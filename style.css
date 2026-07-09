@@ -1,16 +1,40 @@
 * {
-    box-sizing: border-box;
-    scroll-behavior: smooth;
+    box-sizing:border-box;
+    scroll-behavior:smooth;
 }
+
+
+:root {
+
+    --background:#08090d;
+    --surface:#11131a;
+    --surface2:#181c26;
+
+    --accent:#e63946;
+    --text:#f5f5f5;
+    --muted:#a6a8b3;
+
+}
+
 
 
 body {
 
     margin:0;
-    font-family: Arial, sans-serif;
 
-    background:#111;
-    color:white;
+    background:var(--background);
+
+    color:var(--text);
+
+    font-family:"Inter", sans-serif;
+
+}
+
+
+
+h1,h2,h3 {
+
+    font-family:"Space Grotesk", sans-serif;
 
 }
 
@@ -19,13 +43,12 @@ body {
 header {
 
     position:fixed;
+
     top:0;
+
     width:100%;
 
-    background:#111d;
-    backdrop-filter:blur(10px);
-
-    z-index:100;
+    z-index:10;
 
 }
 
@@ -33,29 +56,69 @@ header {
 
 nav {
 
+    margin:20px auto;
+
+    width:85%;
+
+    padding:18px 30px;
+
     display:flex;
+
     justify-content:space-between;
+
     align-items:center;
 
-    padding:20px 8%;
+
+    background:#ffffff08;
+
+    backdrop-filter:blur(20px);
+
+    border:1px solid #ffffff12;
+
+    border-radius:20px;
 
 }
+
+
+
+nav h2 {
+
+    font-size:20px;
+
+}
+
 
 
 nav a {
 
     color:white;
-    margin-left:20px;
+
     text-decoration:none;
+
+    margin-left:25px;
+
+    opacity:.8;
+
+    transition:.3s;
 
 }
 
 
 
+nav a:hover {
+
+    opacity:1;
+
+    color:var(--accent);
+
+}
+
+
+
+
 section {
 
-    min-height:70vh;
-    padding:100px 10%;
+    padding:120px 10%;
 
 }
 
@@ -64,12 +127,13 @@ section {
 
 .hero {
 
+
     height:100vh;
 
     display:flex;
-    flex-direction:column;
 
     justify-content:center;
+
     align-items:center;
 
     text-align:center;
@@ -77,14 +141,12 @@ section {
 
     background:
 
-    linear-gradient(
-    rgba(0,0,0,.6),
-    rgba(0,0,0,.9)
-    ),
+    radial-gradient(
+    circle at top,
+    #343b55,
+    transparent 40%
+    );
 
-    url("images/background.jpg");
-
-    background-size:cover;
 
 }
 
@@ -92,7 +154,23 @@ section {
 
 .hero h1 {
 
-    font-size:60px;
+    font-size:clamp(45px,7vw,90px);
+
+    line-height:1;
+
+    margin-bottom:25px;
+
+}
+
+
+
+.hero p {
+
+    max-width:700px;
+
+    color:var(--muted);
+
+    font-size:20px;
 
 }
 
@@ -100,26 +178,57 @@ section {
 
 .button {
 
-    margin-top:30px;
 
-    padding:15px 30px;
+    display:inline-block;
 
-    background:#d00000;
+    margin-top:35px;
+
+    padding:16px 35px;
+
+    border-radius:50px;
+
+    background:var(--accent);
 
     color:white;
 
     text-decoration:none;
 
-    border-radius:10px;
+    font-weight:600;
+
+    transition:.3s;
+
+}
+
+
+.button:hover {
+
+    transform:translateY(-5px);
 
 }
 
 
 
-.cards {
 
-    display:flex;
-    gap:20px;
+h2 {
+
+    font-size:45px;
+
+    margin-bottom:50px;
+
+}
+
+
+
+
+.card-container {
+
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+
+    gap:25px;
+
 
 }
 
@@ -127,13 +236,26 @@ section {
 
 .card {
 
-    background:#222;
 
-    padding:30px;
+    padding:35px;
 
-    border-radius:15px;
+    background:var(--surface);
 
-    flex:1;
+    border-radius:25px;
+
+    border:1px solid #ffffff10;
+
+    transition:.3s;
+
+}
+
+
+
+.card:hover {
+
+    transform:translateY(-8px);
+
+    background:var(--surface2);
 
 }
 
@@ -142,20 +264,27 @@ section {
 
 .gallery {
 
-    display:flex;
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
 
     gap:30px;
 
 }
 
 
+
 .example {
 
-    background:#222;
+
+    background:var(--surface);
 
     padding:20px;
 
-    border-radius:15px;
+    border-radius:25px;
+
+    overflow:hidden;
 
 }
 
@@ -163,24 +292,39 @@ section {
 
 .example img {
 
-    width:300px;
 
-    max-width:100%;
+    width:100%;
+
+    border-radius:15px;
+
+    transition:.4s;
+
+}
+
+
+
+.example:hover img {
+
+    transform:scale(1.05);
 
 }
 
 
 
 
+
 .review {
 
-    background:#222;
 
-    padding:25px;
+    background:var(--surface);
 
-    margin:20px 0;
+    border-left:4px solid var(--accent);
+
+    padding:30px;
 
     border-radius:15px;
+
+    margin-bottom:20px;
 
 }
 
@@ -189,10 +333,10 @@ section {
 
 footer {
 
+    padding:40px;
+
     text-align:center;
 
-    padding:30px;
-
-    background:#000;
+    color:var(--muted);
 
 }
