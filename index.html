@@ -1,107 +1,376 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Box & Frame — Custom Leverframe Diagrams</title>
-<meta name="description" content="Custom leverframe diagrams drawn to order, for heritage railways, model layouts, and fictional routes.">
+
+<title>Kxko Leverframe Diagrams</title>
+
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
 
 <link rel="stylesheet" href="style.css">
+
 </head>
+
+
 <body>
 
-<nav class="nav">
-  <div class="wrap">
-    <div class="nav-brand">
-      <span class="title" id="nav-title">Box & Frame</span>
-      <span class="tagline" id="nav-tagline">Custom Leverframe Diagrams</span>
-    </div>
-    <ul class="nav-links">
-      <li><button data-scroll="about"><span class="dot" style="background: var(--lever-spare);"></span>About</button></li>
-      <li><button data-scroll="examples"><span class="dot" style="background: var(--lever-points);"></span>Examples</button></li>
-      <li><button data-scroll="reviews"><span class="dot" style="background: var(--lever-fpl);"></span>Reviews</button></li>
-      <li><button data-scroll="terms"><span class="dot" style="background: var(--lever-stop);"></span>Terms</button></li>
-    </ul>
-  </div>
+
+<header>
+
+<nav>
+
+<h2>Kxko Leverframe Diagrams</h2>
+
+
+<div>
+
+<a href="#about">About</a>
+<a href="#examples">Examples</a>
+<a href="#reviews">Reviews</a>
+<a href="#terms">Terms</a>
+
+</div>
+
+
 </nav>
 
-<header class="hero wrap">
-  <p class="hero-eyebrow" id="hero-eyebrow">Signal Box Diagrams, Drawn to Order</p>
-  <h1 id="hero-headline">Custom Leverframe Diagrams</h1>
-  <p class="hero-sub" id="hero-subheadline">Built lever by lever, box by box.</p>
-
-  <div class="lever-frame">
-    <p class="lever-frame-caption">Pull a lever</p>
-    <div class="lever-bank" id="lever-bank"><!-- populated by script.js --></div>
-  </div>
-
-  <div class="hero-about-grid" id="about">
-    <div class="about-body" id="about-body"><!-- populated by script.js --></div>
-    <div>
-      <div class="stat-row" id="about-stats"><!-- populated by script.js --></div>
-    </div>
-  </div>
 </header>
 
-<hr class="rule">
+
+
+
+<section class="hero">
+
+
+<div>
+
+<h1>
+Custom Leverframe Diagrams
+</h1>
+
+
+<p>
+Professional railway signalling diagrams created with accuracy and attention to detail.
+</p>
+
+
+<a class="button" href="#contact">
+Request a Diagram
+</a>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+<section id="about">
+
+
+<h2>About Me</h2>
+
+
+<p>
+
+Hello! I'm Kxko, a railway enthusiast creating custom leverframe diagrams.
+
+I create historic recreations, fictional layouts and diagrams for railway projects.
+
+</p>
+
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+
+<h2>Services</h2>
+
+
+<div class="cards">
+
+
+<div class="card">
+
+<h3>
+Historic recreations
+</h3>
+
+<p>
+Detailed recreations of real signal boxes and railway layouts.
+</p>
+
+</div>
+
+
+
+<div class="card">
+
+<h3>
+Custom diagrams
+</h3>
+
+<p>
+Unique leverframe diagrams based on your own ideas.
+</p>
+
+</div>
+
+
+
+
+<div class="card">
+
+<h3>
+Game projects
+</h3>
+
+<p>
+Diagrams for railway simulations and games.
+</p>
+
+</div>
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
 
 <section id="examples">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="section-number">02</span>
-      <h2 id="examples-heading">Examples</h2>
-    </div>
-    <p class="section-intro" id="examples-intro"></p>
 
-    <div class="legend" id="legend"><!-- populated by script.js --></div>
 
-    <div class="examples-grid" id="examples-grid"><!-- populated by script.js --></div>
-  </div>
+<h2>Examples</h2>
+
+
+<div class="gallery">
+
+
+<div class="example">
+
+<img src="images/example1.png">
+
+<p>
+Example Diagram 1
+</p>
+
+</div>
+
+
+
+
+<div class="example">
+
+<img src="images/example2.png">
+
+<p>
+Example Diagram 2
+</p>
+
+</div>
+
+
+
+</div>
+
+
 </section>
 
-<hr class="rule">
+
+
+
+
+
+
 
 <section id="reviews">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="section-number">03</span>
-      <h2 id="reviews-heading">Reviews</h2>
-    </div>
-    <p class="section-intro" id="reviews-intro"></p>
-    <div class="reviews-list" id="reviews-list"><!-- populated by script.js --></div>
-  </div>
+
+
+<h2>
+Customer Reviews
+</h2>
+
+
+
+<div id="review-list">
+
+</div>
+
+
+
+
+<h3>
+Leave a Review
+</h3>
+
+
+
+<form id="review-form">
+
+
+<input 
+id="name"
+placeholder="Your name"
+required
+>
+
+
+
+<select id="rating" required>
+
+<option value="">
+Rating
+</option>
+
+<option value="5">
+★★★★★
+</option>
+
+<option value="4">
+★★★★☆
+</option>
+
+<option value="3">
+★★★☆☆
+</option>
+
+<option value="2">
+★★☆☆☆
+</option>
+
+<option value="1">
+★☆☆☆☆
+</option>
+
+
+</select>
+
+
+
+<textarea 
+id="message"
+placeholder="Your review"
+required>
+</textarea>
+
+
+
+
+<button>
+Submit Review
+</button>
+
+
+
+</form>
+
+
+
 </section>
 
-<hr class="rule">
+
+
+
+
+
+
+
 
 <section id="terms">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="section-number">04</span>
-      <h2 id="terms-heading">Terms</h2>
-    </div>
-    <p class="section-intro" id="terms-intro"></p>
-    <div class="terms-list" id="terms-list"><!-- populated by script.js --></div>
-  </div>
+
+
+<h2>
+Terms
+</h2>
+
+
+<ul>
+
+<li>
+Custom diagrams are created after discussing requirements.
+</li>
+
+<li>
+Payment is required before delivery.
+</li>
+
+<li>
+Major changes after completion may cost extra.
+</li>
+
+</ul>
+
+
 </section>
 
-<footer class="site-footer">
-  <div class="wrap">
-    <h2 id="footer-heading">Get in touch</h2>
-    <p id="footer-body"></p>
-    <ul class="footer-links" id="footer-links"><!-- populated by script.js --></ul>
-    <div class="footer-bottom">
-      <span id="footer-colophon"></span>
-      <span id="footer-year"></span>
-    </div>
-  </div>
+
+
+
+
+
+
+
+
+<section id="contact">
+
+
+<h2>
+Contact
+</h2>
+
+
+<p>
+Discord: YOUR_USERNAME
+</p>
+
+
+</section>
+
+
+
+
+
+
+<footer>
+
+© 2026 Kxko Leverframe Diagrams
+
 </footer>
 
-<script src="config.js"></script>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script src="script.js"></script>
+
+
 </body>
+
 </html>
