@@ -6,6 +6,220 @@ const SUPABASE_KEY = "sb_publishable_RZYBKLqjC9UYLNdqlOKZCA_IFX-5Gvm";
 const db = supabase.createClient(
     SUPABASE_URL,
     SUPABASE_KEY
+    
+    const ADMIN_EMAIL = "haleannson@gmail.com";
+
+
+// LOGIN
+
+document
+.getElementById("login-button")
+.onclick = async()=>{
+
+
+let email = prompt("Email:");
+
+let password = prompt("Password:");
+
+
+
+const {data,error}=await db.auth.signInWithPassword({
+
+email,
+password
+
+});
+
+
+if(error){
+
+alert(error.message);
+return;
+
+}
+
+
+checkAdmin();
+
+
+};
+
+
+
+
+
+async function checkAdmin(){
+
+
+const {data}=await db.auth.getUser();
+
+
+if(!data.user)
+return;
+
+
+
+if(data.user.email === ADMIN_EMAIL){
+
+
+document
+.getElementById("upload-area")
+.style.display="block";
+
+
+}
+
+
+}
+
+
+
+
+// LOAD EXAMPLES
+
+
+async function loadExamples(){
+
+
+const {data,error}=await db
+.from("examples")
+.select("*")
+.order("created_at");
+
+
+if(error){
+
+console.log(error);
+return;
+
+}
+
+
+
+const gallery =
+document.getElementById("gallery");
+
+
+gallery.innerHTML="";
+
+
+
+data.forEach(example=>{
+
+
+gallery.innerHTML += `
+
+<div class="example">
+
+<img src="${example.image_url}">
+
+
+<h3>
+${example.title}
+</h3>
+
+
+<p>
+${example.description ?? ""}
+</p>
+
+
+</div>
+
+`;
+
+});
+
+
+}
+
+
+loadExamples();
+
+checkAdmin();
+
+
+
+
+
+
+// UPLOAD
+
+
+document
+.getElementById("upload-button")
+.onclick=async()=>{
+
+
+const file =
+document
+.getElementById("diagram-image")
+.files[0];
+
+
+if(!file)
+return;
+
+
+
+const filename =
+Date.now()+"-"+file.name;
+
+
+
+const upload =
+await db.storage
+.from("diagram-images")
+.upload(
+filename,
+file
+);
+
+
+
+if(upload.error){
+
+alert(upload.error.message);
+return;
+
+}
+
+
+
+const url =
+db.storage
+.from("diagram-images")
+.getPublicUrl(filename)
+.data
+.publicUrl;
+
+
+
+
+await db
+.from("examples")
+.insert({
+
+title:
+document.getElementById("diagram-title").value,
+
+
+description:
+document.getElementById("diagram-description").value,
+
+
+image_url:url
+
+});
+
+
+
+alert("Uploaded!");
+
+location.reload();
+
+
+};
 );
 
 
