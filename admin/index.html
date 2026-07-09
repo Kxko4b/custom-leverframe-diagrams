@@ -1,1 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Kxko Admin</title>
+
+<link rel="stylesheet" href="../style.css">
+
+</head>
+
+
+<body>
+
+
+<section class="admin-page">
+
+
+<h1>
+Kxko Admin Dashboard
+</h1>
+
+
+<div id="login-box">
+
+
+<input
+id="email"
+placeholder="Email">
+
+
+<input
+id="password"
+type="password"
+placeholder="Password">
+
+
+<button id="login-button">
+Login
+</button>
+
+
+</div>
+
+
+
+
+
+<div id="dashboard" style="display:none;">
+
+
+<h2>
+Upload Example
+</h2>
+
+
+<input
+id="title"
+placeholder="Diagram title">
+
+
+<textarea
+id="description"
+placeholder="Description">
+</textarea>
+
+
+
+<input
+type="file"
+id="image"
+accept="image/*">
+
+
+
+<button id="upload-button">
+Upload Diagram
+</button>
+
+
+
+<h2>
+Existing Examples
+</h2>
+
+
+<div id="admin-gallery">
+
+</div>
+
+
+<button id="logout-button">
+Logout
+</button>
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+<script src="../js/supabase.js"></script>
+<script src="../js/admin.js"></script>
+
+
+</body>
+
+</html>
