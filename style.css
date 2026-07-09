@@ -1,0 +1,198 @@
+* {
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+
+body {
+
+    margin:0;
+    font-family: Arial, sans-serif;
+
+    background:#111;
+    color:white;
+
+}
+
+
+
+header {
+
+    position:fixed;
+    top:0;
+    width:100%;
+
+    background:#111d;
+    backdrop-filter:blur(10px);
+
+    z-index:100;
+
+}
+
+
+
+nav {
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:20px 8%;
+
+}
+
+
+nav a {
+
+    color:white;
+    margin-left:20px;
+    text-decoration:none;
+
+}
+
+
+
+section {
+
+    min-height:70vh;
+    padding:100px 10%;
+
+}
+
+
+
+
+.hero {
+
+    height:100vh;
+
+    display:flex;
+    flex-direction:column;
+
+    justify-content:center;
+    align-items:center;
+
+    text-align:center;
+
+
+    background:
+
+    linear-gradient(
+    rgba(0,0,0,.6),
+    rgba(0,0,0,.9)
+    ),
+
+    url("images/background.jpg");
+
+    background-size:cover;
+
+}
+
+
+
+.hero h1 {
+
+    font-size:60px;
+
+}
+
+
+
+.button {
+
+    margin-top:30px;
+
+    padding:15px 30px;
+
+    background:#d00000;
+
+    color:white;
+
+    text-decoration:none;
+
+    border-radius:10px;
+
+}
+
+
+
+.cards {
+
+    display:flex;
+    gap:20px;
+
+}
+
+
+
+.card {
+
+    background:#222;
+
+    padding:30px;
+
+    border-radius:15px;
+
+    flex:1;
+
+}
+
+
+
+
+.gallery {
+
+    display:flex;
+
+    gap:30px;
+
+}
+
+
+.example {
+
+    background:#222;
+
+    padding:20px;
+
+    border-radius:15px;
+
+}
+
+
+
+.example img {
+
+    width:300px;
+
+    max-width:100%;
+
+}
+
+
+
+
+.review {
+
+    background:#222;
+
+    padding:25px;
+
+    margin:20px 0;
+
+    border-radius:15px;
+
+}
+
+
+
+
+footer {
+
+    text-align:center;
+
+    padding:30px;
+
+    background:#000;
+
+}
