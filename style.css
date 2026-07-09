@@ -117,18 +117,15 @@ nav a:hover {
 
 
 section {
-
-    padding:120px 10%;
-
+    padding:80px 10%;
 }
 
 
 
 
+
 .hero {
-
-
-    height:100vh;
+    min-height:85vh;
 
     display:flex;
 
@@ -210,10 +207,8 @@ section {
 
 
 h2 {
-
-    font-size:45px;
-
-    margin-bottom:50px;
+    font-size:38px;
+    margin-bottom:30px;
 
 }
 
@@ -237,7 +232,8 @@ h2 {
 .card {
 
 
-    padding:35px;
+
+    padding:25px;
 
     background:var(--surface);
 
