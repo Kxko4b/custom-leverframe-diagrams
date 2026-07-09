@@ -1,79 +1,60 @@
-const SUPABASE_URL = "DEINE_PROJECT_URL";
-
-const SUPABASE_KEY = "DEIN_ANON_KEY";
-
+const SUPABASE_URL = "YOUR_PROJECT_URL";
+const SUPABASE_KEY = "YOUR_ANON_KEY";
 
 
 const db = supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
+    SUPABASE_URL,
+    SUPABASE_KEY
 );
 
 
-
-
+// Load reviews
 
 async function loadReviews(){
 
-
-const {data,error}=await db
-.from("reviews")
-.select("*")
-.order("created_at",{ascending:false});
-
+    const { data, error } = await db
+        .from("reviews")
+        .select("*")
+        .order("created_at", { ascending:false });
 
 
-if(error){
-
-console.log(error);
-
-return;
-
-}
+    if(error){
+        console.error(error);
+        return;
+    }
 
 
+    const box = document.getElementById("review-list");
 
-const box=document.getElementById("review-list");
-
-
-box.innerHTML="";
+    box.innerHTML = "";
 
 
+    data.forEach(review => {
 
-data.forEach(review=>{
+        box.innerHTML += `
 
+        <div class="review">
 
-box.innerHTML += `
+            <div class="stars">
+            ${"★".repeat(review.rating)}
+            ${"☆".repeat(5-review.rating)}
+            </div>
 
-<div class="review">
+            <p>
+            "${review.message}"
+            </p>
 
-<div class="stars">
+            <strong>
+            - ${review.name}
+            </strong>
 
-${"★".repeat(review.rating)}
-${"☆".repeat(5-review.rating)}
+        </div>
 
-</div>
+        `;
 
-
-<p>
-"${review.message}"
-</p>
-
-
-<strong>
-- ${review.name}
-</strong>
-
-
-</div>
-
-`;
-
-});
-
+    });
 
 }
-
 
 
 loadReviews();
@@ -81,18 +62,14 @@ loadReviews();
 
 
 
-
-
-
-
+// Submit review
 
 document
 .getElementById("review-form")
-.addEventListener("submit",async(e)=>{
+.addEventListener("submit", async (event)=>{
 
 
-e.preventDefault();
-
+event.preventDefault();
 
 
 const name =
@@ -108,15 +85,12 @@ document.getElementById("message").value;
 
 
 
-
-const {error}=await db
+const {error} = await db
 .from("reviews")
 .insert({
 
 name:name,
-
 rating:Number(rating),
-
 message:message
 
 });
@@ -125,9 +99,9 @@ message:message
 
 if(error){
 
-alert("Error submitting review");
+console.error(error);
 
-console.log(error);
+alert("Error saving review");
 
 return;
 
@@ -135,7 +109,7 @@ return;
 
 
 
-alert("Thank you for your review!");
+alert("Review submitted!");
 
 location.reload();
 
