@@ -1,236 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Kxko Leverframe Diagrams</title>
-
-    <link rel="stylesheet" href="style.css">
-<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Kxko Leverframe Diagrams</title>
+<title>Box & Frame — Custom Leverframe Diagrams</title>
+<meta name="description" content="Custom leverframe diagrams drawn to order, for heritage railways, model layouts, and fictional routes.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="style.css">
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="script.js"></script>
+</head>
 <body>
 
-<header>
-    <nav>
-        <h2>Kxko Leverframe Diagrams</h2>
+<nav class="nav">
+  <div class="wrap">
+    <div class="nav-brand">
+      <span class="title" id="nav-title">Box & Frame</span>
+      <span class="tagline" id="nav-tagline">Custom Leverframe Diagrams</span>
+    </div>
+    <ul class="nav-links">
+      <li><button data-scroll="about"><span class="dot" style="background: var(--lever-spare);"></span>About</button></li>
+      <li><button data-scroll="examples"><span class="dot" style="background: var(--lever-points);"></span>Examples</button></li>
+      <li><button data-scroll="reviews"><span class="dot" style="background: var(--lever-fpl);"></span>Reviews</button></li>
+      <li><button data-scroll="terms"><span class="dot" style="background: var(--lever-stop);"></span>Terms</button></li>
+    </ul>
+  </div>
+</nav>
 
-        <div>
-            <a href="#about">About</a>
-            <a href="#examples">Examples</a>
-            <a href="#reviews">Reviews</a>
-            <a href="#terms">Terms</a>
-        </div>
-    </nav>
+<header class="hero wrap">
+  <p class="hero-eyebrow" id="hero-eyebrow">Signal Box Diagrams, Drawn to Order</p>
+  <h1 id="hero-headline">Custom Leverframe Diagrams</h1>
+  <p class="hero-sub" id="hero-subheadline">Built lever by lever, box by box.</p>
+
+  <div class="lever-frame">
+    <p class="lever-frame-caption">Pull a lever</p>
+    <div class="lever-bank" id="lever-bank"><!-- populated by script.js --></div>
+  </div>
+
+  <div class="hero-about-grid" id="about">
+    <div class="about-body" id="about-body"><!-- populated by script.js --></div>
+    <div>
+      <div class="stat-row" id="about-stats"><!-- populated by script.js --></div>
+    </div>
+  </div>
 </header>
 
-
-<section class="hero">
-
-    <h1>Custom Leverframe Diagrams</h1>
-
-    <p>
-        Professionally designed railway leverframe diagrams
-        made for your signalling projects.
-    </p>
-
-    <a class="button" href="#contact">
-        Request a Diagram
-    </a>
-
-</section>
-
-
-
-<section id="about">
-
-    <h2>About me</h2>
-
-    <p>
-        Hello! I'm Kxko, a railway enthusiast specialised in
-        creating custom leverframe diagrams.
-
-        I recreate historic and fictional signalling layouts
-        with attention to detail and accuracy.
-    </p>
-
-
-    <!-- Add your own image here -->
-    <!-- <img src="images/profile.png"> -->
-
-</section>
-
-
-
-<section id="services">
-
-<h2>What I create</h2>
-
-<div class="cards">
-
-<div class="card">
-<h3>Historic diagrams</h3>
-<p>
-Recreations of real railway signal boxes and layouts.
-</p>
-</div>
-
-
-<div class="card">
-<h3>Custom designs</h3>
-<p>
-Original leverframe diagrams based on your ideas.
-</p>
-</div>
-
-
-<div class="card">
-<h3>Game projects</h3>
-<p>
-Diagrams for railway simulations and Roblox projects.
-</p>
-</div>
-
-
-</div>
-
-</section>
-
-
-
+<hr class="rule">
 
 <section id="examples">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-number">02</span>
+      <h2 id="examples-heading">Examples</h2>
+    </div>
+    <p class="section-intro" id="examples-intro"></p>
 
-<h2>Examples</h2>
+    <div class="legend" id="legend"><!-- populated by script.js --></div>
 
-
-<div class="gallery">
-
-
-<div class="example">
-<img src="images/example1.png">
-<p>Example Diagram 1</p>
-</div>
-
-
-<div class="example">
-<img src="images/example2.png">
-<p>Example Diagram 2</p>
-</div>
-
-
-</div>
-
-
+    <div class="examples-grid" id="examples-grid"><!-- populated by script.js --></div>
+  </div>
 </section>
 
-
-
-
+<hr class="rule">
 
 <section id="reviews">
-
-<h2>Reviews</h2>
-
-
-<div class="review">
-
-<p>
-"Absolutely amazing attention to detail.
-The diagram was exactly what I needed."
-</p>
-
-<strong>
-- Customer Name
-</strong>
-
-</div>
-
-
-<div class="review">
-
-<p>
-"Great communication and very accurate work."
-</p>
-
-<strong>
-- Customer Name
-</strong>
-
-</div>
-
-
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-number">03</span>
+      <h2 id="reviews-heading">Reviews</h2>
+    </div>
+    <p class="section-intro" id="reviews-intro"></p>
+    <div class="reviews-list" id="reviews-list"><!-- populated by script.js --></div>
+  </div>
 </section>
 
-
-
-
+<hr class="rule">
 
 <section id="terms">
-
-<h2>Terms</h2>
-
-<ul>
-
-<li>Custom diagrams are created after discussing requirements.</li>
-
-<li>Payment must be completed before delivery.</li>
-
-<li>Changes after completion may require additional payment.</li>
-
-<li>Commercial usage must be agreed beforehand.</li>
-
-</ul>
-
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-number">04</span>
+      <h2 id="terms-heading">Terms</h2>
+    </div>
+    <p class="section-intro" id="terms-intro"></p>
+    <div class="terms-list" id="terms-list"><!-- populated by script.js --></div>
+  </div>
 </section>
 
-
-
-
-
-<section id="contact">
-
-<h2>Contact</h2>
-
-<p>
-Interested in a custom leverframe diagram?
-Contact me through:
-</p>
-
-<p>
-Discord: YOUR_USERNAME
-</p>
-
-
-</section>
-
-
-
-
-<footer>
-
-<p>
-© 2026 Kxko Leverframe Diagrams
-</p>
-
+<footer class="site-footer">
+  <div class="wrap">
+    <h2 id="footer-heading">Get in touch</h2>
+    <p id="footer-body"></p>
+    <ul class="footer-links" id="footer-links"><!-- populated by script.js --></ul>
+    <div class="footer-bottom">
+      <span id="footer-colophon"></span>
+      <span id="footer-year"></span>
+    </div>
+  </div>
 </footer>
 
-
-
+<script src="config.js"></script>
 <script src="script.js"></script>
-
 </body>
 </html>
