@@ -67,8 +67,11 @@ function addZoom() {
 
             lightboxImg.src = this.src;
 
-            lightbox.style.display = "flex";
+           document.getElementById("lightbox-close").onclick = function() {
 
+    lightbox.style.display = "none";
+
+};
         };
 
 
