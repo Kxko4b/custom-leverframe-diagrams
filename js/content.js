@@ -36,7 +36,8 @@ async function loadContent(){
         if(item.section === "about"){
 
             const about =
-            document.getElementById("about-text");
+            document.getElementById("about-text").innerHTML =
+    item.content.replace(/\n/g, "<br>");
 
 
             if(about){
@@ -55,7 +56,8 @@ async function loadContent(){
         if(item.section === "terms"){
 
             const terms =
-            document.getElementById("terms-text");
+            document.getElementById("terms-text").innerHTML =
+    item.content.replace(/\n/g, "<br>");
 
 
             if(terms){
