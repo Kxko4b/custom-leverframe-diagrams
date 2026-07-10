@@ -202,3 +202,5 @@ Save this code to check your progress.`
 
 
 });
+
+console.log("Supabase loaded:", SUPABASE_KEY.substring(0,15));
