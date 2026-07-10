@@ -3,17 +3,15 @@ console.log("gallery.js loaded");
 
 async function loadGallery() {
 
+    const gallery = document.getElementById("gallery");
 
-    const gallery =
-        document.getElementById("gallery");
+    if (!gallery) {
+        console.error("Gallery element not found");
+        return;
+    }
 
 
-    if (!gallery) return;
-
-
-
-    const { data, error } =
-        await db
+    const { data, error } = await db
         .from("gallery")
         .select("*")
         .order("created_at", {
@@ -21,141 +19,84 @@ async function loadGallery() {
         });
 
 
-
     if (error) {
-
-        console.error(
-            "Gallery error:",
-            error
-        );
-
+        console.error("Gallery error:", error);
         return;
-
     }
-
-
 
 
     gallery.innerHTML = "";
 
 
-
     data.forEach(item => {
 
-
         gallery.innerHTML += `
-
-        <div class="gallery-item">
-
-            <img 
-            src="${item.image_url}"
-            alt="Leverframe diagram"
-            class="gallery-image">
-
-        </div>
-
+            <div class="gallery-item">
+                <img 
+                    src="${item.image_url}"
+                    class="gallery-image"
+                    alt="Leverframe diagram">
+            </div>
         `;
 
-
     });
-
 
 
     setupLightbox();
 
-
 }
 
 
 
 
+function setupLightbox() {
+
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImg = document.getElementById("lightbox-img");
+
+    const images = document.querySelectorAll(".gallery-image");
 
 
-function setupLightbox(){
-
-
-    const images =
-        document.querySelectorAll(
-            ".gallery-image"
-        );
-
-
-
-    const lightbox =
-        document.getElementById(
-            "lightbox"
-        );
-
-
-    const lightboxImg =
-        document.getElementById(
-            "lightbox-img"
-        );
-
-
-
-    if(!lightbox || !lightboxImg)
+    if (!lightbox || !lightboxImg) {
+        console.error("Lightbox missing");
         return;
+    }
 
 
+    images.forEach(image => {
 
-    images.forEach(img => {
-
-
-        img.style.cursor =
-        "zoom-in";
+        image.style.cursor = "zoom-in";
 
 
+        image.addEventListener("click", () => {
 
-        img.onclick = () => {
+            lightbox.style.display = "flex";
+            lightboxImg.src = image.src;
 
-
-            lightbox.style.display =
-            "flex";
-
-
-            lightboxImg.src =
-            img.src;
-
-
-        };
-
+        });
 
     });
 
 
 
-    lightbox.onclick = () => {
+    lightbox.addEventListener("click", () => {
+
+        lightbox.style.display = "none";
+
+    });
 
 
-        lightbox.style.display =
-        "none";
+    document.addEventListener("keydown", (event) => {
 
+        if (event.key === "Escape") {
 
-    };
-
-
-
-    document.addEventListener(
-        "keydown",
-        (event)=>{
-
-
-            if(event.key === "Escape"){
-
-                lightbox.style.display =
-                "none";
-
-            }
-
+            lightbox.style.display = "none";
 
         }
-    );
 
+    });
 
 }
-
-
 
 
 
