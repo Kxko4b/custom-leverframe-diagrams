@@ -69,9 +69,25 @@ async function loadGallery() {
 
 
     });
-
-
+.lightbox{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.9);
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+    cursor:zoom-out;
 }
+
+.lightbox img{
+    max-width:95%;
+    max-height:95%;
+    object-fit:contain;
+    border-radius:8px;
+    box-shadow:0 0 30px rgba(0,0,0,.5);
+}
+
 
 
 
