@@ -488,7 +488,7 @@ footer {
 .lightbox {
     display: none;
 
-    position: fixed !important;
+    position: fixed;
 
     top: 0;
     left: 0;
@@ -498,17 +498,10 @@ footer {
 
     background: rgba(0,0,0,0.85);
 
-    z-index: 999999 !important;
+    z-index: 999999;
 
     justify-content: center;
     align-items: center;
 }
-
-
-.lightbox img {
-    max-width: 90vw;
-    max-height: 90vh;
-
-    object-fit: contain;
 
 }
