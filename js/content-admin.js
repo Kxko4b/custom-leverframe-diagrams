@@ -9,38 +9,27 @@ async function loadAdminContent() {
 
 
     if (error) {
-
-        console.error("Loading content failed:", error);
+        console.error(error);
         return;
-
     }
-
 
 
     data.forEach(item => {
 
-
         if (item.section === "about") {
 
-            document
-            .getElementById("about-editor")
-            .value = item.content;
+            document.getElementById("about-editor").value = item.content;
 
         }
-
 
 
         if (item.section === "terms") {
 
-            document
-            .getElementById("terms-editor")
-            .value = item.content;
+            document.getElementById("terms-editor").value = item.content;
 
         }
 
-
     });
-
 
 }
 
@@ -50,94 +39,59 @@ async function loadAdminContent() {
 
 async function saveContent() {
 
-
     console.log("Save button clicked");
 
 
-
     const about =
-        document
-        .getElementById("about-editor")
-        .value;
-
+        document.getElementById("about-editor").value;
 
 
     const terms =
-        document
-        .getElementById("terms-editor")
-        .value;
+        document.getElementById("terms-editor").value;
 
 
 
-    console.log("Saving about:", about);
-    console.log("Saving terms:", terms);
-
-
-
-
-    const aboutResult = await db
+    const { error: aboutError } = await db
         .from("site_content")
         .update({
-
             content: about,
             updated_at: new Date()
-
         })
         .eq("section", "about");
 
 
 
+    if (aboutError) {
 
-
-    if (aboutResult.error) {
-
-        console.error(
-            "About update failed:",
-            aboutResult.error
-        );
-
-        alert("About update failed");
-
+        console.error(aboutError);
+        alert("About save failed");
         return;
 
     }
 
 
 
-
-
-    const termsResult = await db
+    const { error: termsError } = await db
         .from("site_content")
         .update({
-
             content: terms,
             updated_at: new Date()
-
         })
         .eq("section", "terms");
 
 
 
+    if (termsError) {
 
-
-    if (termsResult.error) {
-
-        console.error(
-            "Terms update failed:",
-            termsResult.error
-        );
-
-        alert("Terms update failed");
-
+        console.error(termsError);
+        alert("Terms save failed");
         return;
 
     }
 
 
 
-
-
-    alert("Website content saved!");
+    alert("Content saved!");
 
 }
 
@@ -145,30 +99,30 @@ async function saveContent() {
 
 
 
-
-
-document.addEventListener(
-"DOMContentLoaded",
-()=>{
+document.addEventListener("DOMContentLoaded", () => {
 
 
     console.log("DOM ready");
 
 
-    const button =
-        document.getElementById("save-content");
+    const button = document.getElementById("save-content");
+
+
+    console.log("Button:", button);
 
 
 
-    console.log(
-        "Save button:",
-        button
-    );
-
-
-
-    if(button){
+    if (button) {
 
         button.addEventListener(
             "click",
-           
+            saveContent
+        );
+
+    }
+
+
+    loadAdminContent();
+
+
+});
