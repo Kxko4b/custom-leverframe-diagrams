@@ -4,14 +4,13 @@ function generateRequestCode() {
 
     let code = "";
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 8; i++) {
 
         code += chars.charAt(
             Math.floor(Math.random() * chars.length)
         );
 
     }
-
 
     return "KXD-" + code.slice(0,4) + "-" + code.slice(4,8);
 
@@ -29,7 +28,6 @@ document
     event.preventDefault();
 
 
-
     const submitButton =
         event.target.querySelector("button");
 
@@ -39,12 +37,8 @@ document
 
 
 
-
-
     const requestCode =
         generateRequestCode();
-
-
 
 
 
@@ -78,8 +72,6 @@ document
 
 
 
-
-
     const { data: request, error } =
         await db
         .from("requests")
@@ -103,16 +95,18 @@ document
 
 
 
+    if(error){
 
- if(error){
+        alert(error.message);
 
-    alert(error.message);
+        console.error(error);
 
-    console.error(error);
+        submitButton.disabled = false;
+        submitButton.textContent = "Send Request";
 
-    return;
+        return;
 
-}
+    }
 
 
 
@@ -138,6 +132,7 @@ document
 
 
 
+
         if(upload.error){
 
             console.error(upload.error);
@@ -145,7 +140,6 @@ document
             continue;
 
         }
-
 
 
 
@@ -161,7 +155,6 @@ document
 
 
 
-
         await db
         .from("request_images")
         .insert({
@@ -170,24 +163,10 @@ document
 
             image_url: url
 
-
-        await db
-.from("requests")
-.insert({
-
-    name: name,
-    email: email,
-    description: description,
-    file_url: uploadedFileUrl,
-    status: "Pending",
-    request_code: requestCode
-
-});
-    
+        });
 
 
     }
-
 
 
 
@@ -216,4 +195,9 @@ Save this code to check your progress.`
 
 });
 
-console.log("Supabase loaded:", SUPABASE_KEY.substring(0,15));
+
+
+console.log(
+"Supabase loaded:",
+SUPABASE_KEY.substring(0,15)
+);
