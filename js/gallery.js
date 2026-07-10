@@ -108,10 +108,12 @@ document.body.style.overflow = "hidden";
 
 
 
-    lightbox.addEventListener("click", () => {
+   lightbox.addEventListener("click", () => {
 
-        lightbox.style.display = "none";
+    lightbox.style.display = "none";
+    document.body.style.overflow = "";
 
+});
     });
 
 
