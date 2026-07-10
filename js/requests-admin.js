@@ -161,7 +161,9 @@ async function loadRequests() {
                 </option>
 
             </select>
-
+<button onclick="deleteRequest(${request.id})">
+Delete Request
+</button>
 
         </div>
 
@@ -207,6 +209,50 @@ async function updateRequestStatus(id, status) {
 
 }
 
+async function deleteRequest(id) {
 
+
+    const confirmDelete =
+        confirm(
+            "Delete this request permanently?"
+        );
+
+
+    if(!confirmDelete)
+        return;
+
+
+
+    const { error } =
+        await db
+        .from("requests")
+        .delete()
+        .eq("id", id);
+
+
+
+    if(error){
+
+        console.error(error);
+
+        alert(
+            "Could not delete request."
+        );
+
+        return;
+
+    }
+
+
+
+    alert(
+        "Request deleted."
+    );
+
+
+    loadRequests();
+
+
+}
 
 
