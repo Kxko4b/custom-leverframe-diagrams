@@ -460,54 +460,74 @@ footer {
 /* MOBILE */
 
 
-@media(max-width:700px){
+@media (max-width:700px) {
 
     nav {
-
         flex-direction: column;
-
         gap: 15px;
-
     }
-
 
     .nav-links {
-
         flex-wrap: wrap;
-
         justify-content: center;
-
     }
-
 
     section {
-
         padding: 60px 20px;
-
     }
 
-   .lightbox {
+}
+.lightbox {
+
     display: none;
 
     position: fixed;
 
-    top: 0;
-    left: 0;
+    inset: 0;
 
-    width: 100vw;
-    height: 100vh;
-
-    background: rgba(0,0,0,0.85);
+    background: rgba(0,0,0,.9);
 
     z-index: 999999;
 
     justify-content: center;
     align-items: center;
 
-    overflow: hidden;
 }
 
+.lightbox img {
 
+    max-width: 90vw;
+    max-height: 90vh;
+
+    object-fit: contain;
+
+    border-radius: 12px;
+
+}
+
+#lightbox-close {
+
+    position: absolute;
+
+    top: 20px;
+    right: 20px;
+
+    width: 45px;
+    height: 45px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    font-size: 28px;
+
+    cursor: pointer;
+
+    background: white;
+
+    color: black;
+
+}
 .lightbox {
 
     display: none;
