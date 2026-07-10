@@ -31,14 +31,31 @@ async function loadGallery() {
 
     data.forEach(item => {
 
-        gallery.innerHTML += `
-            <div class="gallery-item">
-                <img 
-                    src="${item.image_url}"
-                    class="gallery-image"
-                    alt="Leverframe diagram">
-            </div>
-        `;
+    gallery.innerHTML += `
+
+    <div class="gallery-card">
+
+        <img
+        src="${item.image_url}"
+        class="gallery-image"
+        alt="Leverframe diagram">
+
+
+        <h3>
+        ${item.title || ""}
+        </h3>
+
+
+        <p>
+        ${item.description || ""}
+        </p>
+
+
+    </div>
+
+    `;
+
+});
 
     });
 
