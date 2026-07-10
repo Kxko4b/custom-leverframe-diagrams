@@ -508,16 +508,23 @@ footer {
 }
 
 
+.lightbox {
+    display:none;
+    position:fixed;
+    inset:0;
+
+    background:rgba(0,0,0,0.85);
+
+    z-index:999999;
+
+    justify-content:center;
+    align-items:center;
+}
+
 .lightbox img {
-    max-width: 90vw;
-    max-height: 90vh;
-
-    width: auto;
-    height: auto;
-
-    object-fit: contain;
-
-    display: block;
+    max-width:90vw;
+    max-height:90vh;
+}
 }
 
 
