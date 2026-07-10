@@ -170,7 +170,20 @@ document
 
             image_url: url
 
-        });
+
+        await db
+.from("requests")
+.insert({
+
+    name: name,
+    email: email,
+    description: description,
+    file_url: uploadedFileUrl,
+    status: "Pending",
+    request_code: requestCode
+
+});
+    
 
 
     }
