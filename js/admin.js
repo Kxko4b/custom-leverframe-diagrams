@@ -1,208 +1,131 @@
-const ADMIN_EMAIL = "haleannson@gmail.com";
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
 
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-const loginBox =
-document.getElementById("login-box");
+<title>Kxko Admin Dashboard</title>
 
-const dashboard =
-document.getElementById("dashboard");
+<link rel="stylesheet" href="../style.css">
 
+</head>
 
 
+<body>
 
 
-async function checkUser(){
+<section>
 
+<h1>
+Kxko Admin Dashboard
+</h1>
 
-const {data} =
-await db.auth.getUser();
 
 
+<div id="login-box">
 
-if(
-data.user &&
-data.user.email === ADMIN_EMAIL
-){
 
-showDashboard();
+<h2>
+Login
+</h2>
 
-}
 
+<input
+id="admin-email"
+placeholder="Email"
+>
 
-}
 
+<input
+id="admin-password"
+type="password"
+placeholder="Password"
+>
 
 
-function showDashboard(){
 
+<button id="login-button">
+Login
+</button>
 
-loginBox.style.display="none";
 
-dashboard.style.display="block";
+</div>
 
-loadAdminExamples();
 
-}
 
 
 
+<div id="dashboard" style="display:none;">
 
 
+<h2>
+Upload Example
+</h2>
 
-document
-.getElementById("login-button")
-.onclick = async()=>{
 
 
-const email =
-document.getElementById("email").value;
+<input
+id="example-title"
+placeholder="Title"
+>
 
 
-const password =
-document.getElementById("password").value;
+<textarea
+id="example-description"
+placeholder="Description">
+</textarea>
 
 
 
-const {error} =
-await db.auth.signInWithPassword({
+<input
+id="example-image"
+type="file"
+accept="image/*"
+>
 
-email,
-password
 
-});
 
+<button id="upload-example">
+Upload
+</button>
 
 
-if(error){
 
-alert(error.message);
 
-return;
+<h2>
+Existing Examples
+</h2>
 
-}
 
 
-checkUser();
+<div id="admin-gallery">
 
+</div>
 
-};
 
 
 
+<button id="logout">
+Logout
+</button>
 
 
+</div>
 
 
+</section>
 
-async function uploadExample(){
 
 
-const file =
-document.getElementById("image")
-.files[0];
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<script src="../js/supabase.js"></script>
+<script src="../js/admin.js"></script>
 
-if(!file){
 
-alert("Choose an image");
+</body>
 
-return;
-
-}
-
-
-
-const filename =
-"examples/" +
-Date.now() +
-"-" +
-file.name;
-
-
-
-
-const upload =
-await db.storage
-.from("diagram-files")
-.upload(
-filename,
-file
-);
-
-
-
-if(upload.error){
-
-alert(upload.error.message);
-
-return;
-
-}
-
-
-
-const url =
-db.storage
-.from("diagram-files")
-.getPublicUrl(filename)
-.data
-.publicUrl;
-
-
-
-
-await db
-.from("examples")
-.insert({
-
-title:
-document.getElementById("title").value,
-
-
-description:
-document.getElementById("description").value,
-
-
-image_url:url
-
-});
-
-
-
-alert("Uploaded!");
-
-location.reload();
-
-
-}
-
-
-
-
-document
-.getElementById("upload-button")
-.onclick =
-uploadExample;
-
-
-
-
-
-document
-.getElementById("logout-button")
-.onclick =
-async()=>{
-
-
-await db.auth.signOut();
-
-location.reload();
-
-};
-
-
-
-
-checkUser();
+</html>
