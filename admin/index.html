@@ -1,38 +1,154 @@
-const ADMIN_EMAIL = "haleannson@gmail.com";
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Kxko Admin Dashboard</title>
+
+<link rel="stylesheet" href="../style.css">
+
+</head>
+
+
+<body>
+
+
+<section class="admin-page">
+
+
+<h1>
+Kxko Admin Dashboard
+</h1>
 
 
 
-async function checkAdminAccess() {
-
-    const { data } =
-        await db.auth.getUser();
+<div id="login-box">
 
 
-    if (!data.user) {
-
-        window.location.href = "index.html";
-
-        return;
-
-    }
+<h2>
+Login
+</h2>
 
 
-
-    if (data.user.email !== ADMIN_EMAIL) {
-
-        alert("Access denied.");
-
-        await db.auth.signOut();
-
-        window.location.href = "index.html";
-
-        return;
-
-    }
+<input 
+id="admin-email"
+type="email"
+placeholder="Email"
+>
 
 
-}
+<input 
+id="admin-password"
+type="password"
+placeholder="Password"
+>
+
+
+<button id="login-button">
+Login
+</button>
+
+
+</div>
 
 
 
-checkAdminAccess();
+
+
+<div id="dashboard" style="display:none;">
+
+
+
+<h2>
+Upload Example
+</h2>
+
+
+<input
+id="example-title"
+placeholder="Diagram title"
+>
+
+
+<textarea
+id="example-description"
+placeholder="Description">
+</textarea>
+
+
+
+<input
+id="example-image"
+type="file"
+accept="image/*"
+>
+
+
+
+<button id="upload-example">
+Upload Diagram
+</button>
+
+
+
+
+
+<h2>
+Examples
+</h2>
+
+
+<div id="admin-gallery">
+
+</div>
+
+
+
+
+
+<h2>
+Requests
+</h2>
+
+
+<div id="requests-list">
+
+</div>
+
+
+
+
+
+<button id="logout">
+Logout
+</button>
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+<script src="../js/supabase.js"></script>
+
+<script src="../js/admin.js"></script>
+
+<script src="../js/requests-admin.js"></script>
+
+
+
+</body>
+
+</html>
