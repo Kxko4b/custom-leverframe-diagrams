@@ -1,15 +1,7 @@
-console.log("NEW GALLERY FILE LOADED");
-console.log("gallery.js loaded");
 
+   async function loadGallery() {
 
-async function loadGallery() {
-
-    const gallery = document.getElementById("examples");
-
-    if (!gallery) {
-        console.error("Gallery element not found");
-        return;
-    }
+    const gallery = document.getElementById("gallery");
 
 
     const { data, error } = await db
@@ -20,93 +12,121 @@ async function loadGallery() {
         });
 
 
+
     if (error) {
-        console.error("Gallery error:", error);
+
+        console.error(error);
+
+        gallery.innerHTML =
+            "<p>Unable to load examples.</p>";
+
         return;
+
     }
+
+
+
+    if (!data || data.length === 0) {
+
+        gallery.innerHTML =
+            "<p>No examples available yet.</p>";
+
+        return;
+
+    }
+
 
 
     gallery.innerHTML = "";
 
 
-    data.forEach(item => {
 
-    gallery.innerHTML += `
-
-    <div class="gallery-card">
-
-        <img
-        src="${item.image_url}"
-        class="gallery-image"
-        alt="Leverframe diagram">
+    data.forEach(example => {
 
 
-        <h3>
-        ${item.title || ""}
-        </h3>
+        gallery.innerHTML += `
+
+        <div class="example">
+
+            <img 
+            src="${example.image_url}"
+            alt="${example.title}"
+            loading="lazy"
+            class="zoom-image"
+            >
 
 
-        <p>
-        ${item.description || ""}
-        </p>
+            <h3>
+            ${example.title}
+            </h3>
 
 
-    </div>
+            <p>
+            ${example.description ?? ""}
+            </p>
 
-    `;
+        </div>
 
-});
+        `;
+
 
     });
 
 
-    setupLightbox();
+
+    setupZoom();
 
 }
 
 
 
 
-function setupLightbox() {
 
-    const lightbox = document.getElementById("lightbox");
-    const lightboxImg = document.getElementById("lightbox-img");
-
-    const images = document.querySelectorAll(".gallery-image");
+function setupZoom() {
 
 
-    if (!lightbox || !lightboxImg) {
-        console.error("Lightbox missing");
-        return;
-    }
+    const images =
+        document.querySelectorAll(".zoom-image");
+
+
+    const lightbox =
+        document.getElementById("lightbox");
+
+
+    const lightboxImg =
+        document.getElementById("lightbox-img");
+
 
 
     images.forEach(image => {
 
+
         image.style.cursor = "zoom-in";
 
 
-        image.addEventListener("click", () => {
+        image.onclick = () => {
 
             lightbox.style.display = "flex";
+
             lightboxImg.src = image.src;
 
-        });
+        };
+
 
     });
 
 
 
-    lightbox.addEventListener("click", () => {
+    lightbox.onclick = () => {
 
         lightbox.style.display = "none";
 
-    });
+    };
 
 
     document.addEventListener("keydown", (event) => {
 
-        if (event.key === "Escape") {
+        if(event.key === "Escape") {
 
             lightbox.style.display = "none";
 
@@ -114,7 +134,10 @@ function setupLightbox() {
 
     });
 
+
 }
+
+
 
 
 
