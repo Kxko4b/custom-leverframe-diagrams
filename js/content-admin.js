@@ -51,7 +51,7 @@ async function loadAdminContent(){
 
 async function saveContent(){
 
-
+console.log("Save button clicked");
     const about =
     document
     .getElementById("about-editor")
