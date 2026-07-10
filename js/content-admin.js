@@ -1,3 +1,4 @@
+console.log("content-admin.js loaded");
 async function loadAdminContent(){
 
 
