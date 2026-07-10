@@ -87,7 +87,6 @@ function setupZoom() {
     const lightboxImg = document.getElementById("lightbox-img");
 
 
-
     if (!lightbox || !lightboxImg) {
 
         console.error("Lightbox missing");
@@ -97,14 +96,12 @@ function setupZoom() {
     }
 
 
-
     images.forEach(image => {
-
 
         image.style.cursor = "zoom-in";
 
 
-        image.addEventListener("click", () => {
+        image.onclick = () => {
 
             lightboxImg.src = image.src;
 
@@ -112,32 +109,24 @@ function setupZoom() {
 
             document.body.style.overflow = "hidden";
 
-        });
-
+        };
 
     });
 
 
 
-    lightbox.addEventListener("click", () => {
+    lightbox.onclick = () => {
 
         lightbox.style.display = "none";
 
+        lightboxImg.src = "";
+
         document.body.style.overflow = "";
 
-    });
+    };
 
 
-
-    document.addEventListener("keydown", (event) => {
-
-        if (event.key === "Escape") {
-
-            lightbox.style.display = "none";
-
-            document.body.style.overflow = "";
-
-        }
+}
 
     });
 
