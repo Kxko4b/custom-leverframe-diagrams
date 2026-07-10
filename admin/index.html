@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Kxko Admin</title>
+<title>Kxko Admin Dashboard</title>
 
 <link rel="stylesheet" href="../style.css">
 
@@ -16,26 +16,34 @@
 <body>
 
 
-<section class="admin-page">
-
+<section>
 
 <h1>
 Kxko Admin Dashboard
 </h1>
 
 
+
 <div id="login-box">
 
 
-<input
-id="email"
-placeholder="Email">
+<h2>
+Login
+</h2>
 
 
 <input
-id="password"
+id="admin-email"
+placeholder="Email"
+>
+
+
+<input
+id="admin-password"
 type="password"
-placeholder="Password">
+placeholder="Password"
+>
+
 
 
 <button id="login-button">
@@ -57,28 +65,32 @@ Upload Example
 </h2>
 
 
+
 <input
-id="title"
-placeholder="Diagram title">
+id="example-title"
+placeholder="Title"
+>
 
 
 <textarea
-id="description"
+id="example-description"
 placeholder="Description">
 </textarea>
 
 
 
 <input
+id="example-image"
 type="file"
-id="image"
-accept="image/*">
+accept="image/*"
+>
 
 
 
-<button id="upload-button">
-Upload Diagram
+<button id="upload-example">
+Upload
 </button>
+
 
 
 
@@ -87,12 +99,15 @@ Existing Examples
 </h2>
 
 
+
 <div id="admin-gallery">
 
 </div>
 
 
-<button id="logout-button">
+
+
+<button id="logout">
 Logout
 </button>
 
@@ -100,15 +115,12 @@ Logout
 </div>
 
 
-
 </section>
 
 
 
 
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 
 <script src="../js/supabase.js"></script>
 <script src="../js/admin.js"></script>
