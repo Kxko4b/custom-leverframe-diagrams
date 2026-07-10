@@ -73,6 +73,8 @@ for (const request of data) {
 
     data.forEach(request => {
 
+    console.log("REQUEST:", request);
+
 
         let images = "";
 
