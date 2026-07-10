@@ -202,5 +202,5 @@ Save this code to check your progress.`
 
 
 });
-select * from requests limit 1;
+
 console.log("Supabase loaded:", SUPABASE_KEY.substring(0,15));
