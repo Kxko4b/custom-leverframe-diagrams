@@ -486,7 +486,7 @@ footer {
 
     }
 .lightbox {
-    display: none !important;
+    display: none;
 
     position: fixed !important;
 
