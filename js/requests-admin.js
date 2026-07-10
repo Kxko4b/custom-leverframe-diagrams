@@ -1,5 +1,16 @@
 async function loadRequests() {
+if(request.file_url){
 
+    html += `
+    <p>
+    File:
+    <a href="${request.file_url}" target="_blank">
+    Open file
+    </a>
+    </p>
+    `;
+
+}
     const container =
         document.getElementById("requests-list");
 
