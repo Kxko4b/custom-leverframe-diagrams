@@ -1,78 +1,74 @@
-async function loadGallery(){
+async function loadGallery() {
+
+    const gallery = document.getElementById("gallery");
 
 
-const {data,error} = await db
-.from("examples")
-.select("*")
-.order("created_at", {
-    ascending:false
-});
-
-
-
-const gallery =
-document.getElementById("gallery");
+    const { data, error } = await db
+        .from("examples")
+        .select("*")
+        .order("created_at", {
+            ascending: false
+        });
 
 
 
-if(error){
+    if (error) {
 
-gallery.innerHTML =
-"Could not load examples.";
+        console.error(error);
 
-console.error(error);
+        gallery.innerHTML =
+            "<p>Unable to load examples.</p>";
 
-return;
+        return;
 
-}
-
-
-
-gallery.innerHTML = "";
+    }
 
 
 
-if(data.length === 0){
+    if (!data || data.length === 0) {
 
-gallery.innerHTML =
-"No examples available yet.";
+        gallery.innerHTML =
+            "<p>No examples available yet.</p>";
 
-return;
+        return;
 
-}
-
-
-
-data.forEach(example => {
+    }
 
 
-gallery.innerHTML += `
 
-<div class="example">
-
-
-<img 
-src="${example.image_url}"
-alt="${example.title}"
->
+    gallery.innerHTML = "";
 
 
-<h3>
-${example.title}
-</h3>
+
+    data.forEach(example => {
 
 
-<p>
-${example.description ?? ""}
-</p>
+        gallery.innerHTML += `
+
+        <div class="example">
+
+            <img 
+            src="${example.image_url}"
+            alt="${example.title}"
+            loading="lazy"
+            >
 
 
-</div>
+            <h3>
+            ${example.title}
+            </h3>
 
-`;
+
+            <p>
+            ${example.description ?? ""}
+            </p>
+
+        </div>
+
+        `;
 
 
-});
+    });
 
 
 }
