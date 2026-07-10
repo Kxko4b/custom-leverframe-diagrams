@@ -11,33 +11,18 @@ async function loadGallery() {
         });
 
 
-
     if (error) {
 
         console.error(error);
 
-        gallery.innerHTML =
-            "<p>Unable to load examples.</p>";
+        gallery.innerHTML = "<p>Unable to load examples.</p>";
 
         return;
 
     }
-
-
-
-    if (!data || data.length === 0) {
-
-        gallery.innerHTML =
-            "<p>No examples available yet.</p>";
-
-        return;
-
-    }
-
 
 
     gallery.innerHTML = "";
-
 
 
     data.forEach(example => {
@@ -46,21 +31,15 @@ async function loadGallery() {
 
         <div class="example">
 
-            <img
+            <img 
             src="${example.image_url}"
             alt="${example.title}"
             loading="lazy"
             class="zoom-image">
 
+            <h3>${example.title}</h3>
 
-            <h3>
-            ${example.title}
-            </h3>
-
-
-            <p>
-            ${example.description ?? ""}
-            </p>
+            <p>${example.description ?? ""}</p>
 
         </div>
 
@@ -69,92 +48,43 @@ async function loadGallery() {
     });
 
 
-
-    setupZoom();
+    addZoom();
 
 }
 
 
 
-
-
-function setupZoom() {
-
-    const images = document.querySelectorAll(".zoom-image");
+function addZoom() {
 
     const lightbox = document.getElementById("lightbox");
-
     const lightboxImg = document.getElementById("lightbox-img");
 
 
-    if (!lightbox || !lightboxImg) {
-
-        console.error("Lightbox missing");
-
-        return;
-
-    }
+    document.querySelectorAll(".zoom-image").forEach(img => {
 
 
-    images.forEach(image => {
+        img.onclick = function() {
 
-        image.style.cursor = "zoom-in";
-
-
-        image.onclick = () => {
-
-            lightboxImg.src = image.src;
+            lightboxImg.src = this.src;
 
             lightbox.style.display = "flex";
 
-            document.body.style.overflow = "hidden";
-
         };
+
 
     });
 
 
 
-    lightbox.onclick = () => {
+    lightbox.onclick = function() {
 
         lightbox.style.display = "none";
-
-        lightboxImg.src = "";
-
-        document.body.style.overflow = "";
 
     };
 
 
 }
 
-    });
-
-
-}
-
-
-
 
 
 loadGallery();
-document.addEventListener("keydown", (event) => {
-
-    if (event.key === "Escape") {
-
-        const lightbox =
-            document.getElementById("lightbox");
-
-        const lightboxImg =
-            document.getElementById("lightbox-img");
-
-
-        lightbox.style.display = "none";
-
-        lightboxImg.src = "";
-
-        document.body.style.overflow = "";
-
-    }
-
-});
