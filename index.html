@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -10,286 +9,169 @@
 
 <link rel="stylesheet" href="style.css">
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 
 </head>
 
-
 <body>
 
-
 <header>
-
 <nav>
+<h2>Kxko Leverframe Diagrams</h2>
 
-<h2>
-Kxko Leverframe Diagrams
-</h2>
-
-
-<div>
-
+<div class="nav-links">
 <a href="#about">About</a>
+<a href="#services">Services</a>
 <a href="#examples">Examples</a>
 <a href="#reviews">Reviews</a>
 <a href="#request">Request</a>
-
 </div>
 
 </nav>
-
 </header>
 
 
-
-
+<main>
 
 <section class="hero">
+
+<div class="hero-content">
 
 <h1>
 Custom Leverframe Diagrams
 </h1>
 
 <p>
-Historical recreations, fictional layouts and railway signalling diagrams.
+Historical recreations, custom layouts and railway signalling diagrams made with accuracy.
 </p>
-
 
 <a href="#request" class="button">
 Request a Diagram
 </a>
 
+</div>
 
 </section>
-
-
-
 
 
 
 <section id="about">
 
-<h2>
-About
-</h2>
+<h2>About Me</h2>
 
 <p>
-
-I create custom leverframe diagrams for railway enthusiasts,
-simulation projects and historical recreations.
-
+Hello! I'm Kxko, a railway enthusiast creating custom leverframe diagrams.
+I create historical recreations, fictional layouts and diagrams for railway projects.
 </p>
 
 </section>
 
 
 
+<section id="services">
 
-
-
-
-<section>
-
-<h2>
-Services
-</h2>
-
+<h2>Services</h2>
 
 <div class="cards">
 
-
 <div class="card">
-
-<h3>
-Historical recreations
-</h3>
-
+<h3>Historical Recreations</h3>
 <p>
-Recreating real signal boxes and railway layouts.
+Detailed recreations of real signal boxes and railway layouts.
 </p>
-
 </div>
-
 
 
 <div class="card">
-
-<h3>
-Custom designs
-</h3>
-
+<h3>Custom Designs</h3>
 <p>
-Unique diagrams based on your ideas.
+Unique leverframe diagrams based on your own ideas.
 </p>
-
 </div>
-
 
 
 <div class="card">
-
-<h3>
-Game projects
-</h3>
-
+<h3>Game Projects</h3>
 <p>
-Diagrams for railway games and simulations.
+Diagrams for railway simulations and games.
 </p>
-
 </div>
 
-
 </div>
-
 
 </section>
-
-
-
-
-
 
 
 
 <section id="examples">
 
-
-<h2>
-Examples
-</h2>
-
+<h2>Examples</h2>
 
 <div id="gallery" class="gallery">
 
-Loading examples...
-
 </div>
-
 
 </section>
 
 
 
-
-
-
-
-
 <section id="reviews">
 
-
-<h2>
-Customer Reviews
-</h2>
-
+<h2>Customer Reviews</h2>
 
 <div id="review-list">
-
-Loading reviews...
 
 </div>
 
 
 <form id="review-form">
 
-
-<input 
-id="review-name"
-placeholder="Your name"
-required>
-
+<input id="review-name" placeholder="Your name" required>
 
 <select id="review-rating">
 
-<option value="5">
-★★★★★
-</option>
-
-<option value="4">
-★★★★☆
-</option>
-
-<option value="3">
-★★★☆☆
-</option>
-
-<option value="2">
-★★☆☆☆
-</option>
-
-<option value="1">
-★☆☆☆☆
-</option>
-
+<option value="5">★★★★★</option>
+<option value="4">★★★★☆</option>
+<option value="3">★★★☆☆</option>
+<option value="2">★★☆☆☆</option>
+<option value="1">★☆☆☆☆</option>
 
 </select>
 
 
-<textarea
-id="review-message"
-placeholder="Your review"
-required>
-</textarea>
-
+<textarea id="review-message" placeholder="Your review" required></textarea>
 
 <button>
 Submit Review
 </button>
 
-
 </form>
-
 
 </section>
 
 
 
-
-
-
-
-
 <section id="request">
 
-
-<h2>
-Request a Diagram
-</h2>
+<h2>Request a Diagram</h2>
 
 
 <form id="request-form">
 
+<input id="request-name" placeholder="Name" required>
 
-<input
-id="request-name"
-placeholder="Name"
-required>
+<input id="request-discord" placeholder="Discord username">
 
-
-<input
-id="request-discord"
-placeholder="Discord username">
-
-
-<input
-id="request-email"
-placeholder="Email">
+<input id="request-email" placeholder="Email">
 
 
 <select id="request-size">
 
-<option>
-Small (€2)
-</option>
-
-<option>
-Medium (€3.50)
-</option>
-
-<option>
-Large (€4)
-</option>
-
+<option>Small (€2)</option>
+<option>Medium (€3.50)</option>
+<option>Large (€4)</option>
 
 </select>
 
@@ -297,27 +179,15 @@ Large (€4)
 
 <select id="request-type">
 
-<option>
-Historical recreation
-</option>
-
-<option>
-Custom template
-</option>
-
-<option>
-Fictional design
-</option>
-
+<option>Historical Recreation</option>
+<option>Custom Template</option>
+<option>Fictional Design</option>
 
 </select>
 
 
 
-<textarea
-id="request-description"
-placeholder="Describe your idea">
-</textarea>
+<textarea id="request-description" placeholder="Describe your idea"></textarea>
 
 
 <input 
@@ -327,22 +197,56 @@ multiple
 accept="image/*">
 
 
-
 <button>
 Send Request
 </button>
 
-
 </form>
-
 
 </section>
 
 
 
+<section id="terms">
+
+<h2>Terms</h2>
+
+<ul>
+
+<li>
+Custom diagrams are created after discussing requirements.
+</li>
+
+<li>
+Payment is required before delivery.
+</li>
+
+<li>
+Major changes after completion may cost extra.
+</li>
+
+</ul>
+
+</section>
 
 
 
+<section id="contact">
+
+<h2>Contact</h2>
+
+<p>
+Discord: kxkosnuss4b
+</p>
+
+<p>
+Email: haleannson@gmail.com
+</p>
+
+</section>
+
+
+</main>
 
 
 
@@ -354,16 +258,12 @@ Send Request
 
 
 
-
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 
 <script src="js/supabase.js"></script>
 <script src="js/gallery.js"></script>
 <script src="js/reviews.js"></script>
 <script src="js/requests.js"></script>
-
 
 </body>
 
