@@ -1,13 +1,11 @@
 const ADMIN_EMAIL = "haleannson@gmail.com";
 
 
-
 const loginBox =
 document.getElementById("login-box");
 
 const dashboard =
 document.getElementById("dashboard");
-
 
 
 
@@ -28,7 +26,6 @@ async function checkSession() {
 
     }
 
-
 }
 
 
@@ -42,10 +39,20 @@ function showDashboard() {
 
     dashboard.style.display = "block";
 
+
     loadAdminExamples();
 
 
+    if(typeof loadRequests === "function"){
+
+        loadRequests();
+
+    }
+
+
 }
+
+
 
 
 
@@ -58,7 +65,6 @@ document
 
     const email =
         document.getElementById("admin-email").value;
-
 
 
     const password =
@@ -76,7 +82,7 @@ document
 
 
 
-    if (error) {
+    if(error){
 
         alert(error.message);
 
@@ -97,7 +103,8 @@ document
 
 
 
-async function loadAdminExamples() {
+
+async function loadAdminExamples(){
 
 
     const box =
@@ -134,10 +141,11 @@ async function loadAdminExamples() {
 
         box.innerHTML += `
 
+
         <div class="example">
 
 
-            <img 
+            <img
             src="${example.image_url}"
             width="250"
             >
@@ -148,13 +156,13 @@ async function loadAdminExamples() {
             </h3>
 
 
-            <button
-            onclick="deleteExample(${example.id})">
+            <button onclick="deleteExample(${example.id})">
             Delete
             </button>
 
 
         </div>
+
 
         `;
 
@@ -168,21 +176,25 @@ async function loadAdminExamples() {
 
 
 
+
+
+
 document
 .getElementById("upload-example")
 .onclick = async () => {
 
 
+
     const file =
-        document
-        .getElementById("example-image")
-        .files[0];
+    document
+    .getElementById("example-image")
+    .files[0];
 
 
 
     if(!file){
 
-        alert("Select an image.");
+        alert("Please select an image.");
 
         return;
 
@@ -190,22 +202,24 @@ document
 
 
 
-    const filename =
-        "examples/" +
-        Date.now() +
-        "-" +
-        file.name;
+
+    const path =
+    "examples/" +
+    Date.now() +
+    "-" +
+    file.name;
+
 
 
 
 
     const { error: uploadError } =
-        await db.storage
-        .from("diagram-files")
-        .upload(
-            filename,
-            file
-        );
+    await db.storage
+    .from("diagram-files")
+    .upload(
+        path,
+        file
+    );
 
 
 
@@ -220,39 +234,38 @@ document
 
 
 
-
     const imageUrl =
-        db.storage
-        .from("diagram-files")
-        .getPublicUrl(filename)
-        .data
-        .publicUrl;
+    db.storage
+    .from("diagram-files")
+    .getPublicUrl(path)
+    .data
+    .publicUrl;
+
 
 
 
 
 
     const { error } =
-        await db
-        .from("examples")
-        .insert({
+    await db
+    .from("examples")
+    .insert({
 
-            title:
-            document
-            .getElementById("example-title")
-            .value,
-
-
-            description:
-            document
-            .getElementById("example-description")
-            .value,
+        title:
+        document
+        .getElementById("example-title")
+        .value,
 
 
-            image_url:imageUrl
+        description:
+        document
+        .getElementById("example-description")
+        .value,
 
-        });
 
+        image_url:imageUrl
+
+    });
 
 
 
@@ -279,25 +292,22 @@ document
 
 
 
+
+
+
 async function deleteExample(id){
 
 
-    const confirmDelete =
-        confirm(
-            "Delete this example?"
-        );
-
-
-    if(!confirmDelete)
+    if(!confirm("Delete this example?"))
         return;
 
 
 
     const {error} =
-        await db
-        .from("examples")
-        .delete()
-        .eq("id", id);
+    await db
+    .from("examples")
+    .delete()
+    .eq("id",id);
 
 
 
@@ -315,6 +325,10 @@ async function deleteExample(id){
 
 
 }
+
+
+
+
 
 
 
