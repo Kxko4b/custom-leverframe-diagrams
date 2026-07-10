@@ -1,5 +1,6 @@
+console.log("requests-admin.js loaded");
 async function loadRequests() {
-
+console.log("requests-admin.js loaded");
 
     const container =
         document.getElementById("requests-list");
@@ -10,13 +11,13 @@ async function loadRequests() {
 
 
 
- const { data, error } =
+const { data, error } =
     await db
     .from("requests")
-    .select("*")
-    .order("created_at", {
-        ascending:false
-    });
+    .select("*");
+
+console.log("Error:", error);
+console.log("Data:", data);
 
 
 for (const request of data) {
@@ -419,7 +420,7 @@ async function deleteRequest(id) {
 
 
     loadRequests();
-
+console.log("loadRequests started");
 
 }
 
