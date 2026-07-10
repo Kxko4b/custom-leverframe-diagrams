@@ -1,153 +1,72 @@
-*{
-box-sizing:border-box;
-scroll-behavior:smooth;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 
-body{
+:root {
 
-margin:0;
-
-background:#08090d;
-
-color:white;
-
-font-family:Inter,sans-serif;
-
-}
-
-
-
-h1,h2,h3{
-
-font-family:"Space Grotesk",sans-serif;
+    --background: #0b0f14;
+    --surface: #141b24;
+    --surface-light: #1b2633;
+    --text: #f5f7fa;
+    --muted: #aeb8c4;
+    --accent: #d83b3b;
+    --accent-hover: #ff5050;
 
 }
 
 
 
-header{
+html {
 
-position:fixed;
-
-width:100%;
-
-top:0;
-
-z-index:10;
+    scroll-behavior: smooth;
 
 }
 
 
 
-nav{
+body {
 
-width:85%;
+    background: var(--background);
+    color: var(--text);
 
-margin:20px auto;
+    font-family: "Inter", sans-serif;
 
-padding:18px 30px;
-
-display:flex;
-
-justify-content:space-between;
-
-background:#ffffff10;
-
-backdrop-filter:blur(15px);
-
-border-radius:20px;
-
-border:1px solid #ffffff15;
+    line-height: 1.6;
 
 }
 
 
 
-nav a{
+h1,
+h2,
+h3 {
 
-color:white;
-
-text-decoration:none;
-
-margin-left:20px;
-
-opacity:.8;
+    font-family: "Space Grotesk", sans-serif;
 
 }
 
 
 
-nav a:hover{
+h2 {
 
-opacity:1;
+    font-size: 2.4rem;
 
-color:#e63946;
-
-}
-
-
-
-
-section{
-
-padding:80px 10%;
+    margin-bottom: 40px;
 
 }
 
 
 
-.hero{
+section {
 
-height:85vh;
+    max-width: 1100px;
 
-display:flex;
+    margin: auto;
 
-align-items:center;
-
-justify-content:center;
-
-text-align:center;
-
-}
-
-
-
-.hero h1{
-
-font-size:clamp(45px,7vw,80px);
-
-}
-
-
-
-.hero p{
-
-font-size:20px;
-
-color:#aaa;
-
-max-width:700px;
-
-}
-
-
-
-.button{
-
-display:inline-block;
-
-margin-top:30px;
-
-padding:15px 35px;
-
-background:#e63946;
-
-border-radius:50px;
-
-color:white;
-
-text-decoration:none;
+    padding: 80px 30px;
 
 }
 
@@ -155,144 +74,416 @@ text-decoration:none;
 
 
 
-.cards{
-
-display:grid;
-
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-
-gap:20px;
-
-}
+/* NAVIGATION */
 
 
+header {
 
-.card,.example,.review{
+    position: sticky;
 
-background:#11131a;
+    top: 0;
 
-padding:25px;
+    z-index: 100;
 
-border-radius:20px;
+    backdrop-filter: blur(12px);
 
-border:1px solid #ffffff10;
+    background: rgba(11,15,20,0.8);
 
 }
 
 
 
+nav {
 
+    max-width: 1200px;
 
-.gallery{
+    margin: auto;
 
-display:grid;
+    padding: 20px 30px;
 
-grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    display: flex;
 
-gap:25px;
+    justify-content: space-between;
 
-}
-
-
-
-.example img{
-
-width:100%;
-
-border-radius:15px;
+    align-items: center;
 
 }
 
 
 
+nav h2 {
 
+    font-size: 1.4rem;
 
-.review{
-
-margin-bottom:20px;
-
-border-left:4px solid #e63946;
+    margin: 0;
 
 }
 
 
 
-.stars{
+.nav-links {
 
-color:#ffd166;
+    display: flex;
 
-font-size:22px;
-
-}
-
-
-
-form{
-
-max-width:500px;
-
-display:flex;
-
-flex-direction:column;
-
-gap:15px;
+    gap: 25px;
 
 }
 
 
 
-input,select,textarea{
+.nav-links a {
 
-background:#11131a;
+    color: var(--text);
 
-border:1px solid #ffffff20;
+    text-decoration: none;
 
-padding:15px;
-
-border-radius:12px;
-
-color:white;
-
-font-family:Inter;
+    transition: .3s;
 
 }
 
 
 
-textarea{
+.nav-links a:hover {
 
-height:120px;
-
-}
-
-
-
-button{
-
-background:#e63946;
-
-color:white;
-
-border:none;
-
-padding:15px;
-
-border-radius:30px;
-
-cursor:pointer;
-
-font-weight:bold;
+    color: var(--accent);
 
 }
 
 
 
-footer{
 
-text-align:center;
 
-padding:40px;
+/* HERO */
 
-color:#888;
+
+.hero {
+
+    min-height: 90vh;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+
+}
+
+
+
+.hero h1 {
+
+    font-size: clamp(3rem, 7vw, 5rem);
+
+    margin-bottom: 25px;
+
+}
+
+
+
+.hero p {
+
+    max-width: 700px;
+
+    margin: auto;
+
+    color: var(--muted);
+
+    font-size: 1.2rem;
+
+}
+
+
+
+.button,
+button {
+
+    display: inline-block;
+
+    margin-top: 30px;
+
+    padding: 14px 30px;
+
+    border-radius: 12px;
+
+    border: none;
+
+    cursor: pointer;
+
+    background: var(--accent);
+
+    color: white;
+
+    font-size: 1rem;
+
+    font-weight: 600;
+
+    transition: .3s;
+
+}
+
+
+
+.button:hover,
+button:hover {
+
+    background: var(--accent-hover);
+
+    transform: translateY(-2px);
+
+}
+
+
+
+
+
+/* CARDS */
+
+
+.cards {
+
+    display: grid;
+
+    grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+
+    gap: 25px;
+
+}
+
+
+
+.card {
+
+    background: var(--surface);
+
+    padding: 30px;
+
+    border-radius: 20px;
+
+    border: 1px solid rgba(255,255,255,.05);
+
+    transition: .3s;
+
+}
+
+
+
+.card:hover {
+
+    transform: translateY(-8px);
+
+    background: var(--surface-light);
+
+}
+
+
+
+.card h3 {
+
+    margin-bottom: 15px;
+
+}
+
+
+
+
+
+/* GALLERY */
+
+
+.gallery {
+
+    display: grid;
+
+    grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
+
+    gap: 30px;
+
+}
+
+
+
+.example {
+
+    background: var(--surface);
+
+    border-radius: 20px;
+
+    overflow: hidden;
+
+    padding-bottom: 20px;
+
+}
+
+
+
+.example img {
+
+    width: 100%;
+
+    display: block;
+
+}
+
+
+
+.example h3,
+.example p {
+
+    margin: 15px 20px 0;
+
+}
+
+
+
+
+
+/* FORMS */
+
+
+form {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 15px;
+
+    max-width: 700px;
+
+}
+
+
+
+input,
+textarea,
+select {
+
+    width: 100%;
+
+    padding: 15px;
+
+    border-radius: 12px;
+
+    border: 1px solid rgba(255,255,255,.1);
+
+    background: var(--surface);
+
+    color: white;
+
+    font-family: inherit;
+
+}
+
+
+
+textarea {
+
+    min-height: 140px;
+
+    resize: vertical;
+
+}
+
+
+
+
+
+/* REVIEWS */
+
+
+.review {
+
+    background: var(--surface);
+
+    padding: 25px;
+
+    border-radius: 18px;
+
+    margin-bottom: 20px;
+
+}
+
+
+
+.stars {
+
+    color: #ffd700;
+
+    font-size: 1.4rem;
+
+}
+
+
+
+
+
+/* TERMS */
+
+
+ul {
+
+    padding-left: 25px;
+
+}
+
+
+
+li {
+
+    margin-bottom: 10px;
+
+}
+
+
+
+
+
+/* FOOTER */
+
+
+footer {
+
+    text-align: center;
+
+    padding: 40px;
+
+    color: var(--muted);
+
+}
+
+
+
+
+
+/* MOBILE */
+
+
+@media(max-width:700px){
+
+    nav {
+
+        flex-direction: column;
+
+        gap: 15px;
+
+    }
+
+
+    .nav-links {
+
+        flex-wrap: wrap;
+
+        justify-content: center;
+
+    }
+
+
+    section {
+
+        padding: 60px 20px;
+
+    }
 
 }
