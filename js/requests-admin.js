@@ -10,18 +10,27 @@ async function loadRequests() {
 
 
 
-    const { data, error } =
+ const { data, error } =
+    await db
+    .from("requests")
+    .select("*")
+    .order("created_at", {
+        ascending:false
+    });
+
+
+for (const request of data) {
+
+    const { data: images } =
         await db
-        .from("requests")
-        .select(`
-            *,
-            request_images (
-                image_url
-            )
-        `)
-        .order("created_at", {
-            ascending: false
-        });
+        .from("request_images")
+        .select("image_url")
+        .eq("request_id", request.id);
+
+
+    request.request_images = images;
+
+}
 
 
 
