@@ -4,7 +4,7 @@ console.log("gallery.js loaded");
 
 async function loadGallery() {
 
-    const gallery = document.getElementById("gallery");
+    const gallery = document.getElementById("examples");
 
     if (!gallery) {
         console.error("Gallery element not found");
