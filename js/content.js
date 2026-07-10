@@ -35,10 +35,10 @@ async function loadContent(){
 
         if(item.section === "about"){
 
-            const about =
-            document.getElementById("about-text").innerHTML =
-    item.content.replace(/\n/g, "<br>");
-
+           if (item.id === "about") {
+    document.getElementById("about-text").innerHTML =
+        item.content.replace(/\n/g, "<br>");
+}
 
             if(about){
 
@@ -53,12 +53,10 @@ async function loadContent(){
 
 
 
-        if(item.section === "terms"){
-
-            const terms =
-            document.getElementById("terms-text").innerHTML =
-    item.content.replace(/\n/g, "<br>");
-
+       if (item.id === "terms") {
+    document.getElementById("terms-text").innerHTML =
+        item.content.replace(/\n/g, "<br>");
+}
 
             if(terms){
 
