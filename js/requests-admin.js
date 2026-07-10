@@ -1,21 +1,12 @@
 async function loadRequests() {
-if(request.file_url){
 
-    html += `
-    <p>
-    File:
-    <a href="${request.file_url}" target="_blank">
-    Open file
-    </a>
-    </p>
-    `;
 
-}
     const container =
         document.getElementById("requests-list");
 
 
     if (!container) return;
+
 
 
 
@@ -34,6 +25,8 @@ if(request.file_url){
 
 
 
+
+
     if (error) {
 
         console.error(error);
@@ -47,7 +40,11 @@ if(request.file_url){
 
 
 
+
+
     container.innerHTML = "";
+
+
 
 
 
@@ -63,138 +60,361 @@ if(request.file_url){
 
 
 
+
+
     data.forEach(request => {
 
 
-    let images = "";
+        let images = "";
 
 
-    if (request.request_images) {
 
-        request.request_images.forEach(image => {
 
-            images += `
+        if (request.request_images && request.request_images.length > 0) {
 
-            <div>
 
-            <img 
-            src="${image.image_url}"
-            width="200"
-            style="display:block;margin:10px 0;"
+            request.request_images.forEach(image => {
+
+
+                images += `
+
+                <div style="margin-bottom:15px;">
+
+                    <img
+                    src="${image.image_url}"
+                    width="200"
+                    style="display:block;"
+                    >
+
+
+                    <a href="${image.image_url}" target="_blank">
+                    Open image
+                    </a>
+
+                </div>
+
+                `;
+
+
+            });
+
+
+        } else {
+
+
+            images = "No files uploaded";
+
+
+        }
+
+
+
+
+
+
+
+        container.innerHTML += `
+
+
+        <div class="request-card">
+
+
+            <h3>
+            Request #${String(request.id).padStart(4,"0")}
+            </h3>
+
+
+
+            <p>
+            <strong>Request Code:</strong>
+            ${request.request_code}
+            </p>
+
+
+
+            <p>
+            <strong>Name:</strong>
+            ${request.name}
+            </p>
+
+
+
+            <p>
+            <strong>Discord:</strong>
+            ${request.discord || "Not provided"}
+            </p>
+
+
+
+            <p>
+            <strong>Email:</strong>
+            ${request.email || "Not provided"}
+            </p>
+
+
+
+            <p>
+            <strong>Size:</strong>
+            ${request.size}
+            </p>
+
+
+
+            <p>
+            <strong>Type:</strong>
+            ${request.type}
+            </p>
+
+
+
+            <p>
+            <strong>Description:</strong><br>
+            ${request.description || "No description"}
+            </p>
+
+
+
+
+            <h4>
+            Reference Images
+            </h4>
+
+
+            ${images}
+
+
+
+
+            <label>
+            Status:
+            </label>
+
+
+            <select
+            onchange="updateRequestStatus(${request.id}, this.value)"
             >
 
-            <a href="${image.image_url}" target="_blank">
-            Open image
-            </a>
 
-            </div>
+                <option value="Pending"
+                ${request.status === "Pending" ? "selected" : ""}>
+                Pending
+                </option>
 
-            `;
 
-        });
+
+                <option value="Accepted"
+                ${request.status === "Accepted" ? "selected" : ""}>
+                Accepted
+                </option>
+
+
+
+                <option value="In Progress"
+                ${request.status === "In Progress" ? "selected" : ""}>
+                In Progress
+                </option>
+
+
+
+                <option value="Completed"
+                ${request.status === "Completed" ? "selected" : ""}>
+                Completed
+                </option>
+
+
+
+                <option value="Cancelled"
+                ${request.status === "Cancelled" ? "selected" : ""}>
+                Cancelled
+                </option>
+
+
+            </select>
+
+
+
+
+            <br><br>
+
+
+
+            <button onclick="deleteRequest(${request.id})">
+            Delete Request
+            </button>
+
+
+
+        </div>
+
+
+        `;
+
+
+    });
+
+
+}
+
+
+
+
+
+
+
+
+
+async function updateRequestStatus(id, status) {
+
+
+    const { error } =
+        await db
+        .from("requests")
+        .update({
+
+            status: status
+
+        })
+        .eq("id", id);
+
+
+
+
+
+    if(error){
+
+        console.error(error);
+
+        alert("Failed to update status.");
+
+        return;
+
+    }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+async function deleteRequest(id) {
+
+
+    const confirmDelete =
+        confirm(
+            "Delete this request permanently?"
+        );
+
+
+
+    if(!confirmDelete)
+        return;
+
+
+
+
+
+    // delete images first
+
+    const { data: images } =
+        await db
+        .from("request_images")
+        .select("image_url")
+        .eq("request_id", id);
+
+
+
+
+
+    if(images){
+
+
+        for(const image of images){
+
+
+            const path =
+            image.image_url
+            .split("/diagram-files/")
+            [1];
+
+
+
+            if(path){
+
+                await db.storage
+                .from("diagram-files")
+                .remove([path]);
+
+            }
+
+
+        }
+
 
     }
 
 
 
 
-    container.innerHTML += `
-
-    <div class="request-card">
-
-
-        <h3>
-        KXD-${String(request.id).padStart(4,"0")}
-        </h3>
-
-
-        <p>
-        <strong>Name:</strong>
-        ${request.name}
-        </p>
-
-
-        <p>
-        <strong>Discord:</strong>
-        ${request.discord || "Not provided"}
-        </p>
-
-
-        <p>
-        <strong>Email:</strong>
-        ${request.email || "Not provided"}
-        </p>
-
-
-        <p>
-        <strong>Size:</strong>
-        ${request.size}
-        </p>
-
-
-        <p>
-        <strong>Type:</strong>
-        ${request.type}
-        </p>
-
-
-        <p>
-        ${request.description || ""}
-        </p>
 
 
 
-        <h4>
-        Reference Images
-        </h4>
-
-
-        ${images || "No files uploaded"}
+    await db
+    .from("request_images")
+    .delete()
+    .eq("request_id", id);
 
 
 
 
-        <select
-        onchange="updateRequestStatus(${request.id}, this.value)"
-        >
-
-            <option ${request.status === "Pending" ? "selected" : ""}>
-            Pending
-            </option>
-
-            <option ${request.status === "Accepted" ? "selected" : ""}>
-            Accepted
-            </option>
-
-            <option ${request.status === "In Progress" ? "selected" : ""}>
-            In Progress
-            </option>
-
-            <option ${request.status === "Completed" ? "selected" : ""}>
-            Completed
-            </option>
-
-            <option ${request.status === "Cancelled" ? "selected" : ""}>
-            Cancelled
-            </option>
-
-        </select>
 
 
-        <button onclick="deleteRequest(${request.id})">
-        Delete Request
-        </button>
-
-
-    </div>
-
-    `;
-
-
-});
+    const { error } =
+        await db
+        .from("requests")
+        .delete()
+        .eq("id", id);
 
 
 
 
-     
 
+
+    if(error){
+
+        console.error(error);
+
+        alert(
+            "Could not delete request."
+        );
+
+        return;
+
+    }
+
+
+
+
+
+    alert(
+        "Request deleted."
+    );
+
+
+
+    loadRequests();
+
+
+}
+
+
+
+
+
+
+loadRequests();
