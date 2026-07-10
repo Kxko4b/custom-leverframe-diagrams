@@ -4,8 +4,8 @@ console.log("content.js loaded");
 async function loadContent() {
 
     const { data, error } = await db
-        .from("content")
-        .select("*");
+    .from("site_content")
+    .select("*");
 
 
     if (error) {
