@@ -1,6 +1,4 @@
-```javascript
 console.log("content.js loaded");
-
 
 async function loadContent() {
 
