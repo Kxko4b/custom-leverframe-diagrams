@@ -1,5 +1,6 @@
 console.log("content.js loaded");
 
+
 async function loadContent() {
 
     const { data, error } = await db
@@ -19,43 +20,48 @@ async function loadContent() {
     console.log("Loaded content:", data);
 
 
-    data.forEach(item => {
+    for (const item of data) {
+
 
         const text = (item.content || "")
             .replace(/\n/g, "<br>");
 
 
+
         if (item.id === "about") {
 
-            const aboutText =
+            const about =
                 document.getElementById("about-text");
 
-            if (aboutText) {
 
-                aboutText.innerHTML = text;
+            if (about) {
+
+                about.innerHTML = text;
 
             }
 
         }
+
 
 
         if (item.id === "terms") {
 
-            const termsText =
+            const terms =
                 document.getElementById("terms-text");
 
-            if (termsText) {
 
-                termsText.innerHTML = text;
+            if (terms) {
+
+                terms.innerHTML = text;
 
             }
 
         }
 
-    });
+
+    }
 
 }
 
 
 loadContent();
-```
