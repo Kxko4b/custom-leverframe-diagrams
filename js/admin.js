@@ -1,131 +1,339 @@
-<!DOCTYPE html>
-<html lang="en">
+const ADMIN_EMAIL = "haleannson@gmail.com";
 
-<head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Kxko Admin Dashboard</title>
+const loginBox =
+document.getElementById("login-box");
 
-<link rel="stylesheet" href="../style.css">
+const dashboard =
+document.getElementById("dashboard");
 
-</head>
 
 
-<body>
 
+async function checkSession() {
 
-<section>
 
-<h1>
-Kxko Admin Dashboard
-</h1>
+    const { data } =
+        await db.auth.getUser();
 
 
 
-<div id="login-box">
+    if (
+        data.user &&
+        data.user.email === ADMIN_EMAIL
+    ) {
 
+        showDashboard();
 
-<h2>
-Login
-</h2>
+    }
 
 
-<input
-id="admin-email"
-placeholder="Email"
->
+}
 
 
-<input
-id="admin-password"
-type="password"
-placeholder="Password"
->
 
 
 
-<button id="login-button">
-Login
-</button>
+function showDashboard() {
 
 
-</div>
+    loginBox.style.display = "none";
 
+    dashboard.style.display = "block";
 
+    loadAdminExamples();
 
 
+}
 
-<div id="dashboard" style="display:none;">
 
 
-<h2>
-Upload Example
-</h2>
 
 
+document
+.getElementById("login-button")
+.onclick = async () => {
 
-<input
-id="example-title"
-placeholder="Title"
->
 
+    const email =
+        document.getElementById("admin-email").value;
 
-<textarea
-id="example-description"
-placeholder="Description">
-</textarea>
 
 
+    const password =
+        document.getElementById("admin-password").value;
 
-<input
-id="example-image"
-type="file"
-accept="image/*"
->
 
 
+    const { error } =
+        await db.auth.signInWithPassword({
 
-<button id="upload-example">
-Upload
-</button>
+            email,
+            password
 
+        });
 
 
 
-<h2>
-Existing Examples
-</h2>
+    if (error) {
 
+        alert(error.message);
 
+        return;
 
-<div id="admin-gallery">
+    }
 
-</div>
 
 
+    checkSession();
 
 
-<button id="logout">
-Logout
-</button>
+};
 
 
-</div>
 
 
-</section>
 
 
 
+async function loadAdminExamples() {
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script src="../js/supabase.js"></script>
-<script src="../js/admin.js"></script>
+    const box =
+        document.getElementById("admin-gallery");
 
 
-</body>
 
-</html>
+    const { data, error } =
+        await db
+        .from("examples")
+        .select("*")
+        .order("created_at", {
+            ascending:false
+        });
+
+
+
+    if(error){
+
+        console.error(error);
+
+        return;
+
+    }
+
+
+
+    box.innerHTML = "";
+
+
+
+    data.forEach(example => {
+
+
+        box.innerHTML += `
+
+        <div class="example">
+
+
+            <img 
+            src="${example.image_url}"
+            width="250"
+            >
+
+
+            <h3>
+            ${example.title}
+            </h3>
+
+
+            <button
+            onclick="deleteExample(${example.id})">
+            Delete
+            </button>
+
+
+        </div>
+
+        `;
+
+
+    });
+
+
+}
+
+
+
+
+
+document
+.getElementById("upload-example")
+.onclick = async () => {
+
+
+    const file =
+        document
+        .getElementById("example-image")
+        .files[0];
+
+
+
+    if(!file){
+
+        alert("Select an image.");
+
+        return;
+
+    }
+
+
+
+    const filename =
+        "examples/" +
+        Date.now() +
+        "-" +
+        file.name;
+
+
+
+
+    const { error: uploadError } =
+        await db.storage
+        .from("diagram-files")
+        .upload(
+            filename,
+            file
+        );
+
+
+
+    if(uploadError){
+
+        alert(uploadError.message);
+
+        return;
+
+    }
+
+
+
+
+
+    const imageUrl =
+        db.storage
+        .from("diagram-files")
+        .getPublicUrl(filename)
+        .data
+        .publicUrl;
+
+
+
+
+
+    const { error } =
+        await db
+        .from("examples")
+        .insert({
+
+            title:
+            document
+            .getElementById("example-title")
+            .value,
+
+
+            description:
+            document
+            .getElementById("example-description")
+            .value,
+
+
+            image_url:imageUrl
+
+        });
+
+
+
+
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+
+    }
+
+
+
+    alert("Uploaded!");
+
+    loadAdminExamples();
+
+
+};
+
+
+
+
+
+
+async function deleteExample(id){
+
+
+    const confirmDelete =
+        confirm(
+            "Delete this example?"
+        );
+
+
+    if(!confirmDelete)
+        return;
+
+
+
+    const {error} =
+        await db
+        .from("examples")
+        .delete()
+        .eq("id", id);
+
+
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+
+    }
+
+
+
+    loadAdminExamples();
+
+
+}
+
+
+
+
+
+document
+.getElementById("logout")
+.onclick = async()=>{
+
+
+    await db.auth.signOut();
+
+    location.reload();
+
+
+};
+
+
+
+
+
+checkSession();
