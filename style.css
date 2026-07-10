@@ -503,6 +503,21 @@ footer {
 
     justify-content: center;
     align-items: center;
+
+    overflow: hidden;
+}
+
+
+.lightbox img {
+    max-width: 90vw;
+    max-height: 90vh;
+
+    width: auto;
+    height: auto;
+
+    object-fit: contain;
+
+    display: block;
 }
 
 
