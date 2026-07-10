@@ -13,7 +13,7 @@ async function loadGallery() {
 
 
     const { data, error } = await db
-        .from("example")
+        .from("examples")
         .select("*")
         .order("created_at", {
             ascending: false
