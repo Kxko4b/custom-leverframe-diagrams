@@ -1,3 +1,4 @@
+console.log("NEW GALLERY FILE LOADED");
 console.log("gallery.js loaded");
 
 
