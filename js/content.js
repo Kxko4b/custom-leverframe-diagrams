@@ -4,14 +4,13 @@ console.log("content.js loaded");
 async function loadContent() {
 
     const { data, error } = await db
-    .from("site_content")
-    .select("*");
+        .from("site_content")
+        .select("*");
 
 
     if (error) {
 
         console.error("Content error:", error);
-
         return;
 
     }
@@ -20,15 +19,16 @@ async function loadContent() {
     console.log("Loaded content:", data);
 
 
-    for (const item of data) {
+
+    data.forEach(item => {
 
 
         const text = (item.content || "")
-            .replace(/\n/g, "<br>");
+            .replace(/\r?\n/g, "<br>");
 
 
 
-        if (item.id === "about") {
+        if (item.section === "about") {
 
             const about =
                 document.getElementById("about-text");
@@ -44,7 +44,7 @@ async function loadContent() {
 
 
 
-        if (item.id === "terms") {
+        if (item.section === "terms") {
 
             const terms =
                 document.getElementById("terms-text");
@@ -59,7 +59,7 @@ async function loadContent() {
         }
 
 
-    }
+    });
 
 }
 
