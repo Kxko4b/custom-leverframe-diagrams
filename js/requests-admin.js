@@ -1,35 +1,31 @@
 console.log("requests-admin.js loaded");
 async function loadRequests() {
-console.log("requests-admin.js loaded");
-
-    const container =
-        document.getElementById("requests-list");
-
-
-    if (!container) return;
-
-
-
-
 const { data, error } =
     await db
     .from("requests")
-    .select("*");
+    .select("*")
+    .order("created_at", {
+        ascending: false
+    });
 
-console.log("Error:", error);
-console.log("Data:", data);
-
+if (error) {
+    console.error(error);
+    return;
+}
 
 for (const request of data) {
 
-    const { data: images } =
+    const { data: images, error: imageError } =
         await db
         .from("request_images")
         .select("image_url")
         .eq("request_id", request.id);
 
+    console.log("Request", request.id);
+    console.log("Images:", images);
+    console.log("Image error:", imageError);
 
-    request.request_images = images;
+    request.request_images = images || [];
 
 }
 
