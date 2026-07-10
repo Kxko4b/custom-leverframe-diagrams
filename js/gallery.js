@@ -1,8 +1,6 @@
-
-   async function loadGallery() {
+async function loadGallery() {
 
     const gallery = document.getElementById("gallery");
-
 
     const { data, error } = await db
         .from("examples")
@@ -10,7 +8,6 @@
         .order("created_at", {
             ascending: false
         });
-
 
 
     if (error) {
@@ -25,7 +22,6 @@
     }
 
 
-
     if (!data || data.length === 0) {
 
         gallery.innerHTML =
@@ -36,24 +32,20 @@
     }
 
 
-
     gallery.innerHTML = "";
 
 
-
     data.forEach(example => {
-
 
         gallery.innerHTML += `
 
         <div class="example">
 
-            <img 
+            <img
             src="${example.image_url}"
             alt="${example.title}"
             loading="lazy"
-            class="zoom-image"
-            >
+            class="zoom-image">
 
 
             <h3>
@@ -69,9 +61,7 @@
 
         `;
 
-
     });
-
 
 
     setupZoom();
@@ -84,56 +74,56 @@
 
 function setupZoom() {
 
+    const images = document.querySelectorAll(".zoom-image");
 
-    const images =
-        document.querySelectorAll(".zoom-image");
+    const lightbox = document.getElementById("lightbox");
 
-
-    const lightbox =
-        document.getElementById("lightbox");
+    const lightboxImg = document.getElementById("lightbox-img");
 
 
-    const lightboxImg =
-        document.getElementById("lightbox-img");
+    if (!lightbox || !lightboxImg) {
 
+        console.error("Lightbox not found");
+
+        return;
+
+    }
 
 
     images.forEach(image => {
 
-
         image.style.cursor = "zoom-in";
 
 
-        image.onclick = () => {
+        image.addEventListener("click", () => {
 
             lightbox.style.display = "flex";
 
             lightboxImg.src = image.src;
 
-        };
-
+        });
 
     });
 
 
 
-    lightbox.onclick = () => {
+    lightbox.addEventListener("click", () => {
 
         lightbox.style.display = "none";
 
-    };
+    });
+
 
 
     document.addEventListener("keydown", (event) => {
 
-        if(event.key === "Escape") {
+        if (event.key === "Escape") {
 
             lightbox.style.display = "none";
 
         }
 
     });
-
 
 }
 
