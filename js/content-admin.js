@@ -1,53 +1,3 @@
-async function loadAdminContent(){
-
-
-    const {data,error} =
-    await db
-    .from("site_content")
-    .select("*");
-
-
-
-    if(error){
-
-        console.error(error);
-        return;
-
-    }
-
-
-
-    data.forEach(item=>{
-
-
-        if(item.section === "about"){
-
-            document
-            .getElementById("about-editor")
-            .value = item.content;
-
-        }
-
-
-
-        if(item.section === "terms"){
-
-            document
-            .getElementById("terms-editor")
-            .value = item.content;
-
-        }
-
-
-    });
-
-
-}
-
-
-
-
-
 document
 .getElementById("save-content")
 .onclick = async()=>{
@@ -59,7 +9,6 @@ document
     .value;
 
 
-
     const terms =
     document
     .getElementById("terms-editor")
@@ -67,4 +16,42 @@ document
 
 
 
+    const { error: aboutError } =
+    await db
+    .from("site_content")
+    .update({
+        content: about,
+        updated_at: new Date()
+    })
+    .eq("section","about");
 
+
+
+    const { error: termsError } =
+    await db
+    .from("site_content")
+    .update({
+        content: terms,
+        updated_at: new Date()
+    })
+    .eq("section","terms");
+
+
+
+    if(aboutError || termsError){
+
+        console.error(
+            aboutError || termsError
+        );
+
+        alert("Could not save.");
+
+        return;
+
+    }
+
+
+
+    alert("Content saved!");
+
+};
