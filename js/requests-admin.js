@@ -1,41 +1,41 @@
 console.log("requests-admin.js loaded");
+
+
+
 async function loadRequests() {
-const { data, error } =
-    await db
-    .from("requests")
-    .select("*")
-    .order("created_at", {
-        ascending: false
-    });
 
-if (error) {
-    console.error(error);
-    return;
-}
 
-for (const request of data) {
+    const container =
+        document.getElementById("requests-list");
 
-    const { data: images, error: imageError } =
+
+    if (!container) {
+
+        console.error("requests-list not found");
+        return;
+
+    }
+
+
+
+
+    const { data: requests, error } =
         await db
-        .from("request_images")
-        .select("image_url")
-        .eq("request_id", request.id);
-
-    console.log("Request", request.id);
-    console.log("Images:", images);
-    console.log("Image error:", imageError);
-
-    request.request_images = images || [];
-
-}
-
+        .from("requests")
+        .select("*")
+        .order("created_at", {
+            ascending: false
+        });
 
 
 
 
     if (error) {
 
-        console.error(error);
+        console.error(
+            "Loading requests failed:",
+            error
+        );
 
         container.innerHTML =
         "<p>Could not load requests.</p>";
@@ -47,14 +47,12 @@ for (const request of data) {
 
 
 
-
     container.innerHTML = "";
 
 
 
 
-
-    if (!data || data.length === 0) {
+    if (!requests || requests.length === 0) {
 
         container.innerHTML =
         "<p>No requests yet.</p>";
@@ -67,35 +65,55 @@ for (const request of data) {
 
 
 
-
-    data.forEach(request => {
-
-    console.log("REQUEST:", request);
+    for (const request of requests) {
 
 
-        let images = "";
+        const { data: images, error: imageError } =
+            await db
+            .from("request_images")
+            .select("image_url")
+            .eq("request_id", request.id);
 
 
 
 
-        if (request.request_images && request.request_images.length > 0) {
+        if(imageError){
+
+            console.error(
+                "Image loading error:",
+                imageError
+            );
+
+        }
 
 
-            request.request_images.forEach(image => {
 
 
-                images += `
 
-                <div style="margin-bottom:15px;">
+        let imageHTML = "";
+
+
+
+        if(images && images.length > 0){
+
+
+            images.forEach(image => {
+
+
+                imageHTML += `
+
+                <div style="margin:15px 0;">
 
                     <img
                     src="${image.image_url}"
-                    width="200"
+                    width="250"
                     style="display:block;"
                     >
 
 
-                    <a href="${image.image_url}" target="_blank">
+                    <a
+                    href="${image.image_url}"
+                    target="_blank">
                     Open image
                     </a>
 
@@ -110,7 +128,8 @@ for (const request of data) {
         } else {
 
 
-            images = "No files uploaded";
+            imageHTML =
+            "<p>No files uploaded</p>";
 
 
         }
@@ -120,23 +139,14 @@ for (const request of data) {
 
 
 
-
         container.innerHTML += `
-
 
         <div class="request-card">
 
 
             <h3>
-            Request #${String(request.id).padStart(4,"0")}
+            Request ${request.request_code}
             </h3>
-
-
-
-            <p>
-            <strong>Request Code:</strong>
-            ${request.request_code}
-            </p>
 
 
 
@@ -148,15 +158,15 @@ for (const request of data) {
 
 
             <p>
-            <strong>Discord:</strong>
-            ${request.discord || "Not provided"}
+            <strong>Email:</strong>
+            ${request.email || "Not provided"}
             </p>
 
 
 
             <p>
-            <strong>Email:</strong>
-            ${request.email || "Not provided"}
+            <strong>Discord:</strong>
+            ${request.discord || "Not provided"}
             </p>
 
 
@@ -177,7 +187,7 @@ for (const request of data) {
 
             <p>
             <strong>Description:</strong><br>
-            ${request.description || "No description"}
+            ${request.description || ""}
             </p>
 
 
@@ -188,7 +198,8 @@ for (const request of data) {
             </h4>
 
 
-            ${images}
+            ${imageHTML}
+
 
 
 
@@ -204,35 +215,31 @@ for (const request of data) {
 
 
                 <option value="Pending"
-                ${request.status === "Pending" ? "selected" : ""}>
+                ${request.status === "Pending" ? "selected":""}>
                 Pending
                 </option>
 
 
-
                 <option value="Accepted"
-                ${request.status === "Accepted" ? "selected" : ""}>
+                ${request.status === "Accepted" ? "selected":""}>
                 Accepted
                 </option>
 
 
-
                 <option value="In Progress"
-                ${request.status === "In Progress" ? "selected" : ""}>
+                ${request.status === "In Progress" ? "selected":""}>
                 In Progress
                 </option>
 
 
-
                 <option value="Completed"
-                ${request.status === "Completed" ? "selected" : ""}>
+                ${request.status === "Completed" ? "selected":""}>
                 Completed
                 </option>
 
 
-
                 <option value="Cancelled"
-                ${request.status === "Cancelled" ? "selected" : ""}>
+                ${request.status === "Cancelled" ? "selected":""}>
                 Cancelled
                 </option>
 
@@ -241,9 +248,7 @@ for (const request of data) {
 
 
 
-
             <br><br>
-
 
 
             <button onclick="deleteRequest(${request.id})">
@@ -258,7 +263,7 @@ for (const request of data) {
         `;
 
 
-    });
+    }
 
 
 }
@@ -271,7 +276,8 @@ for (const request of data) {
 
 
 
-async function updateRequestStatus(id, status) {
+async function updateRequestStatus(id, status){
+
 
 
     const { error } =
@@ -287,17 +293,15 @@ async function updateRequestStatus(id, status) {
 
 
 
-
     if(error){
 
         console.error(error);
 
-        alert("Failed to update status.");
-
-        return;
+        alert(
+            "Could not update status."
+        );
 
     }
-
 
 
 }
@@ -310,30 +314,26 @@ async function updateRequestStatus(id, status) {
 
 
 
-async function deleteRequest(id) {
-
-
-    const confirmDelete =
-        confirm(
-            "Delete this request permanently?"
-        );
+async function deleteRequest(id){
 
 
 
-    if(!confirmDelete)
-        return;
+    if(!confirm(
+        "Delete this request?"
+    )) return;
 
 
 
 
 
-    // delete images first
 
     const { data: images } =
         await db
         .from("request_images")
         .select("image_url")
         .eq("request_id", id);
+
+
 
 
 
@@ -356,7 +356,9 @@ async function deleteRequest(id) {
 
                 await db.storage
                 .from("diagram-files")
-                .remove([path]);
+                .remove([
+                    path
+                ]);
 
             }
 
@@ -398,7 +400,7 @@ async function deleteRequest(id) {
         console.error(error);
 
         alert(
-            "Could not delete request."
+            "Delete failed."
         );
 
         return;
@@ -408,15 +410,8 @@ async function deleteRequest(id) {
 
 
 
-
-    alert(
-        "Request deleted."
-    );
-
-
-
     loadRequests();
-console.log("loadRequests started");
+
 
 }
 
