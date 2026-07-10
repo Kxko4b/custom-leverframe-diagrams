@@ -66,28 +66,132 @@ if(request.file_url){
     data.forEach(request => {
 
 
-        let images = "";
+    let images = "";
+
+
+    if (request.request_images) {
+
+        request.request_images.forEach(image => {
+
+            images += `
+
+            <div>
+
+            <img 
+            src="${image.image_url}"
+            width="200"
+            style="display:block;margin:10px 0;"
+            >
+
+            <a href="${image.image_url}" target="_blank">
+            Open image
+            </a>
+
+            </div>
+
+            `;
+
+        });
+
+    }
 
 
 
-        if (request.request_images) {
 
-            request.request_images.forEach(image => {
+    container.innerHTML += `
 
-                images += `
+    <div class="request-card">
 
-                <img 
-                src="${image.image_url}"
-                width="200"
-                style="display:block;margin:10px 0;"
-                >
 
-                `;
+        <h3>
+        KXD-${String(request.id).padStart(4,"0")}
+        </h3>
 
-            });
 
-        }
+        <p>
+        <strong>Name:</strong>
+        ${request.name}
+        </p>
 
+
+        <p>
+        <strong>Discord:</strong>
+        ${request.discord || "Not provided"}
+        </p>
+
+
+        <p>
+        <strong>Email:</strong>
+        ${request.email || "Not provided"}
+        </p>
+
+
+        <p>
+        <strong>Size:</strong>
+        ${request.size}
+        </p>
+
+
+        <p>
+        <strong>Type:</strong>
+        ${request.type}
+        </p>
+
+
+        <p>
+        ${request.description || ""}
+        </p>
+
+
+
+        <h4>
+        Reference Images
+        </h4>
+
+
+        ${images || "No files uploaded"}
+
+
+
+
+        <select
+        onchange="updateRequestStatus(${request.id}, this.value)"
+        >
+
+            <option ${request.status === "Pending" ? "selected" : ""}>
+            Pending
+            </option>
+
+            <option ${request.status === "Accepted" ? "selected" : ""}>
+            Accepted
+            </option>
+
+            <option ${request.status === "In Progress" ? "selected" : ""}>
+            In Progress
+            </option>
+
+            <option ${request.status === "Completed" ? "selected" : ""}>
+            Completed
+            </option>
+
+            <option ${request.status === "Cancelled" ? "selected" : ""}>
+            Cancelled
+            </option>
+
+        </select>
+
+
+        <button onclick="deleteRequest(${request.id})">
+        Delete Request
+        </button>
+
+
+    </div>
+
+    `;
+
+
+});
 
 
 
