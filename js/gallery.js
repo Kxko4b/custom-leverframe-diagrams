@@ -138,3 +138,23 @@ function setupZoom() {
 
 
 loadGallery();
+document.addEventListener("keydown", (event) => {
+
+    if (event.key === "Escape") {
+
+        const lightbox =
+            document.getElementById("lightbox");
+
+        const lightboxImg =
+            document.getElementById("lightbox-img");
+
+
+        lightbox.style.display = "none";
+
+        lightboxImg.src = "";
+
+        document.body.style.overflow = "";
+
+    }
+
+});
