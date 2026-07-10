@@ -104,19 +104,15 @@ document
 
 
 
-    if(error){
+ if(error){
 
-        console.error(error);
+    alert(error.message);
 
-        alert("Could not submit request.");
+    console.error(error);
 
-        submitButton.disabled = false;
-        submitButton.textContent = "Send Request";
+    return;
 
-        return;
-
-    }
-
+}
 
 
 
