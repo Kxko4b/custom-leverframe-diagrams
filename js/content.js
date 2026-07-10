@@ -1,37 +1,69 @@
+console.log("content.js loaded");
+
+
 async function loadContent(){
 
-    const {data,error} =
-    await db
-    .from("site_content")
-    .select("*");
+
+    const { data, error } = await db
+        .from("site_content")
+        .select("*");
+
 
 
     if(error){
 
-        console.error(error);
+        console.error(
+            "Content loading failed:",
+            error
+        );
+
         return;
 
     }
 
 
-    data.forEach(item=>{
+
+    console.log(
+        "Loaded content:",
+        data
+    );
+
+
+
+    data.forEach(item => {
 
 
         if(item.section === "about"){
 
-            document
-            .getElementById("about-text")
-            .innerHTML = item.content;
+            const about =
+            document.getElementById("about-text");
+
+
+            if(about){
+
+                about.innerHTML =
+                item.content;
+
+            }
 
         }
 
 
 
+
+
         if(item.section === "terms"){
 
-            document
-            .getElementById("terms-text")
-            .innerHTML = item.content;
+            const terms =
+            document.getElementById("terms-text");
+
+
+            if(terms){
+
+                terms.innerHTML =
+                item.content;
+
+            }
 
         }
 
@@ -43,4 +75,12 @@ async function loadContent(){
 
 
 
-loadContent();
+
+
+document.addEventListener(
+"DOMContentLoaded",
+()=>{
+
+    loadContent();
+
+});
