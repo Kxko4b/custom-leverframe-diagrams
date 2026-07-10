@@ -99,8 +99,8 @@ function setupZoom() {
 
     console.log("IMAGE CLICKED", image.src);
 
-    lightbox.style.display = "flex";
-
+   lightbox.style.display = "flex";
+document.body.style.overflow = "hidden";
     lightboxImg.src = image.src;
 
 });
