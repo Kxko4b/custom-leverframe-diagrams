@@ -1,67 +1,114 @@
+function generateRequestCode() {
+
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+    let code = "";
+
+    for (let i = 0; i < 10; i++) {
+
+        code += chars.charAt(
+            Math.floor(Math.random() * chars.length)
+        );
+
+    }
+
+
+    return "KXD-" + code.slice(0,4) + "-" + code.slice(4,8);
+
+}
+
+
+
+
+
 document
 .getElementById("request-form")
 .addEventListener("submit", async (event) => {
 
+
     event.preventDefault();
+
 
 
     const submitButton =
         event.target.querySelector("button");
+
 
     submitButton.disabled = true;
     submitButton.textContent = "Sending...";
 
 
 
+
+
+    const requestCode =
+        generateRequestCode();
+
+
+
+
+
     const name =
         document.getElementById("request-name").value;
+
 
     const discord =
         document.getElementById("request-discord").value;
 
+
     const email =
         document.getElementById("request-email").value;
+
 
     const size =
         document.getElementById("request-size").value;
 
+
     const type =
         document.getElementById("request-type").value;
 
+
     const description =
         document.getElementById("request-description").value;
+
 
     const files =
         document.getElementById("request-images").files;
 
 
 
-    // Create request
 
-    const { data: request, error: requestError } =
+
+
+    const { data: request, error } =
         await db
-            .from("requests")
-            .insert({
+        .from("requests")
+        .insert({
 
-                name,
-                discord,
-                email,
-                size,
-                type,
-                description,
-                status: "Pending"
+            name,
+            discord,
+            email,
+            size,
+            type,
+            description,
 
-            })
-            .select()
-            .single();
+            status: "Pending",
+
+            request_code: requestCode
+
+        })
+        .select()
+        .single();
 
 
 
-    if (requestError) {
 
-        console.error(requestError);
 
-        alert("Failed to submit request.");
+    if(error){
+
+        console.error(error);
+
+        alert("Could not submit request.");
 
         submitButton.disabled = false;
         submitButton.textContent = "Send Request";
@@ -72,23 +119,30 @@ document
 
 
 
-    // Upload images
 
-    for (const file of files) {
+
+
+    for(const file of files){
+
 
         const filename =
-            `requests/${request.id}-${Date.now()}-${file.name}`;
+        `requests/${request.id}-${Date.now()}-${file.name}`;
+
+
 
 
 
         const upload =
-            await db.storage
-                .from("diagram-files")
-                .upload(filename, file);
+        await db.storage
+        .from("diagram-files")
+        .upload(
+            filename,
+            file
+        );
 
 
 
-        if (upload.error) {
+        if(upload.error){
 
             console.error(upload.error);
 
@@ -98,33 +152,57 @@ document
 
 
 
-        const publicUrl =
-            db.storage
-                .from("diagram-files")
-                .getPublicUrl(filename)
-                .data
-                .publicUrl;
+
+
+        const url =
+        db.storage
+        .from("diagram-files")
+        .getPublicUrl(filename)
+        .data
+        .publicUrl;
+
+
+
 
 
 
         await db
-            .from("request_images")
-            .insert({
+        .from("request_images")
+        .insert({
 
-                request_id: request.id,
-                image_url: publicUrl
+            request_id: request.id,
 
-            });
+            image_url: url
+
+        });
+
 
     }
 
 
 
-    alert("Request submitted successfully!");
 
-    document.getElementById("request-form").reset();
+
+
+    alert(
+`Request submitted successfully!
+
+Your request code:
+
+${requestCode}
+
+Save this code to check your progress.`
+    );
+
+
+
+
+
+    event.target.reset();
+
 
     submitButton.disabled = false;
     submitButton.textContent = "Send Request";
+
 
 });
