@@ -1,28 +1,26 @@
 console.log("content-admin.js loaded");
-async function loadAdminContent(){
 
 
-    const {data,error} =
-    await db
-    .from("site_content")
-    .select("*");
+async function loadAdminContent() {
+
+    const { data, error } = await db
+        .from("site_content")
+        .select("*");
 
 
+    if (error) {
 
-    if(error){
-
-        console.error(error);
-
+        console.error("Loading content failed:", error);
         return;
 
     }
 
 
 
-    data.forEach(item=>{
+    data.forEach(item => {
 
 
-        if(item.section === "about"){
+        if (item.section === "about") {
 
             document
             .getElementById("about-editor")
@@ -31,7 +29,8 @@ async function loadAdminContent(){
         }
 
 
-        if(item.section === "terms"){
+
+        if (item.section === "terms") {
 
             document
             .getElementById("terms-editor")
@@ -43,80 +42,133 @@ async function loadAdminContent(){
     });
 
 
+}
 
 
 
 
 
+async function saveContent() {
 
-async function saveContent(){
 
     console.log("Save button clicked");
 
 
+
     const about =
-    document
-    .getElementById("about-editor")
-    .value;
+        document
+        .getElementById("about-editor")
+        .value;
+
 
 
     const terms =
-    document
-    .getElementById("terms-editor")
-    .value;
-
-
-    console.log("About:", about);
-    console.log("Terms:", terms);
+        document
+        .getElementById("terms-editor")
+        .value;
 
 
 
-    const aboutUpdate =
-    await db
-    .from("site_content")
-    .update({
-        content: about,
-        updated_at: new Date()
-    })
-    .eq("section", "about")
-    .select();
-
-
-
-    console.log("About result:", aboutUpdate);
+    console.log("Saving about:", about);
+    console.log("Saving terms:", terms);
 
 
 
 
-    const termsUpdate =
-    await db
-    .from("site_content")
-    .update({
-        content: terms,
-        updated_at: new Date()
-    })
-    .eq("section", "terms")
-    .select();
+    const aboutResult = await db
+        .from("site_content")
+        .update({
+
+            content: about,
+            updated_at: new Date()
+
+        })
+        .eq("section", "about");
 
 
 
-    console.log("Terms result:", termsUpdate);
 
 
+    if (aboutResult.error) {
 
-    if(aboutUpdate.error || termsUpdate.error){
+        console.error(
+            "About update failed:",
+            aboutResult.error
+        );
 
-        alert("Save failed. Check console.");
+        alert("About update failed");
 
         return;
 
     }
 
 
-    alert("Saved!");
+
+
+
+    const termsResult = await db
+        .from("site_content")
+        .update({
+
+            content: terms,
+            updated_at: new Date()
+
+        })
+        .eq("section", "terms");
+
+
+
+
+
+    if (termsResult.error) {
+
+        console.error(
+            "Terms update failed:",
+            termsResult.error
+        );
+
+        alert("Terms update failed");
+
+        return;
+
+    }
+
+
+
+
+
+    alert("Website content saved!");
 
 }
 
 
 
-  
+
+
+
+
+document.addEventListener(
+"DOMContentLoaded",
+()=>{
+
+
+    console.log("DOM ready");
+
+
+    const button =
+        document.getElementById("save-content");
+
+
+
+    console.log(
+        "Save button:",
+        button
+    );
+
+
+
+    if(button){
+
+        button.addEventListener(
+            "click",
+           
