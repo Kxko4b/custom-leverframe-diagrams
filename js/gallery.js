@@ -1,10 +1,20 @@
+console.log("gallery.js loaded");
+
+
 async function loadGallery() {
 
-    const gallery = document.getElementById("gallery");
+
+    const gallery =
+        document.getElementById("gallery");
 
 
-    const { data, error } = await db
-        .from("examples")
+    if (!gallery) return;
+
+
+
+    const { data, error } =
+        await db
+        .from("gallery")
         .select("*")
         .order("created_at", {
             ascending: false
@@ -14,25 +24,15 @@ async function loadGallery() {
 
     if (error) {
 
-        console.error(error);
-
-        gallery.innerHTML =
-            "<p>Unable to load examples.</p>";
-
-        return;
-
-    }
-
-
-
-    if (!data || data.length === 0) {
-
-        gallery.innerHTML =
-            "<p>No examples available yet.</p>";
+        console.error(
+            "Gallery error:",
+            error
+        );
 
         return;
 
     }
+
 
 
 
@@ -40,28 +40,17 @@ async function loadGallery() {
 
 
 
-    data.forEach(example => {
+    data.forEach(item => {
 
 
         gallery.innerHTML += `
 
-        <div class="example">
+        <div class="gallery-item">
 
             <img 
-            src="${example.image_url}"
-            alt="${example.title}"
-            loading="lazy"
-            >
-
-
-            <h3>
-            ${example.title}
-            </h3>
-
-
-            <p>
-            ${example.description ?? ""}
-            </p>
+            src="${item.image_url}"
+            alt="Leverframe diagram"
+            class="gallery-image">
 
         </div>
 
@@ -69,24 +58,103 @@ async function loadGallery() {
 
 
     });
-.lightbox{
-    display:none;
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.9);
-    justify-content:center;
-    align-items:center;
-    z-index:9999;
-    cursor:zoom-out;
+
+
+
+    setupLightbox();
+
+
 }
 
-.lightbox img{
-    max-width:95%;
-    max-height:95%;
-    object-fit:contain;
-    border-radius:8px;
-    box-shadow:0 0 30px rgba(0,0,0,.5);
+
+
+
+
+
+function setupLightbox(){
+
+
+    const images =
+        document.querySelectorAll(
+            ".gallery-image"
+        );
+
+
+
+    const lightbox =
+        document.getElementById(
+            "lightbox"
+        );
+
+
+    const lightboxImg =
+        document.getElementById(
+            "lightbox-img"
+        );
+
+
+
+    if(!lightbox || !lightboxImg)
+        return;
+
+
+
+    images.forEach(img => {
+
+
+        img.style.cursor =
+        "zoom-in";
+
+
+
+        img.onclick = () => {
+
+
+            lightbox.style.display =
+            "flex";
+
+
+            lightboxImg.src =
+            img.src;
+
+
+        };
+
+
+    });
+
+
+
+    lightbox.onclick = () => {
+
+
+        lightbox.style.display =
+        "none";
+
+
+    };
+
+
+
+    document.addEventListener(
+        "keydown",
+        (event)=>{
+
+
+            if(event.key === "Escape"){
+
+                lightbox.style.display =
+                "none";
+
+            }
+
+
+        }
+    );
+
+
 }
+
 
 
 
