@@ -122,26 +122,25 @@ console.log("Save button clicked");
 
 
 
-document
-.addEventListener(
-"DOMContentLoaded",
-()=>{
+document.addEventListener("DOMContentLoaded", () => {
+
+    console.log("DOM ready");
 
 
-    const button =
-    document.getElementById("save-content");
+    const button = document.getElementById("save-content");
+
+
+    console.log("Button found:", button);
 
 
 
     if(button){
 
-        button.onclick = saveContent;
+        button.addEventListener("click", saveContent);
 
     }
 
 
-
     loadAdminContent();
-
 
 });
