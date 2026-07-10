@@ -2,12 +2,14 @@ async function loadGallery() {
 
     const gallery = document.getElementById("gallery");
 
+
     const { data, error } = await db
         .from("examples")
         .select("*")
         .order("created_at", {
             ascending: false
         });
+
 
 
     if (error) {
@@ -22,6 +24,7 @@ async function loadGallery() {
     }
 
 
+
     if (!data || data.length === 0) {
 
         gallery.innerHTML =
@@ -32,7 +35,9 @@ async function loadGallery() {
     }
 
 
+
     gallery.innerHTML = "";
+
 
 
     data.forEach(example => {
@@ -64,6 +69,7 @@ async function loadGallery() {
     });
 
 
+
     setupZoom();
 
 }
@@ -81,39 +87,44 @@ function setupZoom() {
     const lightboxImg = document.getElementById("lightbox-img");
 
 
+
     if (!lightbox || !lightboxImg) {
 
-        console.error("Lightbox not found");
+        console.error("Lightbox missing");
 
         return;
 
     }
 
 
+
     images.forEach(image => {
+
 
         image.style.cursor = "zoom-in";
 
 
-       image.addEventListener("click", () => {
+        image.addEventListener("click", () => {
 
-    console.log("IMAGE CLICKED", image.src);
+            lightboxImg.src = image.src;
 
-   lightbox.style.display = "flex";
-document.body.style.overflow = "hidden";
-    lightboxImg.src = image.src;
+            lightbox.style.display = "flex";
 
-});
+            document.body.style.overflow = "hidden";
+
+        });
+
+
     });
 
 
 
-   lightbox.addEventListener("click", () => {
+    lightbox.addEventListener("click", () => {
 
-    lightbox.style.display = "none";
-    document.body.style.overflow = "";
+        lightbox.style.display = "none";
 
-});
+        document.body.style.overflow = "";
+
     });
 
 
@@ -124,9 +135,12 @@ document.body.style.overflow = "hidden";
 
             lightbox.style.display = "none";
 
+            document.body.style.overflow = "";
+
         }
 
     });
+
 
 }
 
