@@ -95,14 +95,15 @@ function setupZoom() {
         image.style.cursor = "zoom-in";
 
 
-        image.addEventListener("click", () => {
+       image.addEventListener("click", () => {
 
-            lightbox.style.display = "flex";
+    console.log("IMAGE CLICKED", image.src);
 
-            lightboxImg.src = image.src;
+    lightbox.style.display = "flex";
 
-        });
+    lightboxImg.src = image.src;
 
+});
     });
 
 
