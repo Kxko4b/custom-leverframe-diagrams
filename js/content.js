@@ -9,55 +9,39 @@ async function loadContent() {
 
 
     if (error) {
-
         console.error("Content error:", error);
         return;
-
     }
 
 
     console.log("Loaded content:", data);
 
 
-
     data.forEach(item => {
 
-
-        const text = (item.content || "")
-            .replace(/\r?\n/g, "<br>");
-
+        const text = marked.parse(item.content || "");
 
 
         if (item.section === "about") {
 
-            const about =
-                document.getElementById("about-text");
-
+            const about = document.getElementById("about-text");
 
             if (about) {
-
                 about.innerHTML = text;
-
             }
 
         }
-
 
 
         if (item.section === "terms") {
 
-            const terms =
-                document.getElementById("terms-text");
-
+            const terms = document.getElementById("terms-text");
 
             if (terms) {
-
                 terms.innerHTML = text;
-
             }
 
         }
-
 
     });
 
