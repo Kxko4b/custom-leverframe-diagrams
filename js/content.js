@@ -44,7 +44,23 @@ async function loadContent() {
         }
 
     });
+// Your Supabase setup should already be above this
 
+async function trackVisit() {
+  const { error } = await db
+    .from("page_views")
+    .insert([
+      {
+        page: window.location.pathname
+      }
+    ]);
+
+  if (error) {
+    console.error("View tracking error:", error);
+  }
+}
+
+trackVisit();
 }
 
 
