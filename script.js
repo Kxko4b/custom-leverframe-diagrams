@@ -328,5 +328,49 @@ alert("Review submitted!");
 
 location.reload();
 
+// Question submitting
 
+document
+.getElementById("Question")
+.addEventListener("submit", async (event)=>{
+
+
+event.preventDefault();
+
+
+const name =
+document.getElementById("Question").value;
+
+
+const rating =
+document.getElementById("Contact").value;
+
+
+const {error} = await db
+.from("Question")
+.insert({
+
+Question:Question,
+Contact:Contact
+
+
+});
+
+
+
+if(error){
+
+console.error(error);
+
+alert("Error saving Question");
+
+return;
+
+}
+
+
+
+alert("Question submitted! Will be answered as soon as possible.");
+
+location.reload();
 });
