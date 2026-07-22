@@ -6,9 +6,9 @@ const SUPABASE_KEY = "sb_publishable_RZYBKLqjC9UYLNdqlOKZCA_IFX-5Gvm";
 const db = supabase.createClient(
     SUPABASE_URL,
     SUPABASE_KEY
-    
-    const ADMIN_EMAIL = "haleannson@gmail.com";
+);
 
+const ADMIN_EMAIL = "haleannson@gmail.com";
 
 // LOGIN
 
