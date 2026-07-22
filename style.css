@@ -211,9 +211,9 @@ button {
 
     cursor: pointer;
 
-    background: var(--accent);
+    background: #193536(--accent);
 
-    color: white;
+    color: #193536;
 
     font-size: 1rem;
 
