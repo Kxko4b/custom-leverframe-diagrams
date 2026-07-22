@@ -328,49 +328,53 @@ alert("Review submitted!");
 
 location.reload();
 
-// Question submitting
+// Submit Question
 
 document
-.getElementById("Question")
-.addEventListener("submit", async (event)=>{
+.getElementById("question-form")
+.addEventListener("submit", async (event) => {
+
+    event.preventDefault();
 
 
-event.preventDefault();
+    const question =
+        document.getElementById("question").value;
 
 
-const name =
-document.getElementById("Question").value;
-
-
-const rating =
-document.getElementById("Contact").value;
-
-
-const {error} = await db
-.from("Question")
-.insert({
-
-Question:Question,
-Contact:Contact
-
-
-});
+    const contact =
+        document.getElementById("contact").value;
 
 
 
-if(error){
+    const { error } = await db
+        .from("questions")
+        .insert({
 
-console.error(error);
+            question: question,
+            contact: contact
 
-alert("Error saving Question");
-
-return;
-
-}
-
+        });
 
 
-alert("Question submitted! Will be answered as soon as possible.");
 
-location.reload();
+    if(error){
+
+        console.error(error);
+
+        alert("Error sending question");
+
+        return;
+
+    }
+
+
+
+    alert("Question submitted! I will answer as soon as possible.");
+
+
+    document
+    .getElementById("question-form")
+    .reset();
+
+
 });
