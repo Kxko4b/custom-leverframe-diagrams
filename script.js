@@ -1,7 +1,7 @@
-console.log("Question script loaded");
+console.log("Main script loaded");
+
 
 const SUPABASE_URL = "https://ggewdpazpeoielbqrcgm.supabase.co";
-
 const SUPABASE_KEY = "sb_publishable_RZYBKLqjC9UYLNdqlOKZCA_IFX-5Gvm";
 
 
@@ -10,67 +10,62 @@ const db = supabase.createClient(
     SUPABASE_KEY
 );
 
+
 const ADMIN_EMAIL = "haleannson@gmail.com";
+
 
 // LOGIN
 
-document
-.getElementById("login-button")
-.onclick = async()=>{
+const loginButton = document.getElementById("login-button");
+
+if(loginButton){
+
+    loginButton.onclick = async()=>{
+
+        let email = prompt("Email:");
+        let password = prompt("Password:");
+
+        const {error} = await db.auth.signInWithPassword({
+            email,
+            password
+        });
 
 
-let email = prompt("Email:");
+        if(error){
 
-let password = prompt("Password:");
+            alert(error.message);
+            return;
 
-
-
-const {data,error}=await db.auth.signInWithPassword({
-
-email,
-password
-
-});
+        }
 
 
-if(error){
+        checkAdmin();
 
-alert(error.message);
-return;
+    };
 
 }
-
-
-checkAdmin();
-
-
-};
-
-
 
 
 
 async function checkAdmin(){
 
-
-const {data}=await db.auth.getUser();
-
-
-if(!data.user)
-return;
+    const {data} = await db.auth.getUser();
 
 
-
-if(data.user.email === ADMIN_EMAIL){
-
-
-document
-.getElementById("upload-area")
-.style.display="block";
+    if(!data.user)
+        return;
 
 
-}
+    if(data.user.email === ADMIN_EMAIL){
 
+        const uploadArea =
+        document.getElementById("upload-area");
+
+
+        if(uploadArea)
+            uploadArea.style.display="block";
+
+    }
 
 }
 
@@ -79,197 +74,215 @@ document
 
 // LOAD EXAMPLES
 
-
 async function loadExamples(){
 
-
-const {data,error}=await db
-.from("examples")
-.select("*")
-.order("created_at");
-
-
-if(error){
-
-console.log(error);
-return;
-
-}
+    const {data,error} = await db
+    .from("examples")
+    .select("*")
+    .order("created_at");
 
 
+    if(error){
 
-const gallery =
-document.getElementById("gallery");
+        console.error(error);
+        return;
 
-
-gallery.innerHTML="";
-
-
-
-data.forEach(example=>{
+    }
 
 
-gallery.innerHTML += `
-
-<div class="example">
-
-<img src="${example.image_url}">
+    const gallery =
+    document.getElementById("gallery");
 
 
-<h3>
-${example.title}
-</h3>
+    if(!gallery)
+        return;
 
 
-<p>
-${example.description ?? ""}
-</p>
+    gallery.innerHTML="";
 
 
-</div>
+    data.forEach(example=>{
 
-`;
 
-});
+        gallery.innerHTML += `
+
+        <div class="example">
+
+            <img src="${example.image_url}">
+
+            <h3>
+            ${example.title}
+            </h3>
+
+            <p>
+            ${example.description ?? ""}
+            </p>
+
+        </div>
+
+        `;
+
+
+    });
 
 
 }
 
 
 loadExamples();
-
 checkAdmin();
-
-
 
 
 
 
 // UPLOAD
 
-
-document
-.getElementById("upload-button")
-.onclick=async()=>{
+const uploadButton =
+document.getElementById("upload-button");
 
 
-const file =
-document
-.getElementById("diagram-image")
-.files[0];
+if(uploadButton){
 
 
-if(!file)
-return;
+uploadButton.onclick = async()=>{
 
 
+    const file =
+    document.getElementById("diagram-image").files[0];
 
-const filename =
-Date.now()+"-"+file.name;
+
+    if(!file)
+        return;
 
 
 
-const upload =
-await db.storage
-.from("diagram-images")
-.upload(
-filename,
-file
-);
+    const filename =
+    Date.now()+"-"+file.name;
 
 
 
-if(upload.error){
+    const upload =
+    await db.storage
+    .from("diagram-images")
+    .upload(filename,file);
 
-alert(upload.error.message);
-return;
+
+
+    if(upload.error){
+
+        alert(upload.error.message);
+        return;
+
+    }
+
+
+
+    const url =
+    db.storage
+    .from("diagram-images")
+    .getPublicUrl(filename)
+    .data
+    .publicUrl;
+
+
+
+    await db
+    .from("examples")
+    .insert({
+
+        title:
+        document.getElementById("diagram-title").value,
+
+        description:
+        document.getElementById("diagram-description").value,
+
+        image_url:url
+
+    });
+
+
+
+    alert("Uploaded!");
+
+    location.reload();
+
+
+};
+
 
 }
 
 
 
-const url =
-db.storage
-.from("diagram-images")
-.getPublicUrl(filename)
-.data
-.publicUrl;
 
+// LOAD REVIEWS
 
-
-
-await db
-.from("examples")
-.insert({
-
-title:
-document.getElementById("diagram-title").value,
-
-
-description:
-document.getElementById("diagram-description").value,
-
-
-image_url:url
-
-});
-
-
-
-alert("Uploaded!");
-
-location.reload();
-
-
-};
-);
-
-
-// Load reviews
 
 async function loadReviews(){
 
-    const { data, error } = await db
-        .from("reviews")
-        .select("*")
-        .order("created_at", { ascending:false });
+
+    const {data,error} =
+    await db
+    .from("reviews")
+    .select("*")
+    .order("created_at",{ascending:false});
+
 
 
     if(error){
+
         console.error(error);
         return;
+
     }
 
 
-    const box = document.getElementById("review-list");
 
-    box.innerHTML = "";
+    const box =
+    document.getElementById("review-list");
 
 
-    data.forEach(review => {
+    if(!box)
+        return;
+
+
+
+    box.innerHTML="";
+
+
+
+    data.forEach(review=>{
+
 
         box.innerHTML += `
 
         <div class="review">
 
             <div class="stars">
+
             ${"★".repeat(review.rating)}
             ${"☆".repeat(5-review.rating)}
+
             </div>
+
 
             <p>
             "${review.message}"
             </p>
 
+
             <strong>
             - ${review.name}
             </strong>
+
 
         </div>
 
         `;
 
+
     });
+
 
 }
 
@@ -279,92 +292,115 @@ loadReviews();
 
 
 
-// Submit review
-
-document
-.getElementById("review-form")
-.addEventListener("submit", async (event)=>{
+// SUBMIT REVIEW
 
 
-event.preventDefault();
+const reviewForm =
+document.getElementById("review-form");
 
 
-const name =
-document.getElementById("name").value;
+if(reviewForm){
 
 
-const rating =
-document.getElementById("rating").value;
+reviewForm.addEventListener("submit",async(event)=>{
 
-
-const message =
-document.getElementById("message").value;
-
-
-
-const {error} = await db
-.from("reviews")
-.insert({
-
-name:name,
-rating:Number(rating),
-message:message
-
-});
-
-
-
-if(error){
-
-console.error(error);
-
-alert("Error saving review");
-
-return;
-
-}
-
-
-
-alert("Review submitted!");
-
-location.reload();
-
-// Submit Question
-
-document
-.getElementById("question-form")
-.addEventListener("submit", async (event) => {
 
     event.preventDefault();
 
 
-    const question =
-        document.getElementById("question").value;
+
+    const name =
+    document.getElementById("review-name").value;
 
 
-    const contact =
-        document.getElementById("contact").value;
+    const rating =
+    document.getElementById("review-rating").value;
+
+
+    const message =
+    document.getElementById("review-message").value;
 
 
 
-    const { error } = await db
-        .from("questions")
-        .insert({
+    const {error} =
+    await db
+    .from("reviews")
+    .insert({
 
-            question: question,
-            contact: contact
+        name,
+        rating:Number(rating),
+        message
 
-        });
+    });
 
 
 
     if(error){
 
         console.error(error);
+        alert("Error saving review");
+        return;
 
-        alert("Error sending question");
+    }
 
+
+
+    alert("Review submitted!");
+
+    location.reload();
+
+
+});
+
+
+}
+
+
+
+
+
+// SUBMIT QUESTION
+
+
+const questionForm =
+document.getElementById("question-form");
+
+
+if(questionForm){
+
+
+questionForm.addEventListener("submit",async(event)=>{
+
+
+    event.preventDefault();
+
+
+
+    const question =
+    document.getElementById("question").value;
+
+
+    const contact =
+    document.getElementById("contact").value;
+
+
+
+    const {error} =
+    await db
+    .from("questions")
+    .insert({
+
+        question,
+        contact
+
+    });
+
+
+
+    if(error){
+
+        console.error(error);
+        alert(error.message);
         return;
 
     }
@@ -374,9 +410,10 @@ document
     alert("Question submitted! I will answer as soon as possible.");
 
 
-    document
-    .getElementById("question-form")
-    .reset();
+    questionForm.reset();
 
 
 });
+
+
+}
