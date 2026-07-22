@@ -12,7 +12,7 @@ function generateRequestCode() {
 
     }
 
-    return "KXD-" + code.slice(0,4) + "-" + code.slice(4,8);
+    return "KXKO-" + code.slice(0,4) + "-" + code.slice(4,8);
 
 }
 
