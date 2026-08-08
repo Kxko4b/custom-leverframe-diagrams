@@ -1801,24 +1801,22 @@ return escapeHtml(value);
 
 function toast(message) {
 
-```
-const element =
-    document.getElementById("toast");
+    const element =
+        document.getElementById("toast");
 
-element.textContent =
-    message;
+    element.textContent =
+        message;
 
-element.classList.add("show");
+    element.classList.add("show");
 
+    setTimeout(function() {
 
-setTimeout(function() {
+        element.classList.remove("show");
 
-    element.classList.remove("show");
-
-}, 3000);
-```
+    }, 3000);
 
 }
+
 
 /* START */
 
