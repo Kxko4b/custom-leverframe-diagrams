@@ -3,13 +3,9 @@
 <html lang="en">
 
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Kxko Admin</title>
-
 <link rel="icon" href="../favicon.png">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -44,6 +40,7 @@ button {
     display: none !important;
 }
 
+
 /* LOGIN */
 
 #login {
@@ -60,7 +57,7 @@ button {
     background: white;
     padding: 30px;
     border-radius: 16px;
-    box-shadow: 0 15px 40px rgba(0,0,0,.08);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.08);
 }
 
 .login-box h1 {
@@ -95,6 +92,7 @@ button {
     margin-top: 12px;
 }
 
+
 /* HEADER */
 
 header {
@@ -125,6 +123,7 @@ header {
     border-radius: 8px;
     padding: 9px 13px;
 }
+
 
 /* MAIN */
 
@@ -165,6 +164,7 @@ main {
     border-radius: 8px;
 }
 
+
 /* REQUESTS */
 
 #requests {
@@ -181,7 +181,7 @@ main {
 }
 
 .request.open {
-    box-shadow: 0 12px 35px rgba(0,0,0,.07);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.07);
 }
 
 .request-head {
@@ -215,19 +215,20 @@ main {
 }
 
 .arrow {
-    transition: transform .3s ease;
+    transition: transform 0.3s ease;
 }
 
 .request.open .arrow {
     transform: rotate(180deg);
 }
 
-/* DETAILS */
+
+/* EXPANDING DETAILS */
 
 .details {
     display: grid;
     grid-template-rows: 0fr;
-    transition: grid-template-rows .3s ease;
+    transition: grid-template-rows 0.35s ease;
 }
 
 .request.open .details {
@@ -243,6 +244,9 @@ main {
     border-top: 1px solid #e4e8ea;
     padding: 24px;
 }
+
+
+/* FORM */
 
 .grid {
     display: grid;
@@ -291,6 +295,7 @@ main {
     margin: 26px 0;
 }
 
+
 /* FILES */
 
 .file-list {
@@ -309,6 +314,7 @@ main {
     color: #306778;
     text-decoration: none;
 }
+
 
 /* UPDATES */
 
@@ -350,13 +356,14 @@ main {
     color: #306778;
 }
 
+
 /* NEW UPDATE */
 
 .new-update {
     margin-top: 14px;
 }
 
-.new-update textarea {
+.new-message {
     width: 100%;
     min-height: 110px;
     padding: 12px;
@@ -383,6 +390,7 @@ main {
     display: none;
 }
 
+
 /* TOAST */
 
 #toast {
@@ -395,7 +403,7 @@ main {
     color: white;
     opacity: 0;
     transform: translateY(10px);
-    transition: .25s ease;
+    transition: 0.25s ease;
     pointer-events: none;
 }
 
@@ -404,11 +412,17 @@ main {
     transform: translateY(0);
 }
 
+
+/* EMPTY */
+
 .empty {
     color: #7a858b;
 }
 
-@media(max-width: 750px) {
+
+/* MOBILE */
+
+@media (max-width: 750px) {
 
     .top {
         display: block;
@@ -444,6 +458,8 @@ main {
 
 <body>
 
+<!-- LOGIN -->
+
 <div id="login">
 
 ```
@@ -478,6 +494,8 @@ main {
 ```
 
 </div>
+
+<!-- ADMIN APP -->
 
 <div id="app" class="hidden">
 
@@ -568,7 +586,6 @@ main {
 
 
 var allRequests = [];
-
 var openRequest = null;
 
 
@@ -629,7 +646,6 @@ document
             await db.auth.signInWithPassword({
 
                 email: email,
-
                 password: password
 
             });
@@ -666,6 +682,7 @@ async function checkSession() {
     var result =
         await db.auth.getSession();
 
+
     if (result.data.session) {
 
         showApp();
@@ -686,6 +703,7 @@ async function loadRequests() {
 
     var container =
         document.getElementById("requests");
+
 
     container.innerHTML =
         '<p class="empty">Loading requests...</p>';
@@ -718,6 +736,7 @@ async function loadRequests() {
     allRequests =
         result.data || [];
 
+
     drawRequests();
 
 }
@@ -731,12 +750,14 @@ function drawRequests() {
     var container =
         document.getElementById("requests");
 
+
     var search =
         document
             .getElementById("search")
             .value
             .toLowerCase()
             .trim();
+
 
     var filter =
         document
@@ -773,7 +794,9 @@ function drawRequests() {
             search &&
             searchable.indexOf(search) === -1
         ) {
+
             continue;
+
         }
 
 
@@ -781,7 +804,9 @@ function drawRequests() {
             filter !== "all" &&
             request.status !== filter
         ) {
+
             continue;
+
         }
 
 
@@ -792,7 +817,9 @@ function drawRequests() {
     }
 
 
-    if (!container.children.length) {
+    if (
+        !container.children.length
+    ) {
 
         container.innerHTML =
             '<p class="empty">No requests found.</p>';
@@ -802,13 +829,14 @@ function drawRequests() {
 }
 
 
-/* REQUEST */
+/* REQUEST CARD */
 
 
 function makeRequest(request) {
 
     var article =
         document.createElement("article");
+
 
     article.className =
         "request";
@@ -826,8 +854,10 @@ function makeRequest(request) {
     var head =
         document.createElement("button");
 
+
     head.className =
         "request-head";
+
 
     head.type =
         "button";
@@ -864,6 +894,7 @@ function makeRequest(request) {
 
             }
 
+
             drawRequests();
 
         };
@@ -872,6 +903,7 @@ function makeRequest(request) {
     var details =
         document.createElement("div");
 
+
     details.className =
         "details";
 
@@ -879,12 +911,14 @@ function makeRequest(request) {
     var inner =
         document.createElement("div");
 
+
     inner.className =
         "details-inner";
 
 
     var content =
         document.createElement("div");
+
 
     content.className =
         "content";
@@ -911,17 +945,27 @@ function makeRequest(request) {
 
         '<div class="field">' +
         '<label>Status</label>' +
+
         '<select class="edit-status">' +
-        '<option>Pending</option>' +
-        '<option>Accepted</option>' +
-        '<option>In Progress</option>' +
-        '<option>Completed</option>' +
-        '<option>Cancelled</option>' +
+
+        '<option value="Pending">Pending</option>' +
+
+        '<option value="Accepted">Accepted</option>' +
+
+        '<option value="In Progress">In Progress</option>' +
+
+        '<option value="Completed">Completed</option>' +
+
+        '<option value="Cancelled">Cancelled</option>' +
+
         '</select>' +
+
         '</div>' +
 
         '<div class="field full">' +
+
         '<label>Description</label>' +
+
         '<textarea class="edit-description"></textarea>' +
 
 ```
@@ -930,9 +974,11 @@ function makeRequest(request) {
     '</div>' +
 
     '<div class="save">' +
+
     '<button class="primary save-button">' +
     'Save Changes' +
     '</button>' +
+
     '</div>' +
 
     '<div class="line"></div>' +
@@ -961,8 +1007,15 @@ function makeRequest(request) {
     '<div class="update-bottom">' +
 
     '<label class="file-button">' +
+
     '📎 Add files' +
-    '<input class="new-files" type="file" multiple>' +
+
+    '<input ' +
+    'class="new-files" ' +
+    'type="file" ' +
+    'multiple' +
+    '>' +
+
     '</label>' +
 
     '<button class="primary post-button">' +
@@ -993,15 +1046,15 @@ content
 
 
 content
-    .querySelector(".edit-description")
-    .value =
-    request.description || "";
-
-
-content
     .querySelector(".edit-status")
     .value =
     request.status || "Pending";
+
+
+content
+    .querySelector(".edit-description")
+    .value =
+    request.description || "";
 
 
 content
@@ -1149,7 +1202,9 @@ for (
 
 drawRequests();
 
-toast("Request saved.");
+toast(
+    "Request saved."
+);
 ```
 
 }
@@ -1178,17 +1233,24 @@ container.innerHTML = "";
 if (result.error) {
 
     container.innerHTML =
-        '<span class="empty">Could not load files.</span>';
+        '<span class="empty">' +
+        'Could not load files.' +
+        '</span>';
 
     return;
 
 }
 
 
-if (!result.data.length) {
+if (
+    !result.data ||
+    result.data.length === 0
+) {
 
     container.innerHTML =
-        '<span class="empty">No files.</span>';
+        '<span class="empty">' +
+        'No files.' +
+        '</span>';
 
     return;
 
@@ -1208,6 +1270,7 @@ for (
     var div =
         document.createElement("div");
 
+
     div.className =
         "file";
 
@@ -1215,14 +1278,18 @@ for (
     var link =
         document.createElement("a");
 
+
     link.href =
         file.image_url;
+
 
     link.target =
         "_blank";
 
+
     link.rel =
         "noopener";
+
 
     link.textContent =
         "📎 View file";
@@ -1237,7 +1304,7 @@ for (
 
 }
 
-/* UPDATES */
+/* LOAD UPDATES */
 
 async function loadUpdates(
 requestId,
@@ -1267,17 +1334,24 @@ container.innerHTML = "";
 if (result.error) {
 
     container.innerHTML =
-        '<span class="empty">Could not load updates.</span>';
+        '<span class="empty">' +
+        'Could not load updates.' +
+        '</span>';
 
     return;
 
 }
 
 
-if (!result.data.length) {
+if (
+    !result.data ||
+    result.data.length === 0
+) {
 
     container.innerHTML =
-        '<span class="empty">No updates yet.</span>';
+        '<span class="empty">' +
+        'No updates yet.' +
+        '</span>';
 
     return;
 
@@ -1300,6 +1374,8 @@ for (
 
 }
 
+/* ADD UPDATE TO PAGE */
+
 async function addUpdate(
 update,
 container
@@ -1308,6 +1384,7 @@ container
 ```
 var div =
     document.createElement("div");
+
 
 div.className =
     "update";
@@ -1323,18 +1400,18 @@ var filesResult =
         );
 
 
-var fileHTML =
-    "";
+var filesBox =
+    document.createElement("div");
+
+
+filesBox.className =
+    "update-files";
 
 
 if (
     !filesResult.error &&
-    filesResult.data.length
+    filesResult.data
 ) {
-
-    fileHTML =
-        '<div class="update-files">';
-
 
     for (
         var i = 0;
@@ -1346,42 +1423,98 @@ if (
             filesResult.data[i];
 
 
-        fileHTML +=
-            '<a href="' +
-            attribute(file.file_url) +
-            '" target="_blank" rel="noopener">' +
-            '📎 ' +
-            clean(file.file_name) +
-            '</a>';
+        var link =
+            document.createElement("a");
+
+
+        link.href =
+            file.file_url;
+
+
+        link.target =
+            "_blank";
+
+
+        link.rel =
+            "noopener";
+
+
+        link.textContent =
+            "📎 " +
+            (
+                file.file_name ||
+                "Attached file"
+            );
+
+
+        filesBox.appendChild(link);
 
     }
-
-
-    fileHTML +=
-        '</div>';
 
 }
 
 
-div.innerHTML =
+var header =
+    document.createElement("div");
 
-    '<div class="update-header">' +
 
-    '<span class="author">' +
-    clean(update.author || "Kxko") +
-    '</span>' +
+header.className =
+    "update-header";
 
-    '<span class="date">' +
-    dateTime(update.created_at) +
-    '</span>' +
 
-    '</div>' +
+var author =
+    document.createElement("span");
 
-    '<div class="message">' +
-    clean(update.message || "") +
-    '</div>' +
 
-    fileHTML;
+author.className =
+    "author";
+
+
+author.textContent =
+    update.author || "Kxko";
+
+
+var date =
+    document.createElement("span");
+
+
+date.className =
+    "date";
+
+
+date.textContent =
+    dateTime(update.created_at);
+
+
+header.appendChild(author);
+
+header.appendChild(date);
+
+
+var message =
+    document.createElement("div");
+
+
+message.className =
+    "message";
+
+
+message.textContent =
+    update.message || "";
+
+
+div.appendChild(header);
+
+div.appendChild(message);
+
+
+if (
+    filesBox.children.length
+) {
+
+    div.appendChild(filesBox);
+
+}
 
 
 container.appendChild(div);
@@ -1405,7 +1538,9 @@ var message =
 
 
 var input =
-    content.querySelector(".new-files");
+    content.querySelector(
+        ".new-files"
+    );
 
 
 var files =
@@ -1435,6 +1570,7 @@ var button =
 button.disabled =
     true;
 
+
 button.textContent =
     "Posting...";
 
@@ -1448,7 +1584,8 @@ var result =
                 requestId,
 
             message:
-                message || "Files attached.",
+                message ||
+                "Files attached.",
 
             author:
                 "Kxko"
@@ -1491,7 +1628,7 @@ for (
         files[i];
 
 
-    var safe =
+    var safeName =
         file.name
             .split(" ")
             .join("_");
@@ -1505,7 +1642,7 @@ for (
         "-" +
         Date.now() +
         "-" +
-        safe;
+        safeName;
 
 
     var upload =
@@ -1528,7 +1665,7 @@ for (
     }
 
 
-    var publicURL =
+    var publicUrl =
         db.storage
             .from("diagram-files")
             .getPublicUrl(
@@ -1538,20 +1675,30 @@ for (
             .publicUrl;
 
 
-    await db
-        .from("request_update_files")
-        .insert({
+    var fileResult =
+        await db
+            .from("request_update_files")
+            .insert({
 
-            update_id:
-                update.id,
+                update_id:
+                    update.id,
 
-            file_url:
-                publicURL,
+                file_url:
+                    publicUrl,
 
-            file_name:
-                file.name
+                file_name:
+                    file.name
 
-        });
+            });
+
+
+    if (fileResult.error) {
+
+        console.error(
+            fileResult.error
+        );
+
+    }
 
 }
 
@@ -1574,6 +1721,7 @@ await loadUpdates(
 
 button.disabled =
     false;
+
 
 button.textContent =
     "Post Update";
@@ -1620,30 +1768,31 @@ var text =
 
 
 text =
-    text.split("&").join("&amp;");
+    text.split("&")
+        .join("&amp;");
+
 
 text =
-    text.split("<").join("&lt;");
+    text.split("<")
+        .join("&lt;");
+
 
 text =
-    text.split(">").join("&gt;");
+    text.split(">")
+        .join("&gt;");
+
 
 text =
-    text.split('"').join("&quot;");
+    text.split('"')
+        .join("&quot;");
+
 
 text =
-    text.split("'").join("&#039;");
+    text.split("'")
+        .join("&#039;");
 
 
 return text;
-```
-
-}
-
-function attribute(value) {
-
-```
-return clean(value);
 ```
 
 }
@@ -1652,7 +1801,9 @@ function dateTime(value) {
 
 ```
 if (!value) {
+
     return "";
+
 }
 
 
@@ -1699,5 +1850,4 @@ checkSession();
 </script>
 
 </body>
-
 </html>
