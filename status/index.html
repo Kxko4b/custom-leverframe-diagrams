@@ -1,59 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Request Status | Kxko Leverframe Diagrams</title>
 
-<title>Request Status - Kxko Leverframe Diagrams</title>
+    <link rel="icon" type="image/png" href="../favicon.png">
 
-<link rel="stylesheet" href="../style.css">
-
+    <link rel="stylesheet" href="style.css">
 </head>
-
 
 <body>
 
+<header>
+    <nav>
+        <h2>Kxko Leverframe Diagrams</h2>
 
-<section>
-
-
-<h1>
-Check Request Status
-</h1>
-
-
-
-<p>
-Enter your request ID to see the progress of your diagram.
-</p>
+        <a href="../">← Back to website</a>
+    </nav>
+</header>
 
 
+<main>
 
-<input
-id="request-id"
-placeholder="Example: KXD-7M4P-92QX"
->
+    <section class="status-search">
+
+        <h1>Check Request Status</h1>
+
+        <p>
+            Enter the request code you received after submitting your request.
+        </p>
+
+        <form id="status-form">
+
+            <input
+                id="request-code"
+                type="text"
+                placeholder="KXKO-XXXX-XXXX"
+                autocomplete="off"
+                required
+            >
+
+            <button type="submit">
+                Check Status
+            </button>
+
+        </form>
+
+        <p id="status-error"></p>
+
+    </section>
 
 
-<button id="check-button">
-Check Status
-</button>
+    <section id="request-result" class="request-result" hidden>
+
+        <div class="request-header">
+
+            <div>
+                <p class="small-label">REQUEST CODE</p>
+                <h2 id="display-code"></h2>
+            </div>
+
+            <span id="display-status" class="status-badge"></span>
+
+        </div>
 
 
+        <div class="request-details">
+
+            <div>
+                <span>Name</span>
+                <strong id="display-name"></strong>
+            </div>
+
+            <div>
+                <span>Type</span>
+                <strong id="display-type"></strong>
+            </div>
+
+            <div>
+                <span>Size</span>
+                <strong id="display-size"></strong>
+            </div>
+
+            <div>
+                <span>Submitted</span>
+                <strong id="display-date"></strong>
+            </div>
+
+        </div>
 
 
-<div id="result">
+        <div class="request-section">
 
-</div>
+            <h3>Your Request</h3>
+
+            <p id="display-description"></p>
+
+        </div>
 
 
+        <div class="request-section">
 
-</section>
+            <h3>Files</h3>
+
+            <div id="request-files" class="files">
+            </div>
+
+        </div>
 
 
+        <div class="request-section">
 
+            <h3>Updates</h3>
+
+            <div id="request-updates" class="updates">
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer>
+    © 2026 Kxko Leverframe Diagrams
+</footer>
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -62,7 +136,5 @@ Check Status
 
 <script src="status.js"></script>
 
-
 </body>
-
 </html>
