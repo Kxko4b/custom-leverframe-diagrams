@@ -1535,9 +1535,10 @@ if (error) {
 for (const file of files) {
 
     const safeName =
-        file.name
-        .replace(/[^a-zA-Z0-9._-]/g, "_");
-
+    file.name
+    .replaceAll(" ", "_")
+    .replaceAll("/", "_")
+    .replaceAll("\\", "_");
 
     const path =
         `request-updates/${requestId}/${update.id}-${crypto.randomUUID()}-${safeName}`;
