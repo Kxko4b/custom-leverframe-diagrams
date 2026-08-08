@@ -1,27 +1,32 @@
 <!DOCTYPE html>
 
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Kxko Admin</title>
 
-<link rel="icon" type="image/png" href="../favicon.png">
+<link rel="icon" href="../favicon.png">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script src="../js/supabase.js"></script>
 
 <style>
+
 * {
     box-sizing: border-box;
 }
 
 body {
     margin: 0;
-    background: #f5f7f8;
+    background: #f4f6f7;
     color: #182126;
-    font-family: Inter, Arial, sans-serif;
+    font-family: Arial, sans-serif;
 }
 
 button,
@@ -41,7 +46,7 @@ button {
 
 /* LOGIN */
 
-#login-screen {
+#login {
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -51,11 +56,11 @@ button {
 
 .login-box {
     width: 100%;
-    max-width: 400px;
+    max-width: 380px;
     background: white;
-    padding: 32px;
-    border-radius: 18px;
-    box-shadow: 0 15px 45px rgba(0,0,0,.07);
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 15px 40px rgba(0,0,0,.08);
 }
 
 .login-box h1 {
@@ -63,46 +68,47 @@ button {
 }
 
 .login-box input {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: 1px solid #d5dcdf;
+    border-radius: 8px;
+}
+
+.primary {
+    background: #306778;
+    color: white;
+    border: 0;
+    border-radius: 8px;
+    padding: 11px 16px;
+    font-weight: bold;
+}
+
+.login-box .primary {
     width: 100%;
     margin-top: 12px;
-    padding: 13px;
-    border: 1px solid #d5dce0;
-    border-radius: 9px;
 }
 
-.login-box button {
-    width: 100%;
-    margin-top: 14px;
-}
-
-#login-error {
+#error {
     color: #b42318;
     margin-top: 12px;
 }
 
-/* GENERAL */
-
-.primary {
-    border: 0;
-    border-radius: 9px;
-    padding: 11px 16px;
-    background: #306778;
-    color: white;
-    font-weight: 700;
-}
+/* HEADER */
 
 header {
+    background: white;
+    border-bottom: 1px solid #dfe5e7;
     position: sticky;
     top: 0;
-    z-index: 50;
-    background: white;
-    border-bottom: 1px solid #e1e6e8;
+    z-index: 10;
 }
 
 .header-inner {
-    max-width: 1250px;
+    max-width: 1200px;
     margin: auto;
-    padding: 16px 24px;
+    padding: 15px 22px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -110,25 +116,25 @@ header {
 
 .header-inner h1 {
     margin: 0;
-    font-size: 21px;
+    font-size: 20px;
 }
 
 .logout {
-    border: 1px solid #d5dce0;
+    border: 1px solid #d5dcdf;
     background: white;
     border-radius: 8px;
     padding: 9px 13px;
 }
 
+/* MAIN */
+
 main {
-    max-width: 1250px;
+    max-width: 1200px;
     margin: auto;
-    padding: 30px 24px 80px;
+    padding: 30px 22px 80px;
 }
 
-/* REQUEST HEADER */
-
-.requests-heading {
+.top {
     display: flex;
     justify-content: space-between;
     align-items: end;
@@ -136,130 +142,118 @@ main {
     margin-bottom: 18px;
 }
 
-.requests-heading h2 {
+.top h2 {
     margin: 0;
-    font-size: 31px;
+    font-size: 30px;
 }
 
-.requests-heading p {
-    color: #737e84;
+.top p {
     margin: 5px 0 0;
+    color: #748087;
 }
 
 .controls {
     display: flex;
-    gap: 9px;
+    gap: 8px;
 }
 
 .controls input,
 .controls select {
-    border: 1px solid #d5dce0;
+    padding: 10px;
     background: white;
-    border-radius: 9px;
-    padding: 10px 12px;
+    border: 1px solid #d5dcdf;
+    border-radius: 8px;
 }
 
-/* REQUEST CARD */
+/* REQUESTS */
 
-.request-list {
+#requests {
     display: flex;
     flex-direction: column;
     gap: 9px;
 }
 
-.request-card {
+.request {
     background: white;
     border: 1px solid #dfe5e7;
-    border-radius: 13px;
+    border-radius: 12px;
     overflow: hidden;
-    transition: box-shadow .25s ease, border-color .25s ease;
 }
 
-.request-card.open {
-    border-color: #b8cdd4;
+.request.open {
     box-shadow: 0 12px 35px rgba(0,0,0,.07);
 }
 
-.request-header {
+.request-head {
     width: 100%;
-    padding: 17px 19px;
     border: 0;
     background: white;
+    padding: 17px;
     display: grid;
-    grid-template-columns: 1.2fr 1fr 140px 110px 20px;
-    align-items: center;
+    grid-template-columns: 1.3fr 1fr 140px 20px;
     gap: 15px;
     text-align: left;
+    align-items: center;
 }
 
-.request-header:hover {
+.request-head:hover {
     background: #fafbfb;
 }
 
-.request-code {
-    font-weight: 800;
+.code {
+    font-weight: bold;
 }
 
-.request-name {
-    color: #59656b;
-}
-
-.request-date {
-    color: #7d878c;
-    font-size: 13px;
+.name {
+    color: #637078;
 }
 
 .status {
-    width: fit-content;
-    padding: 6px 10px;
-    border-radius: 999px;
-    background: #edf3f5;
     color: #306778;
     font-size: 13px;
-    font-weight: 750;
+    font-weight: bold;
 }
 
 .arrow {
-    color: #7a858b;
     transition: transform .3s ease;
 }
 
-.request-card.open .arrow {
+.request.open .arrow {
     transform: rotate(180deg);
 }
 
-/* EXPAND */
+/* DETAILS */
 
-.request-details {
+.details {
     display: grid;
     grid-template-rows: 0fr;
-    transition: grid-template-rows .35s ease;
+    transition: grid-template-rows .3s ease;
 }
 
-.request-card.open .request-details {
+.request.open .details {
     grid-template-rows: 1fr;
 }
 
-.request-details-inner {
+.details-inner {
     overflow: hidden;
     min-height: 0;
 }
 
-.request-content {
-    border-top: 1px solid #e5e9eb;
-    padding: 25px;
+.content {
+    border-top: 1px solid #e4e8ea;
+    padding: 24px;
 }
 
-.form-grid {
+.grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 17px;
+    gap: 15px;
 }
 
 .field {
     display: flex;
     flex-direction: column;
-    gap: 7px;
+    gap: 6px;
 }
 
 .field.full {
@@ -267,54 +261,46 @@ main {
 }
 
 .field label {
-    color: #747f85;
     font-size: 12px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: .06em;
+    color: #748087;
+    font-weight: bold;
 }
 
 .field input,
 .field textarea,
 .field select {
-    width: 100%;
-    border: 1px solid #d5dce0;
-    border-radius: 9px;
-    padding: 11px 12px;
-    background: white;
+    padding: 11px;
+    border: 1px solid #d5dcdf;
+    border-radius: 8px;
 }
 
 .field textarea {
-    min-height: 140px;
+    min-height: 130px;
     resize: vertical;
 }
 
-.save-row {
+.save {
     display: flex;
     justify-content: flex-end;
-    margin-top: 13px;
+    margin-top: 12px;
 }
 
-.divider {
+.line {
     height: 1px;
-    background: #e4e8ea;
-    margin: 27px 0;
-}
-
-h3 {
-    margin-top: 0;
+    background: #e3e7e9;
+    margin: 26px 0;
 }
 
 /* FILES */
 
-.files {
+.file-list {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
 }
 
 .file {
-    background: #f1f4f5;
+    background: #f0f3f4;
     padding: 9px 12px;
     border-radius: 8px;
 }
@@ -322,48 +308,42 @@ h3 {
 .file a {
     color: #306778;
     text-decoration: none;
-    font-weight: 650;
 }
 
 /* UPDATES */
 
-.updates {
-    display: flex;
-    flex-direction: column;
-    gap: 11px;
-}
-
 .update {
-    background: #f5f7f8;
-    border-radius: 10px;
-    padding: 15px;
+    background: #f2f5f6;
+    padding: 14px;
+    border-radius: 9px;
+    margin-top: 9px;
 }
 
-.update-top {
+.update-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 8px;
+    margin-bottom: 7px;
 }
 
-.update-author {
-    font-weight: 800;
+.author {
+    font-weight: bold;
 }
 
-.update-date {
-    color: #7c878d;
+.date {
+    color: #7b858b;
     font-size: 12px;
 }
 
-.update-message {
+.message {
     white-space: pre-wrap;
     line-height: 1.5;
 }
 
 .update-files {
-    margin-top: 10px;
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 10px;
+    margin-top: 10px;
 }
 
 .update-files a {
@@ -373,96 +353,82 @@ h3 {
 /* NEW UPDATE */
 
 .new-update {
-    margin-top: 15px;
+    margin-top: 14px;
 }
 
 .new-update textarea {
     width: 100%;
-    min-height: 120px;
-    resize: vertical;
-    border: 1px solid #d5dce0;
-    border-radius: 9px;
+    min-height: 110px;
     padding: 12px;
+    border: 1px solid #d5dcdf;
+    border-radius: 8px;
+    resize: vertical;
 }
 
-.update-actions {
+.update-bottom {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 9px;
-    gap: 10px;
+    margin-top: 8px;
 }
 
-.file-picker {
-    border: 1px solid #d5dce0;
+.file-button {
     background: white;
+    border: 1px solid #d5dcdf;
     border-radius: 8px;
-    padding: 10px 13px;
-    cursor: pointer;
+    padding: 10px;
 }
 
-.file-picker input {
+.file-button input {
     display: none;
 }
 
-/* EXAMPLES */
-
-.examples {
-    margin-top: 55px;
-    padding-top: 35px;
-    border-top: 1px solid #dfe5e7;
-}
-
-.example-form {
-    max-width: 600px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.example-form input {
-    padding: 12px;
-    border: 1px solid #d5dce0;
-    border-radius: 9px;
-}
-
-/* MESSAGE */
+/* TOAST */
 
 #toast {
     position: fixed;
-    right: 22px;
-    bottom: 22px;
-    background: #182126;
-    color: white;
+    bottom: 20px;
+    right: 20px;
     padding: 13px 17px;
     border-radius: 9px;
+    background: #182126;
+    color: white;
     opacity: 0;
     transform: translateY(10px);
-    pointer-events: none;
     transition: .25s ease;
+    pointer-events: none;
 }
 
-#toast.show {
+#toast.visible {
     opacity: 1;
     transform: translateY(0);
 }
 
 .empty {
-    color: #7b858b;
+    color: #7a858b;
 }
 
-@media (max-width: 800px) {
+@media(max-width: 750px) {
 
-    .request-header {
-        grid-template-columns: 1fr 1fr 20px;
+    .top {
+        display: block;
     }
 
-    .request-header .request-date,
-    .request-header .status {
+    .controls {
+        margin-top: 15px;
+        flex-direction: column;
+    }
+
+    .request-head {
+        grid-template-columns: 1fr 20px;
+    }
+
+    .name,
+    .status {
         display: none;
     }
 
-    .form-grid {
+    .grid {
         grid-template-columns: 1fr;
     }
 
@@ -470,24 +436,15 @@ h3 {
         grid-column: auto;
     }
 
-    .requests-heading {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .controls {
-        flex-direction: column;
-    }
 }
+
 </style>
 
 </head>
 
 <body>
 
-<!-- LOGIN -->
-
-<div id="login-screen">
+<div id="login">
 
 ```
 <div class="login-box">
@@ -497,13 +454,13 @@ h3 {
     <p>Sign in to manage requests.</p>
 
     <input
-        id="admin-email"
+        id="email"
         type="email"
         placeholder="Email"
     >
 
     <input
-        id="admin-password"
+        id="password"
         type="password"
         placeholder="Password"
     >
@@ -515,25 +472,24 @@ h3 {
         Sign In
     </button>
 
-    <div id="login-error"></div>
+    <div id="error"></div>
 
 </div>
 ```
 
 </div>
 
-<!-- ADMIN -->
-
-<div id="admin-screen" class="hidden">
+<div id="app" class="hidden">
 
 <header>
-    <div class="header-inner">
 
 ```
+<div class="header-inner">
+
     <h1>Kxko Admin</h1>
 
     <button
-        id="logout-button"
+        id="logout"
         class="logout"
     >
         Log out
@@ -546,101 +502,61 @@ h3 {
 
 <main>
 
-<section>
+<div class="top">
 
 ```
-<div class="requests-heading">
+<div>
 
-    <div>
-        <h2>Requests</h2>
-        <p>Manage customer requests, files and updates.</p>
-    </div>
+    <h2>Requests</h2>
 
-    <div class="controls">
-
-        <input
-            id="search"
-            type="search"
-            placeholder="Search..."
-        >
-
-        <select id="filter">
-
-            <option value="all">
-                All statuses
-            </option>
-
-            <option value="Pending">
-                Pending
-            </option>
-
-            <option value="Accepted">
-                Accepted
-            </option>
-
-            <option value="In Progress">
-                In Progress
-            </option>
-
-            <option value="Completed">
-                Completed
-            </option>
-
-            <option value="Cancelled">
-                Cancelled
-            </option>
-
-        </select>
-
-    </div>
+    <p>
+        Manage customer requests and send updates.
+    </p>
 
 </div>
 
 
-<div
-    id="request-list"
-    class="request-list"
-></div>
-```
-
-</section>
-
-<section class="examples">
-
-```
-<h2>Examples</h2>
-
-<p>Add a diagram to your public examples.</p>
-
-<form
-    id="example-form"
-    class="example-form"
->
+<div class="controls">
 
     <input
-        id="example-title"
-        placeholder="Diagram title"
-        required
+        id="search"
+        placeholder="Search requests..."
     >
 
-    <input
-        id="example-image"
-        type="file"
-        accept="image/*"
-        required
-    >
+    <select id="filter">
 
-    <button
-        class="primary"
-        type="submit"
-    >
-        Add Example
-    </button>
+        <option value="all">
+            All statuses
+        </option>
 
-</form>
+        <option value="Pending">
+            Pending
+        </option>
+
+        <option value="Accepted">
+            Accepted
+        </option>
+
+        <option value="In Progress">
+            In Progress
+        </option>
+
+        <option value="Completed">
+            Completed
+        </option>
+
+        <option value="Cancelled">
+            Cancelled
+        </option>
+
+    </select>
+
+</div>
 ```
 
-</section>
+</div>
+
+<div id="requests"></div>
 
 </main>
 
@@ -650,22 +566,109 @@ h3 {
 
 <script>
 
-let requests = [];
-let openedRequest = null;
+
+var allRequests = [];
+
+var openRequest = null;
 
 
-/* -------------------------
-   AUTH
-------------------------- */
+/* LOGIN */
 
-async function checkLogin() {
 
-    const result =
+function showApp() {
+
+    document
+        .getElementById("login")
+        .classList.add("hidden");
+
+    document
+        .getElementById("app")
+        .classList.remove("hidden");
+
+    loadRequests();
+
+}
+
+
+function showLogin() {
+
+    document
+        .getElementById("login")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("app")
+        .classList.add("hidden");
+
+}
+
+
+document
+    .getElementById("login-button")
+    .onclick = async function() {
+
+        var email =
+            document
+                .getElementById("email")
+                .value
+                .trim();
+
+        var password =
+            document
+                .getElementById("password")
+                .value;
+
+        var error =
+            document
+                .getElementById("error");
+
+        error.textContent = "";
+
+
+        var result =
+            await db.auth.signInWithPassword({
+
+                email: email,
+
+                password: password
+
+            });
+
+
+        if (result.error) {
+
+            error.textContent =
+                result.error.message;
+
+            return;
+
+        }
+
+
+        showApp();
+
+    };
+
+
+document
+    .getElementById("logout")
+    .onclick = async function() {
+
+        await db.auth.signOut();
+
+        showLogin();
+
+    };
+
+
+async function checkSession() {
+
+    var result =
         await db.auth.getSession();
 
     if (result.data.session) {
 
-        showAdmin();
+        showApp();
 
     } else {
 
@@ -676,481 +679,394 @@ async function checkLogin() {
 }
 
 
-function showLogin() {
+/* LOAD REQUESTS */
 
-    document
-        .getElementById("login-screen")
-        .classList.remove("hidden");
-
-    document
-        .getElementById("admin-screen")
-        .classList.add("hidden");
-
-}
-
-
-function showAdmin() {
-
-    document
-        .getElementById("login-screen")
-        .classList.add("hidden");
-
-    document
-        .getElementById("admin-screen")
-        .classList.remove("hidden");
-
-    loadRequests();
-
-}
-
-
-document
-    .getElementById("login-button")
-    .addEventListener("click", async function() {
-
-        const email =
-            document
-                .getElementById("admin-email")
-                .value
-                .trim();
-
-        const password =
-            document
-                .getElementById("admin-password")
-                .value;
-
-        const errorBox =
-            document
-                .getElementById("login-error");
-
-        errorBox.textContent = "";
-
-        if (!email || !password) {
-
-            errorBox.textContent =
-                "Enter your email and password.";
-
-            return;
-
-        }
-
-        const result =
-            await db.auth.signInWithPassword({
-                email: email,
-                password: password
-            });
-
-        if (result.error) {
-
-            console.error(result.error);
-
-            errorBox.textContent =
-                result.error.message;
-
-            return;
-
-        }
-
-        showAdmin();
-
-    });
-
-
-document
-    .getElementById("logout-button")
-    .addEventListener("click", async function() {
-
-        await db.auth.signOut();
-
-        showLogin();
-
-    });
-
-
-/* -------------------------
-   LOAD REQUESTS
-------------------------- */
 
 async function loadRequests() {
 
-    const list =
-        document.getElementById("request-list");
+    var container =
+        document.getElementById("requests");
 
-    list.innerHTML =
+    container.innerHTML =
         '<p class="empty">Loading requests...</p>';
 
-    const result =
+
+    var result =
         await db
             .from("requests")
             .select("*")
-            .order("created_at", {
-                ascending: false
-            });
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
+
 
     if (result.error) {
 
-        console.error(result.error);
-
-        list.innerHTML =
-            '<p class="empty">Could not load requests: '
-            + escapeHtml(result.error.message)
-            + '</p>';
+        container.innerHTML =
+            '<p class="empty">Error: ' +
+            clean(result.error.message) +
+            '</p>';
 
         return;
 
     }
 
-    requests =
+
+    allRequests =
         result.data || [];
 
-    renderRequests();
+    drawRequests();
 
 }
 
 
-/* -------------------------
-   RENDER REQUESTS
-------------------------- */
+/* DRAW REQUESTS */
 
-function renderRequests() {
 
-    const list =
-        document.getElementById("request-list");
+function drawRequests() {
 
-    const search =
+    var container =
+        document.getElementById("requests");
+
+    var search =
         document
             .getElementById("search")
             .value
-            .trim()
-            .toLowerCase();
+            .toLowerCase()
+            .trim();
 
-    const filter =
+    var filter =
         document
             .getElementById("filter")
             .value;
 
-    list.innerHTML = "";
 
-    const filtered =
-        requests.filter(function(request) {
-
-            const text =
-                (
-                    (request.request_code || "") +
-                    " " +
-                    (request.name || "") +
-                    " " +
-                    (request.discord || "") +
-                    " " +
-                    (request.email || "")
-                ).toLowerCase();
-
-            const matchesSearch =
-                !search ||
-                text.includes(search);
-
-            const matchesFilter =
-                filter === "all" ||
-                request.status === filter;
-
-            return matchesSearch &&
-                   matchesFilter;
-
-        });
+    container.innerHTML = "";
 
 
-    if (!filtered.length) {
+    for (
+        var i = 0;
+        i < allRequests.length;
+        i++
+    ) {
 
-        list.innerHTML =
-            '<p class="empty">No requests found.</p>';
+        var request =
+            allRequests[i];
 
-        return;
+
+        var searchable =
+            (
+                (request.request_code || "") +
+                " " +
+                (request.name || "") +
+                " " +
+                (request.discord || "") +
+                " " +
+                (request.email || "")
+            ).toLowerCase();
+
+
+        if (
+            search &&
+            searchable.indexOf(search) === -1
+        ) {
+            continue;
+        }
+
+
+        if (
+            filter !== "all" &&
+            request.status !== filter
+        ) {
+            continue;
+        }
+
+
+        container.appendChild(
+            makeRequest(request)
+        );
 
     }
 
 
-    filtered.forEach(function(request) {
+    if (!container.children.length) {
 
-        list.appendChild(
-            createRequest(request)
-        );
+        container.innerHTML =
+            '<p class="empty">No requests found.</p>';
 
-    });
+    }
 
 }
 
 
-/* -------------------------
-   CREATE REQUEST CARD
-------------------------- */
+/* REQUEST */
 
-function createRequest(request) {
 
-    const card =
+function makeRequest(request) {
+
+    var article =
         document.createElement("article");
 
-    card.className =
-        "request-card";
+    article.className =
+        "request";
 
-    if (openedRequest === request.id) {
 
-        card.classList.add("open");
+    if (
+        openRequest === request.id
+    ) {
+
+        article.classList.add("open");
 
     }
 
 
-    const header =
+    var head =
         document.createElement("button");
 
-    header.className =
-        "request-header";
+    head.className =
+        "request-head";
 
-    header.type = "button";
+    head.type =
+        "button";
 
 
-    header.innerHTML =
-
-        '<span class="request-code">' +
-            escapeHtml(
-                request.request_code || "No code"
-            ) +
+    head.innerHTML =
+        '<span class="code">' +
+        clean(request.request_code || "No code") +
         '</span>' +
 
-        '<span class="request-name">' +
-            escapeHtml(
-                request.name || "Unknown"
-            ) +
+        '<span class="name">' +
+        clean(request.name || "Unknown") +
         '</span>' +
 
         '<span class="status">' +
-            escapeHtml(
-                request.status || "Pending"
-            ) +
-        '</span>' +
-
-        '<span class="request-date">' +
-            formatDate(request.created_at) +
+        clean(request.status || "Pending") +
         '</span>' +
 
         '<span class="arrow">⌄</span>';
 
 
-    header.addEventListener(
-        "click",
+    head.onclick =
         function() {
 
-            if (openedRequest === request.id) {
+            if (
+                openRequest === request.id
+            ) {
 
-                openedRequest = null;
+                openRequest = null;
 
             } else {
 
-                openedRequest = request.id;
+                openRequest = request.id;
 
             }
 
-            renderRequests();
+            drawRequests();
 
-        }
-    );
+        };
 
 
-    const details =
+    var details =
         document.createElement("div");
 
     details.className =
-        "request-details";
+        "details";
 
 
-    const inner =
+    var inner =
         document.createElement("div");
 
     inner.className =
-        "request-details-inner";
+        "details-inner";
 
 
-    const content =
+    var content =
         document.createElement("div");
 
     content.className =
-        "request-content";
+        "content";
 
 
     content.innerHTML =
 
-        '<div class="form-grid">' +
+        '<div class="grid">' +
 
-            '<div class="field">' +
-                '<label>Name</label>' +
-                '<input class="edit-name">' +
-            '</div>' +
-
-            '<div class="field">' +
-                '<label>Discord</label>' +
-                '<input class="edit-discord">' +
-            '</div>' +
-
-            '<div class="field">' +
-                '<label>Email</label>' +
-                '<input class="edit-email">' +
-            '</div>' +
-
-            '<div class="field">' +
-                '<label>Status</label>' +
-
-                '<select class="edit-status">' +
-
-                    '<option>Pending</option>' +
-                    '<option>Accepted</option>' +
-                    '<option>In Progress</option>' +
-                    '<option>Completed</option>' +
-                    '<option>Cancelled</option>' +
-
-                '</select>' +
-
-            '</div>' +
-
-            '<div class="field full">' +
-
-                '<label>Request description</label>' +
-
-                '<textarea class="edit-description"></textarea>' +
-
-```
+        '<div class="field">' +
+        '<label>Name</label>' +
+        '<input class="edit-name">' +
         '</div>' +
 
+        '<div class="field">' +
+        '<label>Discord</label>' +
+        '<input class="edit-discord">' +
+        '</div>' +
+
+        '<div class="field">' +
+        '<label>Email</label>' +
+        '<input class="edit-email">' +
+        '</div>' +
+
+        '<div class="field">' +
+        '<label>Status</label>' +
+        '<select class="edit-status">' +
+        '<option>Pending</option>' +
+        '<option>Accepted</option>' +
+        '<option>In Progress</option>' +
+        '<option>Completed</option>' +
+        '<option>Cancelled</option>' +
+        '</select>' +
+        '</div>' +
+
+        '<div class="field full">' +
+        '<label>Description</label>' +
+        '<textarea class="edit-description"></textarea>' +
+
+```
     '</div>' +
 
-    '<div class="save-row">' +
-
-        '<button class="primary save-button">' +
-            'Save Changes' +
-        '</button>' +
-
     '</div>' +
 
-    '<div class="divider"></div>' +
+    '<div class="save">' +
+    '<button class="primary save-button">' +
+    'Save Changes' +
+    '</button>' +
+    '</div>' +
+
+    '<div class="line"></div>' +
 
     '<h3>Customer Files</h3>' +
 
-    '<div class="files customer-files">' +
-        '<span class="empty">Loading...</span>' +
+    '<div class="file-list customer-files">' +
+    '<span class="empty">Loading...</span>' +
     '</div>' +
 
-    '<div class="divider"></div>' +
+    '<div class="line"></div>' +
 
     '<h3>Updates</h3>' +
 
-    '<div class="updates update-list">' +
-        '<span class="empty">Loading...</span>' +
+    '<div class="update-list">' +
+    '<span class="empty">Loading...</span>' +
     '</div>' +
 
     '<div class="new-update">' +
 
-        '<textarea ' +
-            'class="new-message" ' +
-            'placeholder="Write an update for the customer..."' +
-        '></textarea>' +
+    '<textarea ' +
+    'class="new-message" ' +
+    'placeholder="Write an update for the customer..."' +
+    '></textarea>' +
 
-        '<div class="update-actions">' +
+    '<div class="update-bottom">' +
 
-            '<label class="file-picker">' +
+    '<label class="file-button">' +
+    '📎 Add files' +
+    '<input class="new-files" type="file" multiple>' +
+    '</label>' +
 
-                '📎 Add files' +
+    '<button class="primary post-button">' +
+    'Post Update' +
+    '</button>' +
 
-                '<input ' +
-                    'class="new-files" ' +
-                    'type="file" ' +
-                    'multiple' +
-                '>' +
-
-            '</label>' +
-
-            '<button class="primary post-update">' +
-                'Post Update' +
-            '</button>' +
-
-        '</div>' +
+    '</div>' +
 
     '</div>';
 
 
-content.querySelector(".edit-name").value =
+content
+    .querySelector(".edit-name")
+    .value =
     request.name || "";
 
-content.querySelector(".edit-discord").value =
+
+content
+    .querySelector(".edit-discord")
+    .value =
     request.discord || "";
 
-content.querySelector(".edit-email").value =
+
+content
+    .querySelector(".edit-email")
+    .value =
     request.email || "";
 
-content.querySelector(".edit-description").value =
+
+content
+    .querySelector(".edit-description")
+    .value =
     request.description || "";
 
-content.querySelector(".edit-status").value =
+
+content
+    .querySelector(".edit-status")
+    .value =
     request.status || "Pending";
 
 
 content
     .querySelector(".save-button")
-    .addEventListener(
-        "click",
-        function() {
+    .onclick =
+    function() {
 
-            saveRequest(
-                request.id,
-                content
-            );
+        saveRequest(
+            request.id,
+            content
+        );
 
-        }
-    );
+    };
 
 
 content
-    .querySelector(".post-update")
-    .addEventListener(
-        "click",
-        function() {
+    .querySelector(".post-button")
+    .onclick =
+    function() {
 
-            postUpdate(
-                request.id,
-                content
-            );
+        postUpdate(
+            request.id,
+            content
+        );
 
-        }
-    );
+    };
 
 
 inner.appendChild(content);
+
 details.appendChild(inner);
 
-card.appendChild(header);
-card.appendChild(details);
+article.appendChild(head);
+
+article.appendChild(details);
 
 
-if (openedRequest === request.id) {
+if (
+    openRequest === request.id
+) {
 
-    loadCustomerFiles(
+    loadFiles(
         request.id,
-        content.querySelector(".customer-files")
+        content.querySelector(
+            ".customer-files"
+        )
     );
+
 
     loadUpdates(
         request.id,
-        content.querySelector(".update-list")
+        content.querySelector(
+            ".update-list"
+        )
     );
 
 }
 
 
-return card;
+return article;
 ```
 
 }
 
-/* -------------------------
-SAVE REQUEST
-------------------------- */
+/* SAVE REQUEST */
 
 async function saveRequest(
 id,
@@ -1158,7 +1074,7 @@ content
 ) {
 
 ```
-const update = {
+var data = {
 
     name:
         content
@@ -1178,23 +1094,23 @@ const update = {
             .value
             .trim(),
 
-    description:
-        content
-            .querySelector(".edit-description")
-            .value,
-
     status:
         content
             .querySelector(".edit-status")
+            .value,
+
+    description:
+        content
+            .querySelector(".edit-description")
             .value
 
 };
 
 
-const result =
+var result =
     await db
         .from("requests")
-        .update(update)
+        .update(data)
         .eq("id", id);
 
 
@@ -1211,46 +1127,49 @@ if (result.error) {
 }
 
 
-const request =
-    requests.find(function(item) {
+for (
+    var i = 0;
+    i < allRequests.length;
+    i++
+) {
 
-        return item.id === id;
+    if (
+        allRequests[i].id === id
+    ) {
 
-    });
+        Object.assign(
+            allRequests[i],
+            data
+        );
 
-
-if (request) {
-
-    Object.assign(
-        request,
-        update
-    );
+    }
 
 }
 
 
-renderRequests();
+drawRequests();
 
 toast("Request saved.");
 ```
 
 }
 
-/* -------------------------
-CUSTOMER FILES
-------------------------- */
+/* CUSTOMER FILES */
 
-async function loadCustomerFiles(
+async function loadFiles(
 requestId,
 container
 ) {
 
 ```
-const result =
+var result =
     await db
         .from("request_images")
         .select("*")
-        .eq("request_id", requestId);
+        .eq(
+            "request_id",
+            requestId
+        );
 
 
 container.innerHTML = "";
@@ -1269,23 +1188,31 @@ if (result.error) {
 if (!result.data.length) {
 
     container.innerHTML =
-        '<span class="empty">No files attached.</span>';
+        '<span class="empty">No files.</span>';
 
     return;
 
 }
 
 
-result.data.forEach(function(file) {
+for (
+    var i = 0;
+    i < result.data.length;
+    i++
+) {
 
-    const wrapper =
+    var file =
+        result.data[i];
+
+
+    var div =
         document.createElement("div");
 
-    wrapper.className =
+    div.className =
         "file";
 
 
-    const link =
+    var link =
         document.createElement("a");
 
     link.href =
@@ -1301,18 +1228,16 @@ result.data.forEach(function(file) {
         "📎 View file";
 
 
-    wrapper.appendChild(link);
+    div.appendChild(link);
 
-    container.appendChild(wrapper);
+    container.appendChild(div);
 
-});
+}
 ```
 
 }
 
-/* -------------------------
-LOAD UPDATES
-------------------------- */
+/* UPDATES */
 
 async function loadUpdates(
 requestId,
@@ -1320,22 +1245,26 @@ container
 ) {
 
 ```
-const result =
+var result =
     await db
         .from("request_updates")
         .select("*")
-        .eq("request_id", requestId)
-        .order("created_at", {
-            ascending: true
-        });
+        .eq(
+            "request_id",
+            requestId
+        )
+        .order(
+            "created_at",
+            {
+                ascending: true
+            }
+        );
 
 
 container.innerHTML = "";
 
 
 if (result.error) {
-
-    console.error(result.error);
 
     container.innerHTML =
         '<span class="empty">Could not load updates.</span>';
@@ -1355,96 +1284,112 @@ if (!result.data.length) {
 }
 
 
-for (const update of result.data) {
+for (
+    var i = 0;
+    i < result.data.length;
+    i++
+) {
 
-    const element =
-        document.createElement("div");
-
-    element.className =
-        "update";
-
-
-    let files = [];
-
-
-    const fileResult =
-        await db
-            .from("request_update_files")
-            .select("*")
-            .eq("update_id", update.id);
-
-
-    if (!fileResult.error) {
-
-        files =
-            fileResult.data || [];
-
-    }
-
-
-    let fileHTML = "";
-
-
-    if (files.length) {
-
-        fileHTML =
-            '<div class="update-files">' +
-
-            files.map(function(file) {
-
-                return (
-                    '<a href="' +
-                    escapeAttribute(file.file_url) +
-                    '" target="_blank" rel="noopener">' +
-                    '📎 ' +
-                    escapeHtml(file.file_name) +
-                    '</a>'
-                );
-
-            }).join("") +
-
-            '</div>';
-
-    }
-
-
-    element.innerHTML =
-
-        '<div class="update-top">' +
-
-            '<span class="update-author">' +
-                escapeHtml(
-                    update.author || "Kxko"
-                ) +
-            '</span>' +
-
-            '<span class="update-date">' +
-                formatDateTime(
-                    update.created_at
-                ) +
-            '</span>' +
-
-        '</div>' +
-
-        '<div class="update-message">' +
-            escapeHtml(
-                update.message || ""
-            ) +
-        '</div>' +
-
-        fileHTML;
-
-
-    container.appendChild(element);
+    await addUpdate(
+        result.data[i],
+        container
+    );
 
 }
 ```
 
 }
 
-/* -------------------------
-POST UPDATE
-------------------------- */
+async function addUpdate(
+update,
+container
+) {
+
+```
+var div =
+    document.createElement("div");
+
+div.className =
+    "update";
+
+
+var filesResult =
+    await db
+        .from("request_update_files")
+        .select("*")
+        .eq(
+            "update_id",
+            update.id
+        );
+
+
+var fileHTML =
+    "";
+
+
+if (
+    !filesResult.error &&
+    filesResult.data.length
+) {
+
+    fileHTML =
+        '<div class="update-files">';
+
+
+    for (
+        var i = 0;
+        i < filesResult.data.length;
+        i++
+    ) {
+
+        var file =
+            filesResult.data[i];
+
+
+        fileHTML +=
+            '<a href="' +
+            attribute(file.file_url) +
+            '" target="_blank" rel="noopener">' +
+            '📎 ' +
+            clean(file.file_name) +
+            '</a>';
+
+    }
+
+
+    fileHTML +=
+        '</div>';
+
+}
+
+
+div.innerHTML =
+
+    '<div class="update-header">' +
+
+    '<span class="author">' +
+    clean(update.author || "Kxko") +
+    '</span>' +
+
+    '<span class="date">' +
+    dateTime(update.created_at) +
+    '</span>' +
+
+    '</div>' +
+
+    '<div class="message">' +
+    clean(update.message || "") +
+    '</div>' +
+
+    fileHTML;
+
+
+container.appendChild(div);
+```
+
+}
+
+/* POST UPDATE */
 
 async function postUpdate(
 requestId,
@@ -1452,23 +1397,28 @@ content
 ) {
 
 ```
-const message =
+var message =
     content
         .querySelector(".new-message")
         .value
         .trim();
 
-const input =
+
+var input =
     content.querySelector(".new-files");
 
-const files =
-    Array.from(input.files);
+
+var files =
+    input.files;
 
 
-if (!message && !files.length) {
+if (
+    !message &&
+    files.length === 0
+) {
 
     toast(
-        "Write an update or add a file."
+        "Write a message or attach a file."
     );
 
     return;
@@ -1476,24 +1426,32 @@ if (!message && !files.length) {
 }
 
 
-const button =
-    content.querySelector(".post-update");
+var button =
+    content.querySelector(
+        ".post-button"
+    );
 
-button.disabled = true;
-button.textContent = "Posting...";
+
+button.disabled =
+    true;
+
+button.textContent =
+    "Posting...";
 
 
-const result =
+var result =
     await db
         .from("request_updates")
         .insert({
 
-            request_id: requestId,
+            request_id:
+                requestId,
 
             message:
                 message || "Files attached.",
 
-            author: "Kxko"
+            author:
+                "Kxko"
 
         })
         .select()
@@ -1508,39 +1466,49 @@ if (result.error) {
         "Could not create update."
     );
 
-    button.disabled = false;
-    button.textContent = "Post Update";
+    button.disabled =
+        false;
+
+    button.textContent =
+        "Post Update";
 
     return;
 
 }
 
 
-const update =
+var update =
     result.data;
 
 
-for (const file of files) {
+for (
+    var i = 0;
+    i < files.length;
+    i++
+) {
 
-    const safeName =
+    var file =
+        files[i];
+
+
+    var safe =
         file.name
-            .replaceAll(" ", "_")
-            .replaceAll("/", "_")
-            .replaceAll("\\", "_");
+            .split(" ")
+            .join("_");
 
 
-    const path =
+    var path =
         "request-updates/" +
         requestId +
         "/" +
         update.id +
         "-" +
-        crypto.randomUUID() +
+        Date.now() +
         "-" +
-        safeName;
+        safe;
 
 
-    const upload =
+    var upload =
         await db.storage
             .from("diagram-files")
             .upload(
@@ -1560,10 +1528,12 @@ for (const file of files) {
     }
 
 
-    const publicURL =
+    var publicURL =
         db.storage
             .from("diagram-files")
-            .getPublicUrl(path)
+            .getPublicUrl(
+                path
+            )
             .data
             .publicUrl;
 
@@ -1590,238 +1560,144 @@ content
     .querySelector(".new-message")
     .value = "";
 
+
 input.value = "";
 
 
 await loadUpdates(
     requestId,
-    content.querySelector(".update-list")
+    content.querySelector(
+        ".update-list"
+    )
 );
 
 
-button.disabled = false;
-button.textContent = "Post Update";
+button.disabled =
+    false;
 
-toast("Update posted.");
+button.textContent =
+    "Post Update";
+
+
+toast(
+    "Update posted."
+);
 ```
 
 }
 
-/* -------------------------
-EXAMPLES
-------------------------- */
-
-document
-.getElementById("example-form")
-.addEventListener(
-"submit",
-async function(event) {
-
-```
-        event.preventDefault();
-
-
-        const title =
-            document
-                .getElementById("example-title")
-                .value
-                .trim();
-
-        const file =
-            document
-                .getElementById("example-image")
-                .files[0];
-
-
-        if (!title || !file) {
-
-            return;
-
-        }
-
-
-        const path =
-            "examples/" +
-            crypto.randomUUID() +
-            "-" +
-            file.name;
-
-
-        const upload =
-            await db.storage
-                .from("diagram-files")
-                .upload(
-                    path,
-                    file
-                );
-
-
-        if (upload.error) {
-
-            console.error(
-                upload.error
-            );
-
-            toast(
-                "Could not upload image."
-            );
-
-            return;
-
-        }
-
-
-        const publicURL =
-            db.storage
-                .from("diagram-files")
-                .getPublicUrl(path)
-                .data
-                .publicUrl;
-
-
-        const result =
-            await db
-                .from("examples")
-                .insert({
-
-                    title: title,
-
-                    image_url: publicURL
-
-                });
-
-
-        if (result.error) {
-
-            console.error(
-                result.error
-            );
-
-            toast(
-                "Could not save example."
-            );
-
-            return;
-
-        }
-
-
-        event.target.reset();
-
-        toast("Example added.");
-
-    }
-);
-```
-
-/* -------------------------
-SEARCH
-------------------------- */
+/* SEARCH */
 
 document
 .getElementById("search")
-.addEventListener(
-"input",
-renderRequests
-);
+.oninput =
+function() {
+
+```
+    drawRequests();
+
+};
+```
 
 document
 .getElementById("filter")
-.addEventListener(
-"change",
-renderRequests
-);
+.onchange =
+function() {
 
-/* -------------------------
-HELPERS
-------------------------- */
+```
+    drawRequests();
 
-function formatDate(value) {
+};
+```
+
+/* HELPERS */
+
+function clean(value) {
+
+```
+var text =
+    String(value);
+
+
+text =
+    text.split("&").join("&amp;");
+
+text =
+    text.split("<").join("&lt;");
+
+text =
+    text.split(">").join("&gt;");
+
+text =
+    text.split('"').join("&quot;");
+
+text =
+    text.split("'").join("&#039;");
+
+
+return text;
+```
+
+}
+
+function attribute(value) {
+
+```
+return clean(value);
+```
+
+}
+
+function dateTime(value) {
 
 ```
 if (!value) {
-    return "—";
+    return "";
 }
+
 
 return new Date(value)
-    .toLocaleDateString(
-        undefined,
-        {
-            day: "2-digit",
-            month: "short",
-            year: "numeric"
-        }
-    );
-```
-
-}
-
-function formatDateTime(value) {
-
-```
-if (!value) {
-    return "—";
-}
-
-return new Date(value)
-    .toLocaleString(
-        undefined,
-        {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit"
-        }
-    );
-```
-
-}
-
-function escapeHtml(value) {
-
-```
-return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-```
-
-}
-
-function escapeAttribute(value) {
-
-```
-return escapeHtml(value);
+    .toLocaleString();
 ```
 
 }
 
 function toast(message) {
 
-    const element =
-        document.getElementById("toast");
+```
+var element =
+    document.getElementById("toast");
 
-    element.textContent =
-        message;
 
-    element.classList.add("show");
+element.textContent =
+    message;
 
-    setTimeout(function() {
 
-        element.classList.remove("show");
+element.classList.add(
+    "visible"
+);
 
-    }, 3000);
+
+setTimeout(
+    function() {
+
+        element.classList.remove(
+            "visible"
+        );
+
+    },
+    3000
+);
+```
 
 }
 
 /* START */
 
-checkLogin();
+checkSession();
 
 </script>
 
 </body>
+
 </html>
