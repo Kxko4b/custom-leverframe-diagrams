@@ -1,1 +1,258 @@
+* {
+    box-sizing: border-box;
+}
 
+body {
+    margin: 0;
+    font-family: Inter, Arial, sans-serif;
+    background: #f7f8fa;
+    color: #1d252b;
+}
+
+header {
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+nav {
+    max-width: 1100px;
+    margin: auto;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+nav h2 {
+    margin: 0;
+    font-family: "Space Grotesk", sans-serif;
+}
+
+nav a {
+    color: #306778;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+main {
+    max-width: 900px;
+    margin: 70px auto;
+    padding: 0 20px;
+}
+
+.status-search {
+    text-align: center;
+    margin-bottom: 45px;
+}
+
+.status-search h1 {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 42px;
+    margin-bottom: 10px;
+}
+
+.status-search p {
+    color: #68727a;
+}
+
+#status-form {
+    display: flex;
+    gap: 10px;
+    max-width: 600px;
+    margin: 30px auto 0;
+}
+
+#request-code {
+    flex: 1;
+    padding: 15px 17px;
+    border: 1px solid #d6dadd;
+    border-radius: 10px;
+    font-size: 16px;
+    text-transform: uppercase;
+}
+
+button {
+    border: 0;
+    border-radius: 10px;
+    padding: 15px 22px;
+    background: #306778;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+#status-error {
+    color: #b42318;
+    font-weight: 600;
+}
+
+.request-result {
+    background: white;
+    border: 1px solid #e2e5e8;
+    border-radius: 18px;
+    overflow: hidden;
+}
+
+.request-header {
+    padding: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #e7e9eb;
+}
+
+.small-label {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: #78828a;
+}
+
+#display-code {
+    margin: 5px 0 0;
+    font-family: "Space Grotesk", sans-serif;
+}
+
+.status-badge {
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: #edf4f6;
+    color: #306778;
+    font-weight: 700;
+}
+
+.request-details {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-bottom: 1px solid #e7e9eb;
+}
+
+.request-details div {
+    padding: 22px;
+    border-right: 1px solid #e7e9eb;
+}
+
+.request-details div:last-child {
+    border-right: 0;
+}
+
+.request-details span {
+    display: block;
+    font-size: 13px;
+    color: #78828a;
+    margin-bottom: 5px;
+}
+
+.request-section {
+    padding: 28px;
+    border-bottom: 1px solid #e7e9eb;
+}
+
+.request-section:last-child {
+    border-bottom: 0;
+}
+
+.request-section h3 {
+    margin-top: 0;
+    font-family: "Space Grotesk", sans-serif;
+}
+
+#display-description {
+    white-space: pre-wrap;
+    line-height: 1.7;
+}
+
+.files {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.file {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 13px;
+    border-radius: 9px;
+    background: #f1f3f5;
+}
+
+.file a {
+    color: #306778;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.updates {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.update {
+    padding: 18px;
+    border-radius: 12px;
+    background: #f5f7f8;
+}
+
+.update-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.update-author {
+    font-weight: 800;
+}
+
+.update-date {
+    color: #78828a;
+    font-size: 13px;
+}
+
+.update-message {
+    white-space: pre-wrap;
+    line-height: 1.6;
+}
+
+.update-files {
+    margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.empty {
+    color: #78828a;
+}
+
+footer {
+    text-align: center;
+    padding: 40px 20px;
+    color: #78828a;
+}
+
+@media (max-width: 700px) {
+
+    .status-search h1 {
+        font-size: 32px;
+    }
+
+    #status-form {
+        flex-direction: column;
+    }
+
+    .request-details {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .request-details div:nth-child(2) {
+        border-right: 0;
+    }
+
+}
