@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,11 +7,9 @@
 <link rel="icon" href="../favicon.png">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script src="../js/supabase.js"></script>
 
 <style>
-
 * {
     box-sizing: border-box;
 }
@@ -40,7 +36,6 @@ button {
     display: none !important;
 }
 
-
 /* LOGIN */
 
 #login {
@@ -65,7 +60,6 @@ button {
 }
 
 .login-box input {
-    display: block;
     width: 100%;
     padding: 12px;
     margin-top: 10px;
@@ -92,7 +86,6 @@ button {
     margin-top: 12px;
 }
 
-
 /* HEADER */
 
 header {
@@ -100,7 +93,7 @@ header {
     border-bottom: 1px solid #dfe5e7;
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: 20;
 }
 
 .header-inner {
@@ -108,8 +101,8 @@ header {
     margin: auto;
     padding: 15px 22px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
 }
 
 .header-inner h1 {
@@ -124,7 +117,6 @@ header {
     padding: 9px 13px;
 }
 
-
 /* MAIN */
 
 main {
@@ -135,10 +127,10 @@ main {
 
 .top {
     display: flex;
-    justify-content: space-between;
     align-items: end;
+    justify-content: space-between;
     gap: 20px;
-    margin-bottom: 18px;
+    margin-bottom: 20px;
 }
 
 .top h2 {
@@ -164,13 +156,12 @@ main {
     border-radius: 8px;
 }
 
-
-/* REQUESTS */
+/* REQUEST LIST */
 
 #requests {
     display: flex;
     flex-direction: column;
-    gap: 9px;
+    gap: 10px;
 }
 
 .request {
@@ -178,10 +169,11 @@ main {
     border: 1px solid #dfe5e7;
     border-radius: 12px;
     overflow: hidden;
+    transition: box-shadow 0.25s ease;
 }
 
 .request.open {
-    box-shadow: 0 12px 35px rgba(0,0,0,0.07);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.08);
 }
 
 .request-head {
@@ -190,10 +182,10 @@ main {
     background: white;
     padding: 17px;
     display: grid;
-    grid-template-columns: 1.3fr 1fr 140px 20px;
+    grid-template-columns: 1.2fr 1fr 150px 20px;
     gap: 15px;
-    text-align: left;
     align-items: center;
+    text-align: left;
 }
 
 .request-head:hover {
@@ -205,13 +197,13 @@ main {
 }
 
 .name {
-    color: #637078;
+    color: #68747b;
 }
 
 .status {
     color: #306778;
-    font-size: 13px;
     font-weight: bold;
+    font-size: 13px;
 }
 
 .arrow {
@@ -222,8 +214,7 @@ main {
     transform: rotate(180deg);
 }
 
-
-/* EXPANDING DETAILS */
+/* SMOOTH EXPANSION */
 
 .details {
     display: grid;
@@ -241,10 +232,9 @@ main {
 }
 
 .content {
-    border-top: 1px solid #e4e8ea;
     padding: 24px;
+    border-top: 1px solid #e4e8ea;
 }
-
 
 /* FORM */
 
@@ -273,28 +263,29 @@ main {
 .field input,
 .field textarea,
 .field select {
+    width: 100%;
     padding: 11px;
     border: 1px solid #d5dcdf;
     border-radius: 8px;
+    background: white;
 }
 
 .field textarea {
-    min-height: 130px;
+    min-height: 140px;
     resize: vertical;
 }
 
-.save {
+.save-row {
     display: flex;
     justify-content: flex-end;
-    margin-top: 12px;
+    margin-top: 14px;
 }
 
-.line {
+.divider {
     height: 1px;
     background: #e3e7e9;
     margin: 26px 0;
 }
-
 
 /* FILES */
 
@@ -315,7 +306,6 @@ main {
     text-decoration: none;
 }
 
-
 /* UPDATES */
 
 .update {
@@ -328,7 +318,8 @@ main {
 .update-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 7px;
+    gap: 10px;
+    margin-bottom: 8px;
 }
 
 .author {
@@ -356,7 +347,6 @@ main {
     color: #306778;
 }
 
-
 /* NEW UPDATE */
 
 .new-update {
@@ -372,14 +362,16 @@ main {
     resize: vertical;
 }
 
-.update-bottom {
+.update-actions {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 8px;
+    gap: 10px;
+    margin-top: 9px;
 }
 
 .file-button {
+    display: inline-block;
     background: white;
     border: 1px solid #d5dcdf;
     border-radius: 8px;
@@ -390,35 +382,27 @@ main {
     display: none;
 }
 
-
 /* TOAST */
 
 #toast {
     position: fixed;
-    bottom: 20px;
     right: 20px;
+    bottom: 20px;
     padding: 13px 17px;
     border-radius: 9px;
     background: #182126;
     color: white;
     opacity: 0;
     transform: translateY(10px);
-    transition: 0.25s ease;
     pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    z-index: 100;
 }
 
-#toast.visible {
+#toast.show {
     opacity: 1;
     transform: translateY(0);
 }
-
-
-/* EMPTY */
-
-.empty {
-    color: #7a858b;
-}
-
 
 /* MOBILE */
 
@@ -450,146 +434,165 @@ main {
         grid-column: auto;
     }
 
+    .update-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
 }
-
 </style>
-
 </head>
 
 <body>
 
-<!-- LOGIN -->
-
 <div id="login">
+    <div class="login-box">
 
-```
-<div class="login-box">
+        <h1>Kxko Admin</h1>
 
-    <h1>Kxko Admin</h1>
+        <p>Sign in to manage requests.</p>
 
-    <p>Sign in to manage requests.</p>
+        <input
+            id="admin-email"
+            type="email"
+            placeholder="Email"
+        >
 
-    <input
-        id="email"
-        type="email"
-        placeholder="Email"
-    >
+        <input
+            id="admin-password"
+            type="password"
+            placeholder="Password"
+        >
 
-    <input
-        id="password"
-        type="password"
-        placeholder="Password"
-    >
+        <button
+            id="login-button"
+            class="primary"
+        >
+            Sign In
+        </button>
 
-    <button
-        id="login-button"
-        class="primary"
-    >
-        Sign In
-    </button>
+        <div id="error"></div>
 
-    <div id="error"></div>
-
-</div>
-```
-
+    </div>
 </div>
 
-<!-- ADMIN APP -->
 
 <div id="app" class="hidden">
 
-<header>
+    <header>
 
-```
-<div class="header-inner">
+        <div class="header-inner">
 
-    <h1>Kxko Admin</h1>
+            <h1>Kxko Admin</h1>
 
-    <button
-        id="logout"
-        class="logout"
-    >
-        Log out
-    </button>
+            <button
+                id="logout-button"
+                class="logout"
+            >
+                Log out
+            </button>
 
-</div>
-```
+        </div>
 
-</header>
-
-<main>
-
-<div class="top">
-
-```
-<div>
-
-    <h2>Requests</h2>
-
-    <p>
-        Manage customer requests and send updates.
-    </p>
-
-</div>
+    </header>
 
 
-<div class="controls">
+    <main>
 
-    <input
-        id="search"
-        placeholder="Search requests..."
-    >
+        <div class="top">
 
-    <select id="filter">
+            <div>
+                <h2>Requests</h2>
+                <p>
+                    Manage customer requests, files and updates.
+                </p>
+            </div>
 
-        <option value="all">
-            All statuses
-        </option>
+            <div class="controls">
 
-        <option value="Pending">
-            Pending
-        </option>
+                <input
+                    id="search"
+                    type="text"
+                    placeholder="Search..."
+                >
 
-        <option value="Accepted">
-            Accepted
-        </option>
+                <select id="filter">
 
-        <option value="In Progress">
-            In Progress
-        </option>
+                    <option value="all">
+                        All statuses
+                    </option>
 
-        <option value="Completed">
-            Completed
-        </option>
+                    <option value="Pending">
+                        Pending
+                    </option>
 
-        <option value="Cancelled">
-            Cancelled
-        </option>
+                    <option value="Accepted">
+                        Accepted
+                    </option>
 
-    </select>
+                    <option value="In Progress">
+                        In Progress
+                    </option>
 
-</div>
-```
+                    <option value="Completed">
+                        Completed
+                    </option>
 
-</div>
+                    <option value="Cancelled">
+                        Cancelled
+                    </option>
 
-<div id="requests"></div>
+                </select>
 
-</main>
+            </div>
+
+        </div>
+
+
+        <div id="requests"></div>
+
+    </main>
 
 </div>
+
 
 <div id="toast"></div>
 
+
 <script>
 
-
 var allRequests = [];
-var openRequest = null;
+var openedRequestId = null;
 
 
 /* LOGIN */
+
+async function start() {
+
+    var result = await db.auth.getSession();
+
+    if (result.error) {
+        showLogin();
+        return;
+    }
+
+    if (result.data.session) {
+        showApp();
+    } else {
+        showLogin();
+    }
+}
+
+
+function showLogin() {
+
+    document
+        .getElementById("login")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("app")
+        .classList.add("hidden");
+}
 
 
 function showApp() {
@@ -603,111 +606,83 @@ function showApp() {
         .classList.remove("hidden");
 
     loadRequests();
-
-}
-
-
-function showLogin() {
-
-    document
-        .getElementById("login")
-        .classList.remove("hidden");
-
-    document
-        .getElementById("app")
-        .classList.add("hidden");
-
 }
 
 
 document
     .getElementById("login-button")
-    .onclick = async function() {
-
-        var email =
-            document
-                .getElementById("email")
-                .value
-                .trim();
-
-        var password =
-            document
-                .getElementById("password")
-                .value;
-
-        var error =
-            document
-                .getElementById("error");
-
-        error.textContent = "";
+    .addEventListener("click", login);
 
 
-        var result =
-            await db.auth.signInWithPassword({
+async function login() {
 
-                email: email,
-                password: password
+    var email =
+        document
+            .getElementById("admin-email")
+            .value
+            .trim();
 
-            });
+    var password =
+        document
+            .getElementById("admin-password")
+            .value;
 
+    var error =
+        document
+            .getElementById("error");
 
-        if (result.error) {
+    error.textContent = "";
 
-            error.textContent =
-                result.error.message;
+    if (!email || !password) {
 
-            return;
+        error.textContent =
+            "Please enter your email and password.";
 
-        }
-
-
-        showApp();
-
-    };
-
-
-document
-    .getElementById("logout")
-    .onclick = async function() {
-
-        await db.auth.signOut();
-
-        showLogin();
-
-    };
-
-
-async function checkSession() {
-
-    var result =
-        await db.auth.getSession();
-
-
-    if (result.data.session) {
-
-        showApp();
-
-    } else {
-
-        showLogin();
-
+        return;
     }
 
+    var result =
+        await db.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+
+    if (result.error) {
+
+        error.textContent =
+            result.error.message;
+
+        return;
+    }
+
+    showApp();
 }
 
 
-/* LOAD REQUESTS */
+document
+    .getElementById("logout-button")
+    .addEventListener(
+        "click",
+        async function() {
 
+            await db.auth.signOut();
+
+            openedRequestId = null;
+
+            showLogin();
+        }
+    );
+
+
+/* REQUESTS */
 
 async function loadRequests() {
 
     var container =
         document.getElementById("requests");
 
-
     container.innerHTML =
-        '<p class="empty">Loading requests...</p>';
-
+        "<p>Loading requests...</p>";
 
     var result =
         await db
@@ -720,36 +695,27 @@ async function loadRequests() {
                 }
             );
 
-
     if (result.error) {
 
         container.innerHTML =
-            '<p class="empty">Error: ' +
-            clean(result.error.message) +
-            '</p>';
+            "<p>Could not load requests: " +
+            escapeHtml(result.error.message) +
+            "</p>";
 
         return;
-
     }
-
 
     allRequests =
         result.data || [];
 
-
-    drawRequests();
-
+    renderRequests();
 }
 
 
-/* DRAW REQUESTS */
-
-
-function drawRequests() {
+function renderRequests() {
 
     var container =
         document.getElementById("requests");
-
 
     var search =
         document
@@ -758,15 +724,14 @@ function drawRequests() {
             .toLowerCase()
             .trim();
 
-
     var filter =
         document
             .getElementById("filter")
             .value;
 
-
     container.innerHTML = "";
 
+    var visible = [];
 
     for (
         var i = 0;
@@ -777,1075 +742,977 @@ function drawRequests() {
         var request =
             allRequests[i];
 
-
         var searchable =
             (
-                (request.request_code || "") +
+                String(request.request_code || "") +
                 " " +
-                (request.name || "") +
+                String(request.name || "") +
                 " " +
-                (request.discord || "") +
+                String(request.email || "") +
                 " " +
-                (request.email || "")
+                String(request.discord || "")
             ).toLowerCase();
-
 
         if (
             search &&
             searchable.indexOf(search) === -1
         ) {
-
             continue;
-
         }
-
 
         if (
             filter !== "all" &&
             request.status !== filter
         ) {
-
             continue;
-
         }
 
-
-        container.appendChild(
-            makeRequest(request)
-        );
-
+        visible.push(request);
     }
 
-
-    if (
-        !container.children.length
-    ) {
+    if (visible.length === 0) {
 
         container.innerHTML =
-            '<p class="empty">No requests found.</p>';
+            "<p>No requests found.</p>";
 
+        return;
     }
 
+    for (
+        var j = 0;
+        j < visible.length;
+        j++
+    ) {
+
+        container.appendChild(
+            createRequestCard(
+                visible[j]
+            )
+        );
+    }
 }
 
 
-/* REQUEST CARD */
+function createRequestCard(request) {
 
-
-function makeRequest(request) {
-
-    var article =
+    var card =
         document.createElement("article");
 
-
-    article.className =
-        "request";
-
+    card.className = "request";
 
     if (
-        openRequest === request.id
+        openedRequestId === request.id
     ) {
-
-        article.classList.add("open");
-
+        card.classList.add("open");
     }
 
 
-    var head =
+    /* HEADER */
+
+    var header =
         document.createElement("button");
 
+    header.type = "button";
+    header.className = "request-head";
 
-    head.className =
-        "request-head";
+    header.innerHTML =
+        "<span class='code'>" +
+        escapeHtml(
+            request.request_code ||
+            "No code"
+        ) +
+        "</span>" +
+
+        "<span class='name'>" +
+        escapeHtml(
+            request.name ||
+            "Unknown"
+        ) +
+        "</span>" +
+
+        "<span class='status'>" +
+        escapeHtml(
+            request.status ||
+            "Pending"
+        ) +
+        "</span>" +
+
+        "<span class='arrow'>⌄</span>";
 
 
-    head.type =
-        "button";
-
-
-    head.innerHTML =
-        '<span class="code">' +
-        clean(request.request_code || "No code") +
-        '</span>' +
-
-        '<span class="name">' +
-        clean(request.name || "Unknown") +
-        '</span>' +
-
-        '<span class="status">' +
-        clean(request.status || "Pending") +
-        '</span>' +
-
-        '<span class="arrow">⌄</span>';
-
-
-    head.onclick =
+    header.addEventListener(
+        "click",
         function() {
 
             if (
-                openRequest === request.id
+                openedRequestId === request.id
             ) {
 
-                openRequest = null;
+                openedRequestId = null;
 
             } else {
 
-                openRequest = request.id;
-
+                openedRequestId = request.id;
             }
 
+            renderRequests();
+        }
+    );
 
-            drawRequests();
 
-        };
-
+    /* DETAILS */
 
     var details =
         document.createElement("div");
 
-
-    details.className =
-        "details";
+    details.className = "details";
 
 
-    var inner =
+    var detailsInner =
         document.createElement("div");
 
-
-    inner.className =
+    detailsInner.className =
         "details-inner";
 
 
     var content =
         document.createElement("div");
 
-
-    content.className =
-        "content";
+    content.className = "content";
 
 
     content.innerHTML =
 
-        '<div class="grid">' +
+        "<div class='grid'>" +
 
-        '<div class="field">' +
-        '<label>Name</label>' +
-        '<input class="edit-name">' +
-        '</div>' +
+        "<div class='field'>" +
+        "<label>Name</label>" +
+        "<input class='edit-name'>" +
+        "</div>" +
 
-        '<div class="field">' +
-        '<label>Discord</label>' +
-        '<input class="edit-discord">' +
-        '</div>' +
+        "<div class='field'>" +
+        "<label>Discord</label>" +
+        "<input class='edit-discord'>" +
+        "</div>" +
 
-        '<div class="field">' +
-        '<label>Email</label>' +
-        '<input class="edit-email">' +
-        '</div>' +
+        "<div class='field'>" +
+        "<label>Email</label>" +
+        "<input class='edit-email'>" +
+        "</div>" +
 
-        '<div class="field">' +
-        '<label>Status</label>' +
+        "<div class='field'>" +
+        "<label>Status</label>" +
 
-        '<select class="edit-status">' +
+        "<select class='edit-status'>" +
+        "<option value='Pending'>Pending</option>" +
+        "<option value='Accepted'>Accepted</option>" +
+        "<option value='In Progress'>In Progress</option>" +
+        "<option value='Completed'>Completed</option>" +
+        "<option value='Cancelled'>Cancelled</option>" +
+        "</select>" +
 
-        '<option value="Pending">Pending</option>' +
+        "</div>" +
 
-        '<option value="Accepted">Accepted</option>' +
+        "<div class='field'>" +
+        "<label>Size</label>" +
+        "<input class='edit-size'>" +
+        "</div>" +
 
-        '<option value="In Progress">In Progress</option>' +
+        "<div class='field'>" +
+        "<label>Type</label>" +
+        "<input class='edit-type'>" +
+        "</div>" +
 
-        '<option value="Completed">Completed</option>' +
+        "<div class='field full'>" +
+        "<label>Description</label>" +
+        "<textarea class='edit-description'></textarea>" +
+        "</div>" +
 
-        '<option value="Cancelled">Cancelled</option>' +
+        "</div>" +
 
-        '</select>' +
+        "<div class='save-row'>" +
+        "<button class='primary save-button'>" +
+        "Save Changes" +
+        "</button>" +
+        "</div>" +
 
-        '</div>' +
+        "<div class='divider'></div>" +
 
-        '<div class="field full">' +
+        "<h3>Customer Files</h3>" +
 
-        '<label>Description</label>' +
+        "<div class='file-list customer-files'>" +
+        "<span>Loading...</span>" +
+        "</div>" +
 
-        '<textarea class="edit-description"></textarea>' +
+        "<div class='divider'></div>" +
 
-```
-    '</div>' +
+        "<h3>Updates</h3>" +
 
-    '</div>' +
+        "<div class='update-list'>" +
+        "<span>Loading...</span>" +
+        "</div>" +
 
-    '<div class="save">' +
+        "<div class='new-update'>" +
 
-    '<button class="primary save-button">' +
-    'Save Changes' +
-    '</button>' +
+        "<textarea " +
+        "class='new-message' " +
+        "placeholder='Write an update for the customer...'>" +
+        "</textarea>" +
 
-    '</div>' +
+        "<div class='update-actions'>" +
 
-    '<div class="line"></div>' +
+        "<label class='file-button'>" +
+        "📎 Add files" +
+        "<input " +
+        "class='new-files' " +
+        "type='file' " +
+        "multiple>" +
+        "</label>" +
 
-    '<h3>Customer Files</h3>' +
+        "<button class='primary post-button'>" +
+        "Post Update" +
+        "</button>" +
 
-    '<div class="file-list customer-files">' +
-    '<span class="empty">Loading...</span>' +
-    '</div>' +
+        "</div>" +
 
-    '<div class="line"></div>' +
+        "</div>";
 
-    '<h3>Updates</h3>' +
 
-    '<div class="update-list">' +
-    '<span class="empty">Loading...</span>' +
-    '</div>' +
+    content
+        .querySelector(".edit-name")
+        .value =
+        request.name || "";
 
-    '<div class="new-update">' +
 
-    '<textarea ' +
-    'class="new-message" ' +
-    'placeholder="Write an update for the customer..."' +
-    '></textarea>' +
+    content
+        .querySelector(".edit-discord")
+        .value =
+        request.discord || "";
 
-    '<div class="update-bottom">' +
 
-    '<label class="file-button">' +
+    content
+        .querySelector(".edit-email")
+        .value =
+        request.email || "";
 
-    '📎 Add files' +
 
-    '<input ' +
-    'class="new-files" ' +
-    'type="file" ' +
-    'multiple' +
-    '>' +
+    content
+        .querySelector(".edit-status")
+        .value =
+        request.status || "Pending";
 
-    '</label>' +
 
-    '<button class="primary post-button">' +
-    'Post Update' +
-    '</button>' +
+    content
+        .querySelector(".edit-size")
+        .value =
+        request.size || "";
 
-    '</div>' +
 
-    '</div>';
+    content
+        .querySelector(".edit-type")
+        .value =
+        request.type || "";
 
 
-content
-    .querySelector(".edit-name")
-    .value =
-    request.name || "";
+    content
+        .querySelector(".edit-description")
+        .value =
+        request.description || "";
 
 
-content
-    .querySelector(".edit-discord")
-    .value =
-    request.discord || "";
+    content
+        .querySelector(".save-button")
+        .addEventListener(
+            "click",
+            function() {
 
-
-content
-    .querySelector(".edit-email")
-    .value =
-    request.email || "";
-
-
-content
-    .querySelector(".edit-status")
-    .value =
-    request.status || "Pending";
-
-
-content
-    .querySelector(".edit-description")
-    .value =
-    request.description || "";
-
-
-content
-    .querySelector(".save-button")
-    .onclick =
-    function() {
-
-        saveRequest(
-            request.id,
-            content
-        );
-
-    };
-
-
-content
-    .querySelector(".post-button")
-    .onclick =
-    function() {
-
-        postUpdate(
-            request.id,
-            content
-        );
-
-    };
-
-
-inner.appendChild(content);
-
-details.appendChild(inner);
-
-article.appendChild(head);
-
-article.appendChild(details);
-
-
-if (
-    openRequest === request.id
-) {
-
-    loadFiles(
-        request.id,
-        content.querySelector(
-            ".customer-files"
-        )
-    );
-
-
-    loadUpdates(
-        request.id,
-        content.querySelector(
-            ".update-list"
-        )
-    );
-
-}
-
-
-return article;
-```
-
-}
-
-/* SAVE REQUEST */
-
-async function saveRequest(
-id,
-content
-) {
-
-```
-var data = {
-
-    name:
-        content
-            .querySelector(".edit-name")
-            .value
-            .trim(),
-
-    discord:
-        content
-            .querySelector(".edit-discord")
-            .value
-            .trim(),
-
-    email:
-        content
-            .querySelector(".edit-email")
-            .value
-            .trim(),
-
-    status:
-        content
-            .querySelector(".edit-status")
-            .value,
-
-    description:
-        content
-            .querySelector(".edit-description")
-            .value
-
-};
-
-
-var result =
-    await db
-        .from("requests")
-        .update(data)
-        .eq("id", id);
-
-
-if (result.error) {
-
-    console.error(result.error);
-
-    toast(
-        "Could not save request."
-    );
-
-    return;
-
-}
-
-
-for (
-    var i = 0;
-    i < allRequests.length;
-    i++
-) {
-
-    if (
-        allRequests[i].id === id
-    ) {
-
-        Object.assign(
-            allRequests[i],
-            data
-        );
-
-    }
-
-}
-
-
-drawRequests();
-
-toast(
-    "Request saved."
-);
-```
-
-}
-
-/* CUSTOMER FILES */
-
-async function loadFiles(
-requestId,
-container
-) {
-
-```
-var result =
-    await db
-        .from("request_images")
-        .select("*")
-        .eq(
-            "request_id",
-            requestId
-        );
-
-
-container.innerHTML = "";
-
-
-if (result.error) {
-
-    container.innerHTML =
-        '<span class="empty">' +
-        'Could not load files.' +
-        '</span>';
-
-    return;
-
-}
-
-
-if (
-    !result.data ||
-    result.data.length === 0
-) {
-
-    container.innerHTML =
-        '<span class="empty">' +
-        'No files.' +
-        '</span>';
-
-    return;
-
-}
-
-
-for (
-    var i = 0;
-    i < result.data.length;
-    i++
-) {
-
-    var file =
-        result.data[i];
-
-
-    var div =
-        document.createElement("div");
-
-
-    div.className =
-        "file";
-
-
-    var link =
-        document.createElement("a");
-
-
-    link.href =
-        file.image_url;
-
-
-    link.target =
-        "_blank";
-
-
-    link.rel =
-        "noopener";
-
-
-    link.textContent =
-        "📎 View file";
-
-
-    div.appendChild(link);
-
-    container.appendChild(div);
-
-}
-```
-
-}
-
-/* LOAD UPDATES */
-
-async function loadUpdates(
-requestId,
-container
-) {
-
-```
-var result =
-    await db
-        .from("request_updates")
-        .select("*")
-        .eq(
-            "request_id",
-            requestId
-        )
-        .order(
-            "created_at",
-            {
-                ascending: true
+                saveRequest(
+                    request.id,
+                    content
+                );
             }
         );
 
 
-container.innerHTML = "";
+    content
+        .querySelector(".post-button")
+        .addEventListener(
+            "click",
+            function() {
 
-
-if (result.error) {
-
-    container.innerHTML =
-        '<span class="empty">' +
-        'Could not load updates.' +
-        '</span>';
-
-    return;
-
-}
-
-
-if (
-    !result.data ||
-    result.data.length === 0
-) {
-
-    container.innerHTML =
-        '<span class="empty">' +
-        'No updates yet.' +
-        '</span>';
-
-    return;
-
-}
-
-
-for (
-    var i = 0;
-    i < result.data.length;
-    i++
-) {
-
-    await addUpdate(
-        result.data[i],
-        container
-    );
-
-}
-```
-
-}
-
-/* ADD UPDATE TO PAGE */
-
-async function addUpdate(
-update,
-container
-) {
-
-```
-var div =
-    document.createElement("div");
-
-
-div.className =
-    "update";
-
-
-var filesResult =
-    await db
-        .from("request_update_files")
-        .select("*")
-        .eq(
-            "update_id",
-            update.id
+                postUpdate(
+                    request.id,
+                    content
+                );
+            }
         );
 
 
-var filesBox =
-    document.createElement("div");
+    detailsInner.appendChild(content);
+    details.appendChild(detailsInner);
+
+    card.appendChild(header);
+    card.appendChild(details);
 
 
-filesBox.className =
-    "update-files";
+    if (
+        openedRequestId === request.id
+    ) {
+
+        loadFiles(
+            request.id,
+            content.querySelector(
+                ".customer-files"
+            )
+        );
+
+        loadUpdates(
+            request.id,
+            content.querySelector(
+                ".update-list"
+            )
+        );
+    }
 
 
-if (
-    !filesResult.error &&
-    filesResult.data
+    return card;
+}
+
+
+/* SAVE */
+
+async function saveRequest(
+    requestId,
+    content
 ) {
+
+    var button =
+        content.querySelector(
+            ".save-button"
+        );
+
+    button.disabled = true;
+    button.textContent = "Saving...";
+
+
+    var data = {
+
+        name:
+            content
+                .querySelector(".edit-name")
+                .value
+                .trim(),
+
+        discord:
+            content
+                .querySelector(".edit-discord")
+                .value
+                .trim(),
+
+        email:
+            content
+                .querySelector(".edit-email")
+                .value
+                .trim(),
+
+        status:
+            content
+                .querySelector(".edit-status")
+                .value,
+
+        size:
+            content
+                .querySelector(".edit-size")
+                .value
+                .trim(),
+
+        type:
+            content
+                .querySelector(".edit-type")
+                .value
+                .trim(),
+
+        description:
+            content
+                .querySelector(".edit-description")
+                .value
+    };
+
+
+    var result =
+        await db
+            .from("requests")
+            .update(data)
+            .eq(
+                "id",
+                requestId
+            );
+
+
+    button.disabled = false;
+    button.textContent = "Save Changes";
+
+
+    if (result.error) {
+
+        console.error(result.error);
+
+        toast(
+            "Could not save request."
+        );
+
+        return;
+    }
+
 
     for (
         var i = 0;
-        i < filesResult.data.length;
+        i < allRequests.length;
         i++
     ) {
 
-        var file =
-            filesResult.data[i];
+        if (
+            allRequests[i].id === requestId
+        ) {
+
+            Object.assign(
+                allRequests[i],
+                data
+            );
+        }
+    }
+
+
+    renderRequests();
+
+    toast(
+        "Request saved."
+    );
+}
+
+
+/* CUSTOMER FILES */
+
+async function loadFiles(
+    requestId,
+    container
+) {
+
+    var result =
+        await db
+            .from("request_images")
+            .select("*")
+            .eq(
+                "request_id",
+                requestId
+            );
+
+
+    container.innerHTML = "";
+
+
+    if (result.error) {
+
+        container.innerHTML =
+            "<span>Could not load files.</span>";
+
+        console.error(result.error);
+
+        return;
+    }
+
+
+    if (
+        !result.data ||
+        result.data.length === 0
+    ) {
+
+        container.innerHTML =
+            "<span>No files.</span>";
+
+        return;
+    }
+
+
+    for (
+        var i = 0;
+        i < result.data.length;
+        i++
+    ) {
+
+        var item =
+            result.data[i];
+
+        var wrapper =
+            document.createElement("div");
+
+        wrapper.className = "file";
 
 
         var link =
             document.createElement("a");
 
-
         link.href =
-            file.file_url;
+            item.image_url;
 
-
-        link.target =
-            "_blank";
-
-
-        link.rel =
-            "noopener";
-
+        link.target = "_blank";
+        link.rel = "noopener";
 
         link.textContent =
-            "📎 " +
-            (
-                file.file_name ||
-                "Attached file"
+            "📎 View file";
+
+
+        wrapper.appendChild(link);
+
+        container.appendChild(wrapper);
+    }
+}
+
+
+/* UPDATES */
+
+async function loadUpdates(
+    requestId,
+    container
+) {
+
+    var result =
+        await db
+            .from("request_updates")
+            .select("*")
+            .eq(
+                "request_id",
+                requestId
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: true
+                }
             );
 
 
-        filesBox.appendChild(link);
+    container.innerHTML = "";
 
+
+    if (result.error) {
+
+        container.innerHTML =
+            "<span>Could not load updates.</span>";
+
+        console.error(result.error);
+
+        return;
     }
 
+
+    if (
+        !result.data ||
+        result.data.length === 0
+    ) {
+
+        container.innerHTML =
+            "<span>No updates yet.</span>";
+
+        return;
+    }
+
+
+    for (
+        var i = 0;
+        i < result.data.length;
+        i++
+    ) {
+
+        await renderUpdate(
+            result.data[i],
+            container
+        );
+    }
 }
 
 
-var header =
-    document.createElement("div");
-
-
-header.className =
-    "update-header";
-
-
-var author =
-    document.createElement("span");
-
-
-author.className =
-    "author";
-
-
-author.textContent =
-    update.author || "Kxko";
-
-
-var date =
-    document.createElement("span");
-
-
-date.className =
-    "date";
-
-
-date.textContent =
-    dateTime(update.created_at);
-
-
-header.appendChild(author);
-
-header.appendChild(date);
-
-
-var message =
-    document.createElement("div");
-
-
-message.className =
-    "message";
-
-
-message.textContent =
-    update.message || "";
-
-
-div.appendChild(header);
-
-div.appendChild(message);
-
-
-if (
-    filesBox.children.length
+async function renderUpdate(
+    update,
+    container
 ) {
 
-    div.appendChild(filesBox);
+    var box =
+        document.createElement("div");
 
-}
-
-
-container.appendChild(div);
-```
-
-}
-
-/* POST UPDATE */
-
-async function postUpdate(
-requestId,
-content
-) {
-
-```
-var message =
-    content
-        .querySelector(".new-message")
-        .value
-        .trim();
+    box.className = "update";
 
 
-var input =
-    content.querySelector(
-        ".new-files"
-    );
+    var header =
+        document.createElement("div");
+
+    header.className =
+        "update-header";
 
 
-var files =
-    input.files;
+    var author =
+        document.createElement("span");
+
+    author.className = "author";
+
+    author.textContent =
+        update.author || "Kxko";
 
 
-if (
-    !message &&
-    files.length === 0
-) {
+    var date =
+        document.createElement("span");
 
-    toast(
-        "Write a message or attach a file."
-    );
+    date.className = "date";
 
-    return;
-
-}
-
-
-var button =
-    content.querySelector(
-        ".post-button"
-    );
-
-
-button.disabled =
-    true;
-
-
-button.textContent =
-    "Posting...";
-
-
-var result =
-    await db
-        .from("request_updates")
-        .insert({
-
-            request_id:
-                requestId,
-
-            message:
-                message ||
-                "Files attached.",
-
-            author:
-                "Kxko"
-
-        })
-        .select()
-        .single();
-
-
-if (result.error) {
-
-    console.error(result.error);
-
-    toast(
-        "Could not create update."
-    );
-
-    button.disabled =
-        false;
-
-    button.textContent =
-        "Post Update";
-
-    return;
-
-}
-
-
-var update =
-    result.data;
-
-
-for (
-    var i = 0;
-    i < files.length;
-    i++
-) {
-
-    var file =
-        files[i];
-
-
-    var safeName =
-        file.name
-            .split(" ")
-            .join("_");
-
-
-    var path =
-        "request-updates/" +
-        requestId +
-        "/" +
-        update.id +
-        "-" +
-        Date.now() +
-        "-" +
-        safeName;
-
-
-    var upload =
-        await db.storage
-            .from("diagram-files")
-            .upload(
-                path,
-                file
-            );
-
-
-    if (upload.error) {
-
-        console.error(
-            upload.error
+    date.textContent =
+        formatDate(
+            update.created_at
         );
 
-        continue;
 
-    }
+    header.appendChild(author);
+    header.appendChild(date);
 
 
-    var publicUrl =
-        db.storage
-            .from("diagram-files")
-            .getPublicUrl(
-                path
-            )
-            .data
-            .publicUrl;
+    var message =
+        document.createElement("div");
+
+    message.className = "message";
+
+    message.textContent =
+        update.message || "";
+
+
+    box.appendChild(header);
+    box.appendChild(message);
 
 
     var fileResult =
         await db
             .from("request_update_files")
-            .insert({
-
-                update_id:
-                    update.id,
-
-                file_url:
-                    publicUrl,
-
-                file_name:
-                    file.name
-
-            });
+            .select("*")
+            .eq(
+                "update_id",
+                update.id
+            );
 
 
-    if (fileResult.error) {
+    if (
+        !fileResult.error &&
+        fileResult.data &&
+        fileResult.data.length > 0
+    ) {
 
-        console.error(
-            fileResult.error
-        );
+        var files =
+            document.createElement("div");
 
+        files.className =
+            "update-files";
+
+
+        for (
+            var i = 0;
+            i < fileResult.data.length;
+            i++
+        ) {
+
+            var file =
+                fileResult.data[i];
+
+            var link =
+                document.createElement("a");
+
+            link.href =
+                file.file_url;
+
+            link.target = "_blank";
+            link.rel = "noopener";
+
+            link.textContent =
+                "📎 " +
+                (
+                    file.file_name ||
+                    "Attached file"
+                );
+
+            files.appendChild(link);
+        }
+
+
+        box.appendChild(files);
     }
 
+
+    container.appendChild(box);
 }
 
 
-content
-    .querySelector(".new-message")
-    .value = "";
+/* POST UPDATE */
 
-
-input.value = "";
-
-
-await loadUpdates(
+async function postUpdate(
     requestId,
-    content.querySelector(
-        ".update-list"
-    )
-);
+    content
+) {
+
+    var message =
+        content
+            .querySelector(".new-message")
+            .value
+            .trim();
 
 
-button.disabled =
-    false;
+    var fileInput =
+        content.querySelector(
+            ".new-files"
+        );
 
 
-button.textContent =
-    "Post Update";
+    var files =
+        fileInput.files;
 
 
-toast(
-    "Update posted."
-);
-```
+    if (
+        !message &&
+        files.length === 0
+    ) {
 
+        toast(
+            "Write a message or add a file."
+        );
+
+        return;
+    }
+
+
+    var button =
+        content.querySelector(
+            ".post-button"
+        );
+
+
+    button.disabled = true;
+    button.textContent = "Posting...";
+
+
+    var result =
+        await db
+            .from("request_updates")
+            .insert({
+
+                request_id:
+                    requestId,
+
+                message:
+                    message ||
+                    "Files attached.",
+
+                author:
+                    "Kxko"
+
+            })
+            .select()
+            .single();
+
+
+    if (result.error) {
+
+        console.error(result.error);
+
+        button.disabled = false;
+        button.textContent = "Post Update";
+
+        toast(
+            "Could not create update."
+        );
+
+        return;
+    }
+
+
+    var update =
+        result.data;
+
+
+    for (
+        var i = 0;
+        i < files.length;
+        i++
+    ) {
+
+        var file =
+            files[i];
+
+
+        var cleanName =
+            file.name
+                .replace(/[^a-zA-Z0-9._-]/g, "_");
+
+
+        var path =
+            "request-updates/" +
+            requestId +
+            "/" +
+            update.id +
+            "-" +
+            Date.now() +
+            "-" +
+            cleanName;
+
+
+        var upload =
+            await db.storage
+                .from("diagram-files")
+                .upload(
+                    path,
+                    file
+                );
+
+
+        if (upload.error) {
+
+            console.error(
+                upload.error
+            );
+
+            continue;
+        }
+
+
+        var publicUrl =
+            db.storage
+                .from("diagram-files")
+                .getPublicUrl(
+                    path
+                )
+                .data
+                .publicUrl;
+
+
+        var fileInsert =
+            await db
+                .from("request_update_files")
+                .insert({
+
+                    update_id:
+                        update.id,
+
+                    file_url:
+                        publicUrl,
+
+                    file_name:
+                        file.name
+
+                });
+
+
+        if (fileInsert.error) {
+
+            console.error(
+                fileInsert.error
+            );
+        }
+    }
+
+
+    content
+        .querySelector(
+            ".new-message"
+        )
+        .value = "";
+
+
+    fileInput.value = "";
+
+
+    await loadUpdates(
+        requestId,
+        content.querySelector(
+            ".update-list"
+        )
+    );
+
+
+    button.disabled = false;
+    button.textContent = "Post Update";
+
+
+    toast(
+        "Update posted."
+    );
 }
+
 
 /* SEARCH */
 
 document
-.getElementById("search")
-.oninput =
-function() {
+    .getElementById("search")
+    .addEventListener(
+        "input",
+        renderRequests
+    );
 
-```
-    drawRequests();
-
-};
-```
 
 document
-.getElementById("filter")
-.onchange =
-function() {
+    .getElementById("filter")
+    .addEventListener(
+        "change",
+        renderRequests
+    );
 
-```
-    drawRequests();
-
-};
-```
 
 /* HELPERS */
 
-function clean(value) {
+function escapeHtml(value) {
 
-```
-var text =
-    String(value);
+    var text =
+        String(value);
 
-
-text =
-    text.split("&")
-        .join("&amp;");
-
-
-text =
-    text.split("<")
-        .join("&lt;");
-
-
-text =
-    text.split(">")
-        .join("&gt;");
-
-
-text =
-    text.split('"')
-        .join("&quot;");
-
-
-text =
-    text.split("'")
-        .join("&#039;");
-
-
-return text;
-```
-
-}
-
-function dateTime(value) {
-
-```
-if (!value) {
-
-    return "";
-
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
 
-return new Date(value)
-    .toLocaleString();
-```
+function formatDate(value) {
 
+    if (!value) {
+        return "";
+    }
+
+    return new Date(value)
+        .toLocaleString();
 }
+
 
 function toast(message) {
 
-```
-var element =
-    document.getElementById("toast");
+    var element =
+        document.getElementById("toast");
 
+    element.textContent =
+        message;
 
-element.textContent =
-    message;
+    element.classList.add("show");
 
+    setTimeout(
+        function() {
 
-element.classList.add(
-    "visible"
-);
+            element.classList.remove(
+                "show"
+            );
 
-
-setTimeout(
-    function() {
-
-        element.classList.remove(
-            "visible"
-        );
-
-    },
-    3000
-);
-```
-
+        },
+        3000
+    );
 }
+
 
 /* START */
 
-checkSession();
+start();
 
 </script>
 
