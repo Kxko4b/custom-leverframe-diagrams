@@ -616,6 +616,78 @@ footer {
 
     cursor: pointer;
 
+
+    #examples-admin {
+    margin-bottom: 30px;
+}
+
+.example-editor {
+    background: white;
+    border: 1px solid #dfe5e7;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 15px;
+}
+
+#example-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.example-admin-card {
+    background: white;
+    border: 1px solid #dfe5e7;
+    border-radius: 12px;
+    padding: 18px;
+    display: flex;
+    gap: 18px;
+    align-items: center;
+}
+
+.example-admin-card img {
+    width: 150px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    background: #eef1f2;
+}
+
+.example-admin-info {
+    flex: 1;
+}
+
+.example-admin-info h3 {
+    margin: 0 0 6px;
+}
+
+.example-admin-info p {
+    margin: 0;
+    color: #748087;
+}
+
+.delete-example {
+    border: 0;
+    background: #fbeaea;
+    color: #b42318;
+    border-radius: 8px;
+    padding: 9px 12px;
+}
+
+@media (max-width: 650px) {
+
+    .example-admin-card {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .example-admin-card img {
+        width: 100%;
+        height: auto;
+        max-height: 250px;
+    }
+
+}
 }
 }
 }
