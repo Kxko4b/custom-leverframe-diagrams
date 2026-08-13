@@ -45,31 +45,30 @@
    Dark Mode
    ========================= */
 
-:has(#dark-mode-toggle:checked) {
+html.dark {
+    --bg-color: #f7f8fa;
+    --text-color: #1d252b;
 
-    --bg-color: #0f172a;
-    --text-color: #e2e8f0;
+    --header-bg: #ffffff;
 
-    --header-bg: #1e293b;
+    --surface: #ffffff;
+    --surface-secondary: #f1f3f5;
+    --surface-update: #f5f7f8;
 
-    --surface: #172033;
-    --surface-secondary: #263449;
-    --surface-update: #1e2a3d;
+    --border: #e2e5e8;
+    --border-light: #e7e9eb;
+    --input-border: #d6dadd;
 
-    --border: #334155;
-    --border-light: #2d3b50;
-    --input-border: #475569;
+    --muted: #68727a;
+    --muted-light: #78828a;
 
-    --muted: #a8b4c4;
-    --muted-light: #94a3b8;
+    --primary: #306778;
+    --primary-light: #edf4f6;
 
-    --primary: #5eead4;
-    --primary-light: #163d3a;
+    --error: #b42318;
 
-    --error: #f97066;
-
-    --toggle-bg: #475569;
-    --toggle-circle: #0f172a;
+    --toggle-bg: #68727a;
+    --toggle-circle: #ffffff;
 }
 
 
