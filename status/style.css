@@ -36,29 +36,29 @@
 }
 
 :has(#dark-mode-toggle:checked) {
-    --bg-color: #111111;
-    --text-color: #eeeeee;
+    --bg-color: #f7f8fa;
+    --text-color: #1d252b;
 
-    --header-bg: #181818;
+    --header-bg: #ffffff;
 
-    --surface: #181818;
-    --surface-secondary: #222222;
-    --surface-update: #1f1f1f;
+    --surface: #ffffff;
+    --surface-secondary: #f1f3f5;
+    --surface-update: #f5f7f8;
 
-    --border: #333333;
-    --border-light: #2d2d2d;
-    --input-border: #444444;
+    --border: #e2e5e8;
+    --border-light: #e7e9eb;
+    --input-border: #d6dadd;
 
-    --muted: #aaaaaa;
-    --muted-light: #888888;
+    --muted: #68727a;
+    --muted-light: #78828a;
 
-    --primary: #6fa7b8;
-    --primary-light: #26383d;
+    --primary: #306778;
+    --primary-light: #edf4f6;
 
-    --error: #f97066;
+    --error: #b42318;
 
-    --toggle-bg: #444444;
-    --toggle-circle: #eeeeee;
+    --toggle-bg: #68727a;
+    --toggle-circle: #ffffff;
 }
 
 /* =========================
