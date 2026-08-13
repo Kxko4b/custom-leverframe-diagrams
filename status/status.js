@@ -1,28 +1,4 @@
-/* =========================
-   Theme
-   ========================= */
 
-const themeToggle = document.getElementById("theme-toggle");
-
-const savedTheme = localStorage.getItem("theme");
-
-if (savedTheme === "dark") {
-    document.documentElement.classList.add("dark");
-}
-
-if (themeToggle) {
-
-    themeToggle.addEventListener("click", () => {
-
-        const isDark =
-            document.documentElement.classList.toggle("dark");
-
-        localStorage.setItem(
-            "theme",
-            isDark ? "dark" : "light"
-        );
-
-    });
 
 
     themeToggle.addEventListener("keydown", (event) => {
