@@ -6,15 +6,10 @@
 
 
 /* =========================
-   Light Mode
-   ========================= */
-
-/* =========================
-   Light Mode
+   LIGHT MODE — DEFAULT
    ========================= */
 
 :root {
-
     --bg-color: #f7f8fa;
     --text-color: #1d252b;
 
@@ -36,18 +31,16 @@
 
     --error: #b42318;
 
-    --toggle-bg: #94a3b8;
+    --toggle-bg: #68727a;
     --toggle-circle: #ffffff;
 }
 
 
 /* =========================
-   Dark Mode
+   DARK MODE
    ========================= */
 
-html.dark {
-    /* DARK MODE */
-
+:root:has(#dark-mode-toggle:checked) {
     --bg-color: #17191a;
     --text-color: #e5e7e8;
 
@@ -72,7 +65,6 @@ html.dark {
     --toggle-bg: #4b5052;
     --toggle-circle: #e5e7e8;
 }
-
 
 /* =========================
    Body
