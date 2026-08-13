@@ -10,7 +10,9 @@
    ========================= */
 
 :root {
-    --bg-color: #f7f8fa;
+    /* LIGHT MODE */
+
+    --bg-color: #ffffff;
     --text-color: #1d252b;
 
     --header-bg: #ffffff;
@@ -35,7 +37,10 @@
     --toggle-circle: #ffffff;
 }
 
-:has(#dark-mode-toggle:checked) {
+
+html.dark {
+    /* DARK MODE */
+
     --bg-color: #f7f8fa;
     --text-color: #1d252b;
 
