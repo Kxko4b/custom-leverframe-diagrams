@@ -149,31 +149,25 @@ nav a {
    ========================= */
 
 .theme-toggle-wrapper {
-
     display: flex;
-
     align-items: center;
-
-    gap: 4px;
 }
 
 
 /* Hide checkbox */
 
 #dark-mode-toggle {
-
     display: none;
 }
 
 
-/* Toggle bar */
+/* Toggle */
 
 .toggle {
-
-    display: inline-block;
-
     width: 60px;
     height: 30px;
+
+    display: block;
 
     position: relative;
 
@@ -183,15 +177,13 @@ nav a {
 
     cursor: pointer;
 
-    transition:
-        background-color 0.3s ease;
+    transition: background-color 0.3s ease;
 }
 
 
 /* Sliding circle */
 
 .toggle::before {
-
     content: "";
 
     position: absolute;
@@ -206,8 +198,7 @@ nav a {
 
     border-radius: 50%;
 
-    box-shadow:
-        0 1px 4px rgba(0, 0, 0, 0.18);
+    z-index: 1;
 
     transition:
         transform 0.3s ease,
@@ -215,21 +206,20 @@ nav a {
 }
 
 
-/* Move circle to the right */
+/* Move slider right */
 
 #dark-mode-toggle:checked + .toggle::before {
-
     transform: translateX(30px);
 }
 
 
-/* Sun icon */
+/* Icons */
 
-.theme-icon.sun {
-
+.theme-icon,
+.toggle-moon {
     position: absolute;
 
-    z-index: 2;
+    top: 0;
 
     width: 30px;
     height: 30px;
@@ -239,43 +229,27 @@ nav a {
     align-items: center;
     justify-content: center;
 
-    left: 0;
-
-    color: #ffffff;
-
-    font-size: 15px;
+    font-size: 14px;
 
     pointer-events: none;
 
     user-select: none;
+
+    z-index: 2;
 }
 
 
-/* Moon icon */
+/* Sun on left */
+
+.theme-icon.sun {
+    left: 0;
+}
+
+
+/* Moon on right */
 
 .toggle-moon {
-
-    position: absolute;
-
-    z-index: 2;
-
-    width: 30px;
-    height: 30px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
     right: 0;
-
-    color: #ffffff;
-
-    font-size: 15px;
-
-    pointer-events: none;
-
-    user-select: none;
 }
 
 
