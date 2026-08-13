@@ -10,7 +10,6 @@
    ========================= */
 
 :root {
-
     --bg-color: #f7f8fa;
     --text-color: #1d252b;
 
@@ -32,8 +31,34 @@
 
     --error: #b42318;
 
-    --toggle-bg: #94a3b8;
+    --toggle-bg: #68727a;
     --toggle-circle: #ffffff;
+}
+
+html.dark {
+    --bg-color: #151515;
+    --text-color: #eeeeee;
+
+    --header-bg: #1c1c1c;
+
+    --surface: #1c1c1c;
+    --surface-secondary: #262626;
+    --surface-update: #222222;
+
+    --border: #333333;
+    --border-light: #303030;
+    --input-border: #444444;
+
+    --muted: #aaaaaa;
+    --muted-light: #888888;
+
+    --primary: #6fa7b8;
+    --primary-light: #263a40;
+
+    --error: #f97066;
+
+    --toggle-bg: #444444;
+    --toggle-circle: #eeeeee;
 }
 
 
