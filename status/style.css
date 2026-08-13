@@ -46,31 +46,32 @@
    ========================= */
 
 html.dark {
-    --bg-color: #f7f8fa;
-    --text-color: #1d252b;
+    /* DARK MODE */
 
-    --header-bg: #ffffff;
+    --bg-color: #17191a;
+    --text-color: #e5e7e8;
 
-    --surface: #ffffff;
-    --surface-secondary: #f1f3f5;
-    --surface-update: #f5f7f8;
+    --header-bg: #202324;
 
-    --border: #e2e5e8;
-    --border-light: #e7e9eb;
-    --input-border: #d6dadd;
+    --surface: #202324;
+    --surface-secondary: #292c2e;
+    --surface-update: #252829;
 
-    --muted: #68727a;
-    --muted-light: #78828a;
+    --border: #383c3e;
+    --border-light: #303436;
+    --input-border: #484d4f;
 
-    --primary: #306778;
-    --primary-light: #edf4f6;
+    --muted: #a5aaac;
+    --muted-light: #858b8d;
 
-    --error: #b42318;
+    --primary: #8aafb7;
+    --primary-light: #303a3d;
 
-    --toggle-bg: #68727a;
-    --toggle-circle: #ffffff;
+    --error: #e46d65;
+
+    --toggle-bg: #4b5052;
+    --toggle-circle: #e5e7e8;
 }
-
 
 
 /* =========================
