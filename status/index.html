@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,27 +16,34 @@
 
 <header>
     <nav>
+
         <h2>Kxko Leverframe Diagrams</h2>
 
         <div class="nav-actions">
 
-            <div
-                class="theme-switch"
-                id="theme-toggle"
-                role="button"
-                tabindex="0"
-                aria-label="Toggle dark mode"
-            >
-                <span class="theme-icon sun">☀️</span>
+            <div class="theme-toggle-wrapper">
 
-                <span class="theme-slider"></span>
+                <span class="theme-icon sun">☀</span>
 
-                <span class="theme-icon moon">◐</span>
+                <input
+                    type="checkbox"
+                    id="dark-mode-toggle"
+                >
+
+                <label
+                    for="dark-mode-toggle"
+                    class="toggle"
+                    aria-label="Toggle dark mode"
+                >
+                    <span class="toggle-moon">◐</span>
+                </label>
+
             </div>
 
             <a href="../">← Back to website</a>
 
         </div>
+
     </nav>
 </header>
 
@@ -71,16 +79,28 @@
     </section>
 
 
-    <section id="request-result" class="request-result" hidden>
+    <section
+        id="request-result"
+        class="request-result"
+        hidden
+    >
 
         <div class="request-header">
 
             <div>
-                <p class="small-label">REQUEST CODE</p>
+
+                <p class="small-label">
+                    REQUEST CODE
+                </p>
+
                 <h2 id="display-code"></h2>
+
             </div>
 
-            <span id="display-status" class="status-badge"></span>
+            <span
+                id="display-status"
+                class="status-badge"
+            ></span>
 
         </div>
 
@@ -123,8 +143,10 @@
 
             <h3>Files</h3>
 
-            <div id="request-files" class="files">
-            </div>
+            <div
+                id="request-files"
+                class="files"
+            ></div>
 
         </div>
 
@@ -133,8 +155,10 @@
 
             <h3>Updates</h3>
 
-            <div id="request-updates" class="updates">
-            </div>
+            <div
+                id="request-updates"
+                class="updates"
+            ></div>
 
         </div>
 
@@ -155,4 +179,5 @@
 <script src="status.js"></script>
 
 </body>
+
 </html>
