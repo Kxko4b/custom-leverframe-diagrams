@@ -31,36 +31,35 @@
 
     --error: #b42318;
 
-    --toggle-bg: #68727a;
+    --toggle-bg: #94a3b8;
     --toggle-circle: #ffffff;
 }
 
-html.dark {
-    --bg-color: #151515;
+:has(#dark-mode-toggle:checked) {
+    --bg-color: #111111;
     --text-color: #eeeeee;
 
-    --header-bg: #1c1c1c;
+    --header-bg: #181818;
 
-    --surface: #1c1c1c;
-    --surface-secondary: #262626;
-    --surface-update: #222222;
+    --surface: #181818;
+    --surface-secondary: #222222;
+    --surface-update: #1f1f1f;
 
     --border: #333333;
-    --border-light: #303030;
+    --border-light: #2d2d2d;
     --input-border: #444444;
 
     --muted: #aaaaaa;
     --muted-light: #888888;
 
     --primary: #6fa7b8;
-    --primary-light: #263a40;
+    --primary-light: #26383d;
 
     --error: #f97066;
 
     --toggle-bg: #444444;
     --toggle-circle: #eeeeee;
 }
-
 
 /* =========================
    Dark Mode
