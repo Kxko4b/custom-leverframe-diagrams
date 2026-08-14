@@ -1,28 +1,3 @@
-
-
-
-    themeToggle.addEventListener("keydown", (event) => {
-
-        if (
-            event.key === "Enter" ||
-            event.key === " "
-        ) {
-
-            event.preventDefault();
-
-            themeToggle.click();
-
-        }
-
-    });
-
-}
-
-
-/* =========================
-   Request Status
-   ========================= */
-
 const form = document.getElementById("status-form");
 
 const result = document.getElementById("request-result");
