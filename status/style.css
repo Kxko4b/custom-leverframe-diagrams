@@ -6,7 +6,7 @@
 
 
 /* =========================
-   LIGHT MODE — DEFAULT
+   LIGHT MODE
    ========================= */
 
 :root {
@@ -66,17 +66,17 @@
     --toggle-circle: #e5e7e8;
 }
 
+
 /* =========================
-   Body
+   BODY
    ========================= */
 
 body {
-
     min-height: 100vh;
 
     font-family: Inter, Arial, sans-serif;
 
-    background-color: var(--bg-color);
+    background: var(--bg-color);
     color: var(--text-color);
 
     transition:
@@ -86,11 +86,10 @@ body {
 
 
 /* =========================
-   Header
+   HEADER
    ========================= */
 
 header {
-
     background: var(--header-bg);
 
     border-bottom: 1px solid var(--border);
@@ -101,38 +100,27 @@ header {
 }
 
 nav {
-
     max-width: 1100px;
 
     margin: auto;
-
     padding: 20px;
 
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
 }
 
 nav h2 {
-
     font-family: "Space Grotesk", sans-serif;
-
-    margin: 0;
 }
 
 .nav-actions {
-
     display: flex;
-
     align-items: center;
-
     gap: 16px;
 }
 
 nav a {
-
     color: var(--primary);
 
     text-decoration: none;
@@ -142,7 +130,7 @@ nav a {
 
 
 /* =========================
-   Dark Mode Toggle
+   THEME TOGGLE
    ========================= */
 
 .theme-toggle-wrapper {
@@ -150,15 +138,9 @@ nav a {
     align-items: center;
 }
 
-
-/* Hide checkbox */
-
 #dark-mode-toggle {
     display: none;
 }
-
-
-/* Toggle */
 
 .toggle {
     width: 60px;
@@ -203,7 +185,7 @@ nav a {
 }
 
 
-/* Move slider right */
+/* Move circle to right */
 
 #dark-mode-toggle:checked + .toggle::before {
     transform: translateX(30px);
@@ -229,21 +211,20 @@ nav a {
     font-size: 14px;
 
     pointer-events: none;
-
     user-select: none;
 
     z-index: 2;
 }
 
 
-/* Sun on left */
+/* Sun */
 
 .theme-icon.sun {
     left: 0;
 }
 
 
-/* Moon on right */
+/* Moon */
 
 .toggle-moon {
     right: 0;
@@ -251,11 +232,10 @@ nav a {
 
 
 /* =========================
-   Main
+   MAIN
    ========================= */
 
 main {
-
     max-width: 900px;
 
     margin: 70px auto;
@@ -265,18 +245,16 @@ main {
 
 
 /* =========================
-   Search
+   SEARCH
    ========================= */
 
 .status-search {
-
     text-align: center;
 
     margin-bottom: 45px;
 }
 
 .status-search h1 {
-
     font-family: "Space Grotesk", sans-serif;
 
     font-size: 42px;
@@ -285,13 +263,11 @@ main {
 }
 
 .status-search p {
-
     color: var(--muted);
 }
 
 
 #status-form {
-
     display: flex;
 
     gap: 10px;
@@ -303,7 +279,6 @@ main {
 
 
 #request-code {
-
     flex: 1;
 
     padding: 15px 17px;
@@ -328,21 +303,20 @@ main {
         border-color 0.3s ease;
 }
 
-
 #request-code::placeholder {
-
     color: var(--muted-light);
 }
 
-
 #request-code:focus {
-
     border-color: var(--primary);
 }
 
 
-button {
+/* =========================
+   BUTTON
+   ========================= */
 
+button {
     border: 0;
 
     border-radius: 10px;
@@ -357,20 +331,19 @@ button {
 
     cursor: pointer;
 
-    transition:
-        background-color 0.3s ease,
-        opacity 0.2s ease;
+    transition: opacity 0.2s ease;
 }
 
-
 button:hover {
-
     opacity: 0.9;
 }
 
 
-#status-error {
+/* =========================
+   ERROR
+   ========================= */
 
+#status-error {
     color: var(--error);
 
     font-weight: 600;
@@ -378,11 +351,10 @@ button:hover {
 
 
 /* =========================
-   Request Result
+   REQUEST RESULT
    ========================= */
 
 .request-result {
-
     background: var(--surface);
 
     border: 1px solid var(--border);
@@ -398,13 +370,11 @@ button:hover {
 
 
 .request-header {
-
     padding: 28px;
 
     display: flex;
 
     align-items: center;
-
     justify-content: space-between;
 
     border-bottom: 1px solid var(--border-light);
@@ -412,7 +382,6 @@ button:hover {
 
 
 .small-label {
-
     margin: 0;
 
     font-size: 12px;
@@ -426,7 +395,6 @@ button:hover {
 
 
 #display-code {
-
     margin: 5px 0 0;
 
     font-family: "Space Grotesk", sans-serif;
@@ -434,7 +402,6 @@ button:hover {
 
 
 .status-badge {
-
     padding: 8px 14px;
 
     border-radius: 999px;
@@ -448,11 +415,10 @@ button:hover {
 
 
 /* =========================
-   Request Details
+   REQUEST DETAILS
    ========================= */
 
 .request-details {
-
     display: grid;
 
     grid-template-columns: repeat(4, 1fr);
@@ -462,7 +428,6 @@ button:hover {
 
 
 .request-details div {
-
     padding: 22px;
 
     border-right: 1px solid var(--border-light);
@@ -470,13 +435,11 @@ button:hover {
 
 
 .request-details div:last-child {
-
     border-right: 0;
 }
 
 
 .request-details span {
-
     display: block;
 
     font-size: 13px;
@@ -488,11 +451,10 @@ button:hover {
 
 
 /* =========================
-   Request Sections
+   SECTIONS
    ========================= */
 
 .request-section {
-
     padding: 28px;
 
     border-bottom: 1px solid var(--border-light);
@@ -500,13 +462,11 @@ button:hover {
 
 
 .request-section:last-child {
-
     border-bottom: 0;
 }
 
 
 .request-section h3 {
-
     margin-top: 0;
 
     font-family: "Space Grotesk", sans-serif;
@@ -514,7 +474,6 @@ button:hover {
 
 
 #display-description {
-
     white-space: pre-wrap;
 
     line-height: 1.7;
@@ -522,11 +481,10 @@ button:hover {
 
 
 /* =========================
-   Files
+   FILES
    ========================= */
 
 .files {
-
     display: flex;
 
     flex-wrap: wrap;
@@ -536,7 +494,6 @@ button:hover {
 
 
 .file {
-
     display: inline-flex;
 
     align-items: center;
@@ -552,7 +509,6 @@ button:hover {
 
 
 .file a {
-
     color: var(--primary);
 
     text-decoration: none;
@@ -562,11 +518,10 @@ button:hover {
 
 
 /* =========================
-   Updates
+   UPDATES
    ========================= */
 
 .updates {
-
     display: flex;
 
     flex-direction: column;
@@ -576,7 +531,6 @@ button:hover {
 
 
 .update {
-
     padding: 18px;
 
     border-radius: 12px;
@@ -586,7 +540,6 @@ button:hover {
 
 
 .update-header {
-
     display: flex;
 
     justify-content: space-between;
@@ -596,13 +549,11 @@ button:hover {
 
 
 .update-author {
-
     font-weight: 800;
 }
 
 
 .update-date {
-
     color: var(--muted-light);
 
     font-size: 13px;
@@ -610,7 +561,6 @@ button:hover {
 
 
 .update-message {
-
     white-space: pre-wrap;
 
     line-height: 1.6;
@@ -618,7 +568,6 @@ button:hover {
 
 
 .update-files {
-
     margin-top: 12px;
 
     display: flex;
@@ -630,17 +579,15 @@ button:hover {
 
 
 .empty {
-
     color: var(--muted-light);
 }
 
 
 /* =========================
-   Footer
+   FOOTER
    ========================= */
 
 footer {
-
     text-align: center;
 
     padding: 40px 20px;
@@ -650,72 +597,48 @@ footer {
 
 
 /* =========================
-   Tablet / Mobile
+   MOBILE
    ========================= */
 
 @media (max-width: 700px) {
 
     .status-search h1 {
-
         font-size: 32px;
     }
 
-
     #status-form {
-
         flex-direction: column;
     }
 
-
     .request-details {
-
         grid-template-columns: repeat(2, 1fr);
     }
 
-
     .request-details div:nth-child(2) {
-
         border-right: 0;
     }
 
-
     .nav-actions {
-
         gap: 10px;
     }
 
-
     nav h2 {
-
         font-size: 18px;
     }
-
 }
 
 
 @media (max-width: 500px) {
 
     nav {
-
         padding: 15px;
     }
 
-
     nav h2 {
-
         font-size: 16px;
     }
 
-
     nav a {
-
         font-size: 14px;
     }
-
-
-    .theme-toggle-wrapper {
-
-        transform: scale(0.9);
-    }
-
 }
