@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Kxko Admin</title>
+
 <link rel="icon" href="../favicon.png">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -74,6 +76,11 @@ button {
     border-radius: 8px;
     padding: 11px 16px;
     font-weight: bold;
+}
+
+.primary:disabled {
+    opacity: 0.6;
+    cursor: wait;
 }
 
 .login-box .primary {
@@ -156,6 +163,68 @@ main {
     border-radius: 8px;
 }
 
+/* EXAMPLES */
+
+.example-editor {
+    background: white;
+    border: 1px solid #dfe5e7;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+#example-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.example {
+    background: white;
+    border: 1px solid #dfe5e7;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.example-image {
+    width: 100%;
+    height: 220px;
+    object-fit: contain;
+    background: #f2f4f5;
+    display: block;
+}
+
+.example-content {
+    padding: 16px;
+}
+
+.example h3 {
+    margin: 0 0 7px;
+}
+
+.example p {
+    color: #68747b;
+    line-height: 1.5;
+    margin: 0 0 15px;
+}
+
+.example-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.delete-button {
+    border: 1px solid #d5dcdf;
+    background: white;
+    color: #b42318;
+    border-radius: 8px;
+    padding: 9px 13px;
+}
+
+.delete-button:hover {
+    background: #fff5f5;
+}
+
 /* REQUEST LIST */
 
 #requests {
@@ -214,7 +283,7 @@ main {
     transform: rotate(180deg);
 }
 
-/* SMOOTH EXPANSION */
+/* DETAILS */
 
 .details {
     display: grid;
@@ -406,6 +475,13 @@ main {
 
 /* MOBILE */
 
+@media (max-width: 900px) {
+
+    #example-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 @media (max-width: 750px) {
 
     .top {
@@ -438,18 +514,25 @@ main {
         align-items: stretch;
         flex-direction: column;
     }
+
+    #example-list {
+        grid-template-columns: 1fr;
+    }
 }
 </style>
 </head>
 
 <body>
 
+<!-- LOGIN -->
+
 <div id="login">
+
     <div class="login-box">
 
         <h1>Kxko Admin</h1>
 
-        <p>Sign in to manage requests.</p>
+        <p>Sign in to manage requests and examples.</p>
 
         <input
             id="admin-email"
@@ -466,6 +549,7 @@ main {
         <button
             id="login-button"
             class="primary"
+            type="button"
         >
             Sign In
         </button>
@@ -473,8 +557,11 @@ main {
         <div id="error"></div>
 
     </div>
+
 </div>
 
+
+<!-- APP -->
 
 <div id="app" class="hidden">
 
@@ -487,6 +574,7 @@ main {
             <button
                 id="logout-button"
                 class="logout"
+                type="button"
             >
                 Log out
             </button>
@@ -497,118 +585,166 @@ main {
 
 
     <main>
-<section id="examples-admin">
 
-    <div class="top">
-        <div>
-            <h2>Examples</h2>
-            <p>Manage the diagrams shown on your website.</p>
-        </div>
-    </div>
+        <!-- EXAMPLES -->
 
-    <div class="example-editor">
+        <section id="examples-admin">
 
-        <div class="grid">
+            <div class="top">
 
-            <div class="field">
-                <label>Diagram title</label>
-                <input
-                    id="example-title"
-                    placeholder="Diagram title"
-                >
+                <div>
+
+                    <h2>Examples</h2>
+
+                    <p>
+                        Manage the diagrams shown on your website.
+                    </p>
+
+                </div>
+
             </div>
 
-            <div class="field">
-                <label>Image</label>
-                <input
-                    id="example-image"
-                    type="file"
-                    accept="image/*"
-                >
+
+            <div class="example-editor">
+
+                <div class="grid">
+
+                    <div class="field">
+
+                        <label>
+                            Diagram title
+                        </label>
+
+                        <input
+                            id="example-title"
+                            placeholder="Diagram title"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Image
+                        </label>
+
+                        <input
+                            id="example-image"
+                            type="file"
+                            accept="image/*"
+                        >
+
+                    </div>
+
+
+                    <div class="field full">
+
+                        <label>
+                            Description
+                        </label>
+
+                        <textarea
+                            id="example-description"
+                            placeholder="Description..."
+                        ></textarea>
+
+                    </div>
+
+                </div>
+
+
+                <div class="save-row">
+
+                    <button
+                        id="add-example"
+                        class="primary"
+                        type="button"
+                    >
+                        Add Example
+                    </button>
+
+                </div>
+
             </div>
 
-            <div class="field full">
-                <label>Description</label>
-                <textarea
-                    id="example-description"
-                    placeholder="Description..."
-                ></textarea>
-            </div>
 
-        </div>
+            <div id="example-list">
 
-        <div class="save-row">
-
-            <button
-                id="add-example"
-                class="primary"
-                type="button"
-            >
-                Add Example
-            </button>
-
-        </div>
-
-    </div>
-
-    <div id="example-list">
-        <p>Loading examples...</p>
-    </div>
-
-</section>
-
-<div class="divider"></div>
-        <div class="top">
-
-            <div>
-                <h2>Requests</h2>
                 <p>
-                    Manage customer requests, files and updates.
+                    Loading examples...
                 </p>
-            </div>
-
-            <div class="controls">
-
-                <input
-                    id="search"
-                    type="text"
-                    placeholder="Search..."
-                >
-
-                <select id="filter">
-
-                    <option value="all">
-                        All statuses
-                    </option>
-
-                    <option value="Pending">
-                        Pending
-                    </option>
-
-                    <option value="Accepted">
-                        Accepted
-                    </option>
-
-                    <option value="In Progress">
-                        In Progress
-                    </option>
-
-                    <option value="Completed">
-                        Completed
-                    </option>
-
-                    <option value="Cancelled">
-                        Cancelled
-                    </option>
-
-                </select>
 
             </div>
 
-        </div>
+        </section>
 
 
-        <div id="requests"></div>
+        <div class="divider"></div>
+
+
+        <!-- REQUESTS -->
+
+        <section>
+
+            <div class="top">
+
+                <div>
+
+                    <h2>Requests</h2>
+
+                    <p>
+                        Manage customer requests, files and updates.
+                    </p>
+
+                </div>
+
+
+                <div class="controls">
+
+                    <input
+                        id="search"
+                        type="text"
+                        placeholder="Search..."
+                    >
+
+
+                    <select id="filter">
+
+                        <option value="all">
+                            All statuses
+                        </option>
+
+                        <option value="Pending">
+                            Pending
+                        </option>
+
+                        <option value="Accepted">
+                            Accepted
+                        </option>
+
+                        <option value="In Progress">
+                            In Progress
+                        </option>
+
+                        <option value="Completed">
+                            Completed
+                        </option>
+
+                        <option value="Cancelled">
+                            Cancelled
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div id="requests"></div>
+
+        </section>
 
     </main>
 
@@ -618,1163 +754,7 @@ main {
 <div id="toast"></div>
 
 
-<script>
-
-var allRequests = [];
-var openedRequestId = null;
-
-
-/* LOGIN */
-
-async function start() {
-
-    var result = await db.auth.getSession();
-
-    if (result.error) {
-        showLogin();
-        return;
-    }
-
-    if (result.data.session) {
-        showApp();
-    } else {
-        showLogin();
-    }
-}
-
-
-function showLogin() {
-
-    document
-        .getElementById("login")
-        .classList.remove("hidden");
-
-    document
-        .getElementById("app")
-        .classList.add("hidden");
-}
-
-
-function showApp() {
-
-    document
-        .getElementById("login")
-        .classList.add("hidden");
-
-    document
-        .getElementById("app")
-        .classList.remove("hidden");
-
-    loadRequests();
-}
-
-
-document
-    .getElementById("login-button")
-    .addEventListener("click", login);
-
-
-async function login() {
-
-    var email =
-        document
-            .getElementById("admin-email")
-            .value
-            .trim();
-
-    var password =
-        document
-            .getElementById("admin-password")
-            .value;
-
-    var error =
-        document
-            .getElementById("error");
-
-    error.textContent = "";
-
-    if (!email || !password) {
-
-        error.textContent =
-            "Please enter your email and password.";
-
-        return;
-    }
-
-    var result =
-        await db.auth.signInWithPassword({
-            email: email,
-            password: password
-        });
-
-    if (result.error) {
-
-        error.textContent =
-            result.error.message;
-
-        return;
-    }
-
-    showApp();
-}
-
-
-document
-    .getElementById("logout-button")
-    .addEventListener(
-        "click",
-        async function() {
-
-            await db.auth.signOut();
-
-            openedRequestId = null;
-
-            showLogin();
-        }
-    );
-
-
-/* REQUESTS */
-
-async function loadRequests() {
-
-    var container =
-        document.getElementById("requests");
-
-    container.innerHTML =
-        "<p>Loading requests...</p>";
-
-    var result =
-        await db
-            .from("requests")
-            .select("*")
-            .order(
-                "created_at",
-                {
-                    ascending: false
-                }
-            );
-
-    if (result.error) {
-
-        container.innerHTML =
-            "<p>Could not load requests: " +
-            escapeHtml(result.error.message) +
-            "</p>";
-
-        return;
-    }
-
-    allRequests =
-        result.data || [];
-
-    renderRequests();
-}
-
-
-function renderRequests() {
-
-    var container =
-        document.getElementById("requests");
-
-    var search =
-        document
-            .getElementById("search")
-            .value
-            .toLowerCase()
-            .trim();
-
-    var filter =
-        document
-            .getElementById("filter")
-            .value;
-
-    container.innerHTML = "";
-
-    var visible = [];
-
-    for (
-        var i = 0;
-        i < allRequests.length;
-        i++
-    ) {
-
-        var request =
-            allRequests[i];
-
-        var searchable =
-            (
-                String(request.request_code || "") +
-                " " +
-                String(request.name || "") +
-                " " +
-                String(request.email || "") +
-                " " +
-                String(request.discord || "")
-            ).toLowerCase();
-
-        if (
-            search &&
-            searchable.indexOf(search) === -1
-        ) {
-            continue;
-        }
-
-        if (
-            filter !== "all" &&
-            request.status !== filter
-        ) {
-            continue;
-        }
-
-        visible.push(request);
-    }
-
-    if (visible.length === 0) {
-
-        container.innerHTML =
-            "<p>No requests found.</p>";
-
-        return;
-    }
-
-    for (
-        var j = 0;
-        j < visible.length;
-        j++
-    ) {
-
-        container.appendChild(
-            createRequestCard(
-                visible[j]
-            )
-        );
-    }
-}
-
-
-function createRequestCard(request) {
-
-    var card =
-        document.createElement("article");
-
-    card.className = "request";
-
-    if (
-        openedRequestId === request.id
-    ) {
-        card.classList.add("open");
-    }
-
-
-    /* HEADER */
-
-    var header =
-        document.createElement("button");
-
-    header.type = "button";
-    header.className = "request-head";
-
-    header.innerHTML =
-        "<span class='code'>" +
-        escapeHtml(
-            request.request_code ||
-            "No code"
-        ) +
-        "</span>" +
-
-        "<span class='name'>" +
-        escapeHtml(
-            request.name ||
-            "Unknown"
-        ) +
-        "</span>" +
-
-        "<span class='status'>" +
-        escapeHtml(
-            request.status ||
-            "Pending"
-        ) +
-        "</span>" +
-
-        "<span class='arrow'>⌄</span>";
-
-
-    header.addEventListener(
-        "click",
-        function() {
-
-            if (
-                openedRequestId === request.id
-            ) {
-
-                openedRequestId = null;
-
-            } else {
-
-                openedRequestId = request.id;
-            }
-
-            renderRequests();
-        }
-    );
-
-
-    /* DETAILS */
-
-    var details =
-        document.createElement("div");
-
-    details.className = "details";
-
-
-    var detailsInner =
-        document.createElement("div");
-
-    detailsInner.className =
-        "details-inner";
-
-
-    var content =
-        document.createElement("div");
-
-    content.className = "content";
-
-
-    content.innerHTML =
-
-        "<div class='grid'>" +
-
-        "<div class='field'>" +
-        "<label>Name</label>" +
-        "<input class='edit-name'>" +
-        "</div>" +
-
-        "<div class='field'>" +
-        "<label>Discord</label>" +
-        "<input class='edit-discord'>" +
-        "</div>" +
-
-        "<div class='field'>" +
-        "<label>Email</label>" +
-        "<input class='edit-email'>" +
-        "</div>" +
-
-        "<div class='field'>" +
-        "<label>Status</label>" +
-
-        "<select class='edit-status'>" +
-        "<option value='Pending'>Pending</option>" +
-        "<option value='Accepted'>Accepted</option>" +
-        "<option value='In Progress'>In Progress</option>" +
-        "<option value='Completed'>Completed</option>" +
-        "<option value='Cancelled'>Cancelled</option>" +
-        "</select>" +
-
-        "</div>" +
-
-        "<div class='field'>" +
-        "<label>Size</label>" +
-        "<input class='edit-size'>" +
-        "</div>" +
-
-        "<div class='field'>" +
-        "<label>Type</label>" +
-        "<input class='edit-type'>" +
-        "</div>" +
-
-        "<div class='field full'>" +
-        "<label>Description</label>" +
-        "<textarea class='edit-description'></textarea>" +
-        "</div>" +
-
-        "</div>" +
-
-        "<div class='save-row'>" +
-        "<button class='primary save-button'>" +
-        "Save Changes" +
-        "</button>" +
-        "</div>" +
-
-        "<div class='divider'></div>" +
-
-        "<h3>Customer Files</h3>" +
-
-        "<div class='file-list customer-files'>" +
-        "<span>Loading...</span>" +
-        "</div>" +
-
-        "<div class='divider'></div>" +
-
-        "<h3>Updates</h3>" +
-
-        "<div class='update-list'>" +
-        "<span>Loading...</span>" +
-        "</div>" +
-
-        "<div class='new-update'>" +
-
-        "<textarea " +
-        "class='new-message' " +
-        "placeholder='Write an update for the customer...'>" +
-        "</textarea>" +
-
-        "<div class='update-actions'>" +
-
-        "<label class='file-button'>" +
-        "📎 Add files" +
-        "<input " +
-        "class='new-files' " +
-        "type='file' " +
-        "multiple>" +
-        "</label>" +
-
-        "<button class='primary post-button'>" +
-        "Post Update" +
-        "</button>" +
-
-        "</div>" +
-
-        "</div>";
-
-
-    content
-        .querySelector(".edit-name")
-        .value =
-        request.name || "";
-
-
-    content
-        .querySelector(".edit-discord")
-        .value =
-        request.discord || "";
-
-
-    content
-        .querySelector(".edit-email")
-        .value =
-        request.email || "";
-
-
-    content
-        .querySelector(".edit-status")
-        .value =
-        request.status || "Pending";
-
-
-    content
-        .querySelector(".edit-size")
-        .value =
-        request.size || "";
-
-
-    content
-        .querySelector(".edit-type")
-        .value =
-        request.type || "";
-
-
-    content
-        .querySelector(".edit-description")
-        .value =
-        request.description || "";
-
-
-    content
-        .querySelector(".save-button")
-        .addEventListener(
-            "click",
-            function() {
-
-                saveRequest(
-                    request.id,
-                    content
-                );
-            }
-        );
-
-
-    content
-        .querySelector(".post-button")
-        .addEventListener(
-            "click",
-            function() {
-
-                postUpdate(
-                    request.id,
-                    content
-                );
-            }
-        );
-
-
-    detailsInner.appendChild(content);
-    details.appendChild(detailsInner);
-
-    card.appendChild(header);
-    card.appendChild(details);
-
-
-    if (
-        openedRequestId === request.id
-    ) {
-
-        loadFiles(
-            request.id,
-            content.querySelector(
-                ".customer-files"
-            )
-        );
-
-        loadUpdates(
-            request.id,
-            content.querySelector(
-                ".update-list"
-            )
-        );
-    }
-
-
-    return card;
-}
-
-
-/* SAVE */
-
-async function saveRequest(
-    requestId,
-    content
-) {
-
-    var button =
-        content.querySelector(
-            ".save-button"
-        );
-
-    button.disabled = true;
-    button.textContent = "Saving...";
-
-
-    var data = {
-
-        name:
-            content
-                .querySelector(".edit-name")
-                .value
-                .trim(),
-
-        discord:
-            content
-                .querySelector(".edit-discord")
-                .value
-                .trim(),
-
-        email:
-            content
-                .querySelector(".edit-email")
-                .value
-                .trim(),
-
-        status:
-            content
-                .querySelector(".edit-status")
-                .value,
-
-        size:
-            content
-                .querySelector(".edit-size")
-                .value
-                .trim(),
-
-        type:
-            content
-                .querySelector(".edit-type")
-                .value
-                .trim(),
-
-        description:
-            content
-                .querySelector(".edit-description")
-                .value
-    };
-
-
-    var result =
-        await db
-            .from("requests")
-            .update(data)
-            .eq(
-                "id",
-                requestId
-            );
-
-
-    button.disabled = false;
-    button.textContent = "Save Changes";
-
-
-    if (result.error) {
-
-        console.error(result.error);
-
-        toast(
-            "Could not save request."
-        );
-
-        return;
-    }
-
-
-    for (
-        var i = 0;
-        i < allRequests.length;
-        i++
-    ) {
-
-        if (
-            allRequests[i].id === requestId
-        ) {
-
-            Object.assign(
-                allRequests[i],
-                data
-            );
-        }
-    }
-
-
-    renderRequests();
-
-    toast(
-        "Request saved."
-    );
-}
-
-
-/* CUSTOMER FILES */
-
-async function loadFiles(
-    requestId,
-    container
-) {
-
-    var result =
-        await db
-            .from("request_images")
-            .select("*")
-            .eq(
-                "request_id",
-                requestId
-            );
-
-
-    container.innerHTML = "";
-
-
-    if (result.error) {
-
-        container.innerHTML =
-            "<span>Could not load files.</span>";
-
-        console.error(result.error);
-
-        return;
-    }
-
-
-    if (
-        !result.data ||
-        result.data.length === 0
-    ) {
-
-        container.innerHTML =
-            "<span>No files.</span>";
-
-        return;
-    }
-
-
-    for (
-        var i = 0;
-        i < result.data.length;
-        i++
-    ) {
-
-        var item =
-            result.data[i];
-
-        var wrapper =
-            document.createElement("div");
-
-        wrapper.className = "file";
-
-
-        var link =
-            document.createElement("a");
-
-        link.href =
-            item.image_url;
-
-        link.target = "_blank";
-        link.rel = "noopener";
-
-        link.textContent =
-            "📎 View file";
-
-
-        wrapper.appendChild(link);
-
-        container.appendChild(wrapper);
-    }
-}
-
-
-/* UPDATES */
-
-async function loadUpdates(
-    requestId,
-    container
-) {
-
-    var result =
-        await db
-            .from("request_updates")
-            .select("*")
-            .eq(
-                "request_id",
-                requestId
-            )
-            .order(
-                "created_at",
-                {
-                    ascending: true
-                }
-            );
-
-
-    container.innerHTML = "";
-
-
-    if (result.error) {
-
-        container.innerHTML =
-            "<span>Could not load updates.</span>";
-
-        console.error(result.error);
-
-        return;
-    }
-
-
-    if (
-        !result.data ||
-        result.data.length === 0
-    ) {
-
-        container.innerHTML =
-            "<span>No updates yet.</span>";
-
-        return;
-    }
-
-
-    for (
-        var i = 0;
-        i < result.data.length;
-        i++
-    ) {
-
-        await renderUpdate(
-            result.data[i],
-            container
-        );
-    }
-}
-
-
-async function renderUpdate(
-    update,
-    container
-) {
-
-    var box =
-        document.createElement("div");
-
-    box.className = "update";
-
-
-    var header =
-        document.createElement("div");
-
-    header.className =
-        "update-header";
-
-
-    var author =
-        document.createElement("span");
-
-    author.className = "author";
-
-    author.textContent =
-        update.author || "Kxko";
-
-
-    var date =
-        document.createElement("span");
-
-    date.className = "date";
-
-    date.textContent =
-        formatDate(
-            update.created_at
-        );
-
-
-    header.appendChild(author);
-    header.appendChild(date);
-
-
-    var message =
-        document.createElement("div");
-
-    message.className = "message";
-
-    message.textContent =
-        update.message || "";
-
-
-    box.appendChild(header);
-    box.appendChild(message);
-
-
-    var fileResult =
-        await db
-            .from("request_update_files")
-            .select("*")
-            .eq(
-                "update_id",
-                update.id
-            );
-
-
-    if (
-        !fileResult.error &&
-        fileResult.data &&
-        fileResult.data.length > 0
-    ) {
-
-        var files =
-            document.createElement("div");
-
-        files.className =
-            "update-files";
-
-
-        for (
-            var i = 0;
-            i < fileResult.data.length;
-            i++
-        ) {
-
-            var file =
-                fileResult.data[i];
-
-            var link =
-                document.createElement("a");
-
-            link.href =
-                file.file_url;
-
-            link.target = "_blank";
-            link.rel = "noopener";
-
-            link.textContent =
-                "📎 " +
-                (
-                    file.file_name ||
-                    "Attached file"
-                );
-
-            files.appendChild(link);
-        }
-
-
-        box.appendChild(files);
-    }
-
-
-    container.appendChild(box);
-}
-
-
-/* POST UPDATE */
-
-async function postUpdate(
-    requestId,
-    content
-) {
-
-    var message =
-        content
-            .querySelector(".new-message")
-            .value
-            .trim();
-
-
-    var fileInput =
-        content.querySelector(
-            ".new-files"
-        );
-
-
-    var files =
-        fileInput.files;
-
-
-    if (
-        !message &&
-        files.length === 0
-    ) {
-
-        toast(
-            "Write a message or add a file."
-        );
-
-        return;
-    }
-
-
-    var button =
-        content.querySelector(
-            ".post-button"
-        );
-
-
-    button.disabled = true;
-    button.textContent = "Posting...";
-
-
-    var result =
-        await db
-            .from("request_updates")
-            .insert({
-
-                request_id:
-                    requestId,
-
-                message:
-                    message ||
-                    "Files attached.",
-
-                author:
-                    "Kxko"
-
-            })
-            .select()
-            .single();
-
-
-    if (result.error) {
-
-        console.error(result.error);
-
-        button.disabled = false;
-        button.textContent = "Post Update";
-
-        toast(
-            "Could not create update."
-        );
-
-        return;
-    }
-
-
-    var update =
-        result.data;
-
-
-    for (
-        var i = 0;
-        i < files.length;
-        i++
-    ) {
-
-        var file =
-            files[i];
-
-
-        var cleanName =
-            file.name
-                .replace(/[^a-zA-Z0-9._-]/g, "_");
-
-
-        var path =
-            "request-updates/" +
-            requestId +
-            "/" +
-            update.id +
-            "-" +
-            Date.now() +
-            "-" +
-            cleanName;
-
-
-        var upload =
-            await db.storage
-                .from("diagram-files")
-                .upload(
-                    path,
-                    file
-                );
-
-
-        if (upload.error) {
-
-            console.error(
-                upload.error
-            );
-
-            continue;
-        }
-
-
-        var publicUrl =
-            db.storage
-                .from("diagram-files")
-                .getPublicUrl(
-                    path
-                )
-                .data
-                .publicUrl;
-
-
-        var fileInsert =
-            await db
-                .from("request_update_files")
-                .insert({
-
-                    update_id:
-                        update.id,
-
-                    file_url:
-                        publicUrl,
-
-                    file_name:
-                        file.name
-
-                });
-
-
-        if (fileInsert.error) {
-
-            console.error(
-                fileInsert.error
-            );
-        }
-    }
-
-
-    content
-        .querySelector(
-            ".new-message"
-        )
-        .value = "";
-
-
-    fileInput.value = "";
-
-
-    await loadUpdates(
-        requestId,
-        content.querySelector(
-            ".update-list"
-        )
-    );
-
-
-    button.disabled = false;
-    button.textContent = "Post Update";
-
-
-    toast(
-        "Update posted."
-    );
-}
-
-
-/* SEARCH */
-
-document
-    .getElementById("search")
-    .addEventListener(
-        "input",
-        renderRequests
-    );
-
-
-document
-    .getElementById("filter")
-    .addEventListener(
-        "change",
-        renderRequests
-    );
-
-
-/* HELPERS */
-
-function escapeHtml(value) {
-
-    var text =
-        String(value);
-
-    return text
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
-
-
-function formatDate(value) {
-
-    if (!value) {
-        return "";
-    }
-
-    return new Date(value)
-        .toLocaleString();
-}
-
-
-function toast(message) {
-
-    var element =
-        document.getElementById("toast");
-
-    element.textContent =
-        message;
-
-    element.classList.add("show");
-
-    setTimeout(
-        function() {
-
-            element.classList.remove(
-                "show"
-            );
-
-        },
-        3000
-    );
-}
-
-
-/* START */
-
-start();
-
-</script>
+<script src="../js/admin.js"></script>
 
 </body>
 </html>
