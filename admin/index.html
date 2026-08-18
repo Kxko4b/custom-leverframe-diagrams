@@ -3,9 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Kxko Admin</title>
-
 <link rel="icon" href="../favicon.png">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -76,11 +74,6 @@ button {
     border-radius: 8px;
     padding: 11px 16px;
     font-weight: bold;
-}
-
-.primary:disabled {
-    opacity: 0.6;
-    cursor: wait;
 }
 
 .login-box .primary {
@@ -186,7 +179,7 @@ main {
     overflow: hidden;
 }
 
-.example-image {
+.example img {
     width: 100%;
     height: 220px;
     object-fit: contain;
@@ -213,16 +206,12 @@ main {
     justify-content: flex-end;
 }
 
-.delete-button {
+.delete-example {
     border: 1px solid #d5dcdf;
     background: white;
     color: #b42318;
     border-radius: 8px;
     padding: 9px 13px;
-}
-
-.delete-button:hover {
-    background: #fff5f5;
 }
 
 /* REQUEST LIST */
@@ -283,7 +272,7 @@ main {
     transform: rotate(180deg);
 }
 
-/* DETAILS */
+/* SMOOTH EXPANSION */
 
 .details {
     display: grid;
@@ -524,15 +513,13 @@ main {
 
 <body>
 
-<!-- LOGIN -->
-
 <div id="login">
 
     <div class="login-box">
 
         <h1>Kxko Admin</h1>
 
-        <p>Sign in to manage requests and examples.</p>
+        <p>Sign in to manage requests.</p>
 
         <input
             id="admin-email"
@@ -560,8 +547,6 @@ main {
 
 </div>
 
-
-<!-- APP -->
 
 <div id="app" class="hidden">
 
@@ -685,66 +670,60 @@ main {
 
         <!-- REQUESTS -->
 
-        <section>
+        <div class="top">
 
-            <div class="top">
+            <div>
 
-                <div>
+                <h2>Requests</h2>
 
-                    <h2>Requests</h2>
-
-                    <p>
-                        Manage customer requests, files and updates.
-                    </p>
-
-                </div>
-
-
-                <div class="controls">
-
-                    <input
-                        id="search"
-                        type="text"
-                        placeholder="Search..."
-                    >
-
-
-                    <select id="filter">
-
-                        <option value="all">
-                            All statuses
-                        </option>
-
-                        <option value="Pending">
-                            Pending
-                        </option>
-
-                        <option value="Accepted">
-                            Accepted
-                        </option>
-
-                        <option value="In Progress">
-                            In Progress
-                        </option>
-
-                        <option value="Completed">
-                            Completed
-                        </option>
-
-                        <option value="Cancelled">
-                            Cancelled
-                        </option>
-
-                    </select>
-
-                </div>
+                <p>
+                    Manage customer requests, files and updates.
+                </p>
 
             </div>
 
+            <div class="controls">
 
-            <div id="requests"></div>
+                <input
+                    id="search"
+                    type="text"
+                    placeholder="Search..."
+                >
 
-        </section>
+                <select id="filter">
+
+                    <option value="all">
+                        All statuses
+                    </option>
+
+                    <option value="Pending">
+                        Pending
+                    </option>
+
+                    <option value="Accepted">
+                        Accepted
+                    </option>
+
+                    <option value="In Progress">
+                        In Progress
+                    </option>
+
+                    <option value="Completed">
+                        Completed
+                    </option>
+
+                    <option value="Cancelled">
+                        Cancelled
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div id="requests"></div>
 
     </main>
 
