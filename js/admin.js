@@ -37,6 +37,10 @@ function showDashboard() {
         loadRequests();
     }
 
+    if (typeof loadQuestions === "function") {
+        loadQuestions();
+    }
+
 }
 
 
