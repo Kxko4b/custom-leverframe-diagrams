@@ -14,13 +14,17 @@ if (questionForm) {
         const contact =
             document.getElementById("contact").value.trim();
 
+
         if (!question || !contact) {
+
             alert("Please fill in all fields.");
+
             return;
         }
 
+
         /*
-         * Generate a question code.
+         * Generate question code
          *
          * Example:
          * KXKO-QSTN-7F3A
@@ -34,27 +38,29 @@ if (questionForm) {
                 .toUpperCase();
 
 
-       const { data, error } = await db
-    .from("questions")
-    .insert({
-        question,
-        contact
-    })
-    .select("question_code")
-    .single();
+        /*
+         * Insert question
+         */
 
-if (error) {
-    console.error(error);
-    alert(error.message);
-    return;
-}
+        const { data, error } =
 
-alert(
-    `Question submitted!\n\nYour question code is:\n${data.question_code}\n\nSave this code to check your answer later.`
-);
+            await db
+                .from("questions")
+                .insert({
 
-questionForm.reset();
+                    question: question,
+                    contact: contact,
+                    question_code: questionCode,
+                    status: "Pending"
 
+                })
+                .select("*")
+                .single();
+
+
+        /*
+         * Handle error
+         */
 
         if (error) {
 
@@ -70,14 +76,18 @@ questionForm.reset();
 
 
         /*
-         * Show the code to the customer.
+         * Success
          */
 
         alert(
             "Question submitted!\n\n" +
+
             "Your question code is:\n" +
-            questionCode +
+
+            data.question_code +
+
             "\n\n" +
+
             "Keep this code so you can check your answer later."
         );
 
