@@ -49,13 +49,40 @@
 
 <main>
 
+    <!-- =========================
+         STATUS SEARCH
+    ========================== -->
+
     <section class="status-search">
 
-        <h1>Check Request/Question Status</h1>
+        <h1>Check Status</h1>
 
         <p>
-            Enter the request/question code you received after submitting your request.
+            Check the status of a request or question using the code you received.
         </p>
+
+    </section>
+
+
+    <!-- =========================
+         REQUEST CHECKER
+    ========================== -->
+
+    <section class="status-search">
+
+        <div class="status-type-header">
+            <span class="status-type-icon">📦</span>
+
+            <div>
+                <h2>Check a Request</h2>
+
+                <p>
+                    Enter your request code to see its current status,
+                    files and updates.
+                </p>
+            </div>
+        </div>
+
 
         <form id="status-form">
 
@@ -68,7 +95,7 @@
             >
 
             <button type="submit">
-                Check Status
+                Check Request
             </button>
 
         </form>
@@ -78,69 +105,57 @@
     </section>
 
 
+    <!-- =========================
+         QUESTION CHECKER
+    ========================== -->
+
+    <section class="status-search question-search">
+
+        <div class="status-type-header">
+            <span class="status-type-icon">❓</span>
+
+            <div>
+                <h2>Check a Question</h2>
+
+                <p>
+                    Enter your question code to see whether your question
+                    has been answered.
+                </p>
+            </div>
+        </div>
+
+
+        <form id="question-status-form">
+
+            <input
+                id="question-code"
+                type="text"
+                placeholder="KXQ-XXXX-XXXX"
+                autocomplete="off"
+                required
+            >
+
+            <button type="submit">
+                Check Question
+            </button>
+
+        </form>
+
+        <p id="question-status-error"></p>
+
+    </section>
+
+
+    <!-- =========================
+         REQUEST RESULT
+    ========================== -->
+
     <section
         id="request-result"
         class="request-result"
         hidden
     >
-         <div
-    id="question-result"
-    class="request-result"
-    hidden
->
 
-    <div class="request-header">
-
-        <div>
-
-            <p class="small-label">
-                QUESTION
-            </p>
-
-            <h2 id="question-display-code">
-                —
-            </h2>
-
-        </div>
-
-        <span
-            id="question-display-status"
-            class="status-badge"
-        >
-            Pending
-        </span>
-
-    </div>
-
-
-    <div class="request-section">
-
-        <h3>
-            Your question
-        </h3>
-
-        <p
-            id="question-display-question"
-            style="white-space: pre-wrap;"
-        ></p>
-
-    </div>
-
-
-    <div class="request-section">
-
-        <h3>
-            Answer
-        </h3>
-
-        <p
-            id="question-display-answer"
-            style="white-space: pre-wrap;"
-        ></p>
-
-    </div>
-
-</div>
         <div class="request-header">
 
             <div>
@@ -217,9 +232,73 @@
             ></div>
 
         </div>
-        
+
     </section>
-    
+
+
+    <!-- =========================
+         QUESTION RESULT
+    ========================== -->
+
+    <section
+        id="question-result"
+        class="request-result question-result"
+        hidden
+    >
+
+        <div class="request-header">
+
+            <div>
+
+                <p class="small-label">
+                    QUESTION CODE
+                </p>
+
+                <h2 id="question-display-code">
+                    —
+                </h2>
+
+            </div>
+
+            <span
+                id="question-display-status"
+                class="status-badge"
+            >
+                Pending
+            </span>
+
+        </div>
+
+
+        <div class="request-section">
+
+            <h3>
+                Your Question
+            </h3>
+
+            <p
+                id="question-display-question"
+                style="white-space: pre-wrap;"
+            ></p>
+
+        </div>
+
+
+        <div class="request-section">
+
+            <h3>
+                Answer
+            </h3>
+
+            <p
+                id="question-display-answer"
+                style="white-space: pre-wrap;"
+            ></p>
+
+        </div>
+
+    </section>
+
 </main>
 
 
