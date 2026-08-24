@@ -195,7 +195,124 @@ function displayRequest(request) {
         request.description || "No description provided.";
 
 }
+function displayQuestion(question) {
 
+    /*
+     * Hide request-specific information
+     */
+
+    const requestDetails = document.getElementById("request-details");
+
+    if (requestDetails) {
+        requestDetails.hidden = true;
+    }
+
+
+    /*
+     * Question result container
+     */
+
+    let questionDetails =
+        document.getElementById("question-details");
+
+
+    if (!questionDetails) {
+
+        questionDetails =
+            document.createElement("div");
+
+        questionDetails.id = "question-details";
+
+        result.appendChild(questionDetails);
+    }
+
+
+    questionDetails.hidden = false;
+
+
+    const date = question.created_at
+        ? new Date(question.created_at).toLocaleString()
+        : "Unknown";
+
+
+    const status =
+        question.status || "Pending";
+
+
+    const answer =
+        question.answer;
+
+
+    questionDetails.innerHTML = `
+        <div class="question-result">
+
+            <div class="question-result-header">
+
+                <div>
+
+                    <div class="result-label">
+                        Question code
+                    </div>
+
+                    <strong>
+                        ${escapeHTML(question.question_code)}
+                    </strong>
+
+                </div>
+
+                <span class="question-status">
+                    ${escapeHTML(status)}
+                </span>
+
+            </div>
+
+
+            <div class="question-result-field">
+
+                <div class="result-label">
+                    Your question
+                </div>
+
+                <p>
+                    ${escapeHTML(question.question)}
+                </p>
+
+            </div>
+
+
+            <div class="question-result-field">
+
+                <div class="result-label">
+                    Submitted
+                </div>
+
+                <p>
+                    ${escapeHTML(date)}
+                </p>
+
+            </div>
+
+
+            <div class="question-result-field">
+
+                <div class="result-label">
+                    Answer
+                </div>
+
+                <p>
+                    ${
+                        answer
+                            ? escapeHTML(answer)
+                            : "Your question has not been answered yet."
+                    }
+                </p>
+
+            </div>
+
+        </div>
+    `;
+
+}
 
 async function loadRequestFiles(requestId) {
 
