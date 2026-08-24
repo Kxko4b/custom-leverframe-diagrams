@@ -4,14 +4,6 @@ console.log("questions-admin.js loaded");
 let adminQuestions = [];
 
 
-const QUESTION_STATUSES = [
-    "Pending",
-    "In Progress",
-    "Answered",
-    "Closed"
-];
-
-
 /* =========================
    LOAD QUESTIONS
 ========================= */
@@ -19,9 +11,12 @@ const QUESTION_STATUSES = [
 async function loadQuestions() {
 
     const container =
-        document.getElementById("questions-admin");
+        document.getElementById("questions");
 
-    if (!container) return;
+    if (!container) {
+        console.error("Questions container not found.");
+        return;
+    }
 
     container.textContent =
         "Loading questions…";
@@ -50,7 +45,9 @@ async function loadQuestions() {
     }
 
 
-    adminQuestions = data || [];
+    adminQuestions =
+        data || [];
+
 
     renderQuestions();
 
@@ -64,25 +61,17 @@ async function loadQuestions() {
 function renderQuestions() {
 
     const container =
-        document.getElementById("questions-admin");
+        document.getElementById("questions");
 
     if (!container) return;
 
 
     const search =
-        (
-            document
-                .getElementById("question-search")
-                ?.value || ""
-        )
-        .trim()
-        .toLowerCase();
-
-
-    const filter =
         document
-            .getElementById("question-filter")
-            ?.value || "all";
+            .getElementById("question-search")
+            ?.value
+            .trim()
+            .toLowerCase() || "";
 
 
     const visible =
@@ -91,29 +80,16 @@ function renderQuestions() {
             const searchable = [
 
                 question.question_code,
-
                 question.question,
-
-                question.contact
+                question.contact,
+                question.answer
 
             ]
                 .join(" ")
                 .toLowerCase();
 
 
-            return (
-
-                (!search ||
-                    searchable.includes(search))
-
-                &&
-
-                (
-                    filter === "all" ||
-                    question.status === filter
-                )
-
-            );
+            return searchable.includes(search);
 
         });
 
@@ -159,9 +135,14 @@ function createQuestionCard(question) {
         "question-card";
 
 
-    /*
-     * Header
-     */
+    const answered =
+        Boolean(
+            question.answer &&
+            question.answer.trim()
+        );
+
+
+    /* HEADER */
 
     const header =
         document.createElement("div");
@@ -179,27 +160,37 @@ function createQuestionCard(question) {
 
     const code =
         makeQuestionElement(
-            "div",
+            "strong",
             "question-code",
             question.question_code ||
-            `KXKO-QSTN-${question.id}`
+                "KXQ-UNKNOWN"
+        );
+
+
+    const contact =
+        makeQuestionElement(
+            "span",
+            "question-contact",
+            question.contact ||
+                "No contact provided"
         );
 
 
     const date =
         makeQuestionElement(
-            "div",
+            "span",
             "question-date",
             question.created_at
                 ? new Date(
                     question.created_at
                 ).toLocaleString()
-                : "Unknown date"
+                : "Date unavailable"
         );
 
 
     identity.append(
         code,
+        contact,
         date
     );
 
@@ -207,8 +198,13 @@ function createQuestionCard(question) {
     const status =
         makeQuestionElement(
             "span",
-            "question-status",
-            question.status || "Pending"
+            "question-status" +
+                (answered
+                    ? " answered"
+                    : ""),
+            answered
+                ? "Answered"
+                : "Awaiting answer"
         );
 
 
@@ -218,9 +214,7 @@ function createQuestionCard(question) {
     );
 
 
-    /*
-     * Content
-     */
+    /* CONTENT */
 
     const content =
         document.createElement("div");
@@ -228,6 +222,8 @@ function createQuestionCard(question) {
     content.className =
         "question-content";
 
+
+    /* QUESTION */
 
     const questionLabel =
         makeQuestionElement(
@@ -237,33 +233,15 @@ function createQuestionCard(question) {
         );
 
 
-    const questionText =
+    const questionBox =
         makeQuestionElement(
             "div",
-            "question-text",
+            "question-box",
             question.question || ""
         );
 
 
-    const contactLabel =
-        makeQuestionElement(
-            "div",
-            "question-label",
-            "Contact"
-        );
-
-
-    const contact =
-        makeQuestionElement(
-            "div",
-            "question-contact",
-            question.contact || "Not provided"
-        );
-
-
-    /*
-     * Answer
-     */
+    /* ANSWER */
 
     const answerLabel =
         makeQuestionElement(
@@ -271,6 +249,10 @@ function createQuestionCard(question) {
             "question-label",
             "Answer"
         );
+
+
+    answerLabel.style.marginTop =
+        "20px";
 
 
     const answer =
@@ -286,56 +268,13 @@ function createQuestionCard(question) {
         question.answer || "";
 
 
-    /*
-     * Controls
-     */
+    /* ACTIONS */
 
-    const controls =
+    const actions =
         document.createElement("div");
 
-    controls.className =
-        "question-controls";
-
-
-    const select =
-        document.createElement("select");
-
-    QUESTION_STATUSES.forEach(status => {
-
-        select.add(
-            new Option(
-                status,
-                status,
-                status === question.status,
-                status === question.status
-            )
-        );
-
-    });
-
-
-    const save =
-        document.createElement("button");
-
-    save.type =
-        "button";
-
-    save.className =
-        "primary";
-
-    save.textContent =
-        "Save";
-
-
-    save.addEventListener(
-        "click",
-        () => saveQuestion(
-            question.id,
-            answer.value,
-            select.value,
-            save
-        )
-    );
+    actions.className =
+        "question-actions";
 
 
     const deleteButton =
@@ -345,40 +284,57 @@ function createQuestionCard(question) {
         "button";
 
     deleteButton.className =
-        "delete-request";
+        "delete-question";
 
     deleteButton.textContent =
-        "Delete";
+        "Delete question";
 
 
     deleteButton.addEventListener(
         "click",
-        () => deleteQuestion(
-            question.id
-        )
+        () =>
+            deleteQuestion(question.id)
     );
 
 
-    controls.append(
-        select,
-        save,
-        deleteButton
+    const saveButton =
+        document.createElement("button");
+
+    saveButton.type =
+        "button";
+
+    saveButton.className =
+        "primary";
+
+    saveButton.textContent =
+        answered
+            ? "Update answer"
+            : "Answer question";
+
+
+    saveButton.addEventListener(
+        "click",
+        () =>
+            saveQuestionAnswer(
+                question.id,
+                answer.value,
+                saveButton
+            )
+    );
+
+
+    actions.append(
+        deleteButton,
+        saveButton
     );
 
 
     content.append(
-
         questionLabel,
-        questionText,
-
-        contactLabel,
-        contact,
-
+        questionBox,
         answerLabel,
         answer,
-
-        controls
-
+        actions
     );
 
 
@@ -394,15 +350,28 @@ function createQuestionCard(question) {
 
 
 /* =========================
-   SAVE
+   SAVE ANSWER
 ========================= */
 
-async function saveQuestion(
+async function saveQuestionAnswer(
     id,
     answer,
-    status,
     button
 ) {
+
+    answer =
+        answer.trim();
+
+
+    if (!answer) {
+
+        alert(
+            "Please enter an answer."
+        );
+
+        return;
+    }
+
 
     button.disabled =
         true;
@@ -416,70 +385,58 @@ async function saveQuestion(
             .from("questions")
             .update({
 
-                answer:
-                    answer.trim() || null,
+                answer: answer,
 
-                status:
-                    status
+                answered_at:
+                    new Date().toISOString()
 
             })
             .eq("id", id);
+
+
+    if (error) {
+
+        console.error(
+            "Could not save answer:",
+            error
+        );
+
+        alert(
+            "Could not save the answer:\n" +
+            error.message
+        );
+
+        button.disabled =
+            false;
+
+        button.textContent =
+            "Save answer";
+
+        return;
+    }
 
 
     button.disabled =
         false;
 
     button.textContent =
-        "Save";
+        "Saved ✓";
 
 
-    if (error) {
-
-        console.error(error);
-
-        alert(
-            "Could not save question."
-        );
-
-        return;
-    }
-
-
-    /*
-     * Update local copy.
-     */
-
-    const question =
-        adminQuestions.find(
-            item => item.id === id
-        );
-
-
-    if (question) {
-
-        question.answer =
-            answer.trim() || null;
-
-        question.status =
-            status;
-
-    }
-
-
-    renderQuestions();
+    await loadQuestions();
 
 }
 
 
 /* =========================
-   DELETE
+   DELETE QUESTION
 ========================= */
 
 async function deleteQuestion(id) {
 
     if (
         !confirm(
-            "Delete this question?"
+            "Delete this question permanently?"
         )
     ) {
         return;
@@ -495,10 +452,14 @@ async function deleteQuestion(id) {
 
     if (error) {
 
-        console.error(error);
+        console.error(
+            "Could not delete question:",
+            error
+        );
 
         alert(
-            "Could not delete question."
+            "Could not delete question:\n" +
+            error.message
         );
 
         return;
@@ -511,7 +472,19 @@ async function deleteQuestion(id) {
 
 
 /* =========================
-   HELPERS
+   SEARCH
+========================= */
+
+document
+    .getElementById("question-search")
+    ?.addEventListener(
+        "input",
+        renderQuestions
+    );
+
+
+/* =========================
+   HELPER
 ========================= */
 
 function makeQuestionElement(
@@ -536,23 +509,3 @@ function makeQuestionElement(
     return element;
 
 }
-
-
-/* =========================
-   FILTERS
-========================= */
-
-document
-    .getElementById("question-search")
-    ?.addEventListener(
-        "input",
-        renderQuestions
-    );
-
-
-document
-    .getElementById("question-filter")
-    ?.addEventListener(
-        "change",
-        renderQuestions
-    );
