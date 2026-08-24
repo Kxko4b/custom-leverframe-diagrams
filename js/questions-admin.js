@@ -1,511 +1,298 @@
 console.log("questions-admin.js loaded");
 
-
-let adminQuestions = [];
-
-
-/* =========================
-   LOAD QUESTIONS
-========================= */
-
 async function loadQuestions() {
 
-    const container =
-        document.getElementById("questions");
+    const container = document.getElementById("questions");
 
     if (!container) {
         console.error("Questions container not found.");
         return;
     }
 
-    container.textContent =
-        "Loading questions…";
+    container.innerHTML = `
+        <p class="empty">Loading questions...</p>
+    `;
 
-
-    const { data, error } =
-        await db
-            .from("questions")
-            .select("*")
-            .order("created_at", {
-                ascending: false
-            });
-
+    const { data, error } = await db
+        .from("questions")
+        .select("*")
+        .order("created_at", {
+            ascending: false
+        });
 
     if (error) {
 
-        console.error(
-            "Could not load questions:",
-            error
-        );
+        console.error("Could not load questions:", error);
 
-        container.textContent =
-            "Could not load questions.";
+        container.innerHTML = `
+            <div class="question-card">
+                <p class="empty">
+                    Could not load questions.
+                </p>
+                <small>${escapeHTML(error.message)}</small>
+            </div>
+        `;
 
         return;
     }
 
+    if (!data || data.length === 0) {
 
-    adminQuestions =
-        data || [];
+        container.innerHTML = `
+            <div class="question-card">
+                <p class="empty">
+                    No questions have been submitted yet.
+                </p>
+            </div>
+        `;
+
+        return;
+    }
+
+    container.innerHTML = "";
+
+    data.forEach(question => {
+
+        const card = document.createElement("article");
+
+        card.className = "question-card";
+
+        const code = question.question_code || "No code";
+        const status = question.status || "Pending";
+        const text = question.question || "";
+        const contact = question.contact || "";
+        const answer = question.answer || "";
+
+        const date = question.created_at
+            ? new Date(question.created_at).toLocaleString()
+            : "Unknown";
+
+        card.innerHTML = `
+
+            <div class="question-header">
+
+                <div class="question-identity">
+
+                    <span class="question-label">
+                        QUESTION
+                    </span>
+
+                    <span class="question-code">
+                        ${escapeHTML(code)}
+                    </span>
+
+                    <span class="question-date">
+                        ${escapeHTML(date)}
+                    </span>
+
+                </div>
+
+                <span class="question-status">
+                    ${escapeHTML(status)}
+                </span>
+
+            </div>
 
 
-    renderQuestions();
+            <div class="question-content">
 
-}
+                <div class="question-field">
 
+                    <span class="question-field-label">
+                        Question
+                    </span>
 
-/* =========================
-   RENDER
-========================= */
+                    <p>
+                        ${escapeHTML(text)}
+                    </p>
 
-function renderQuestions() {
-
-    const container =
-        document.getElementById("questions");
-
-    if (!container) return;
+                </div>
 
 
-    const search =
-        document
-            .getElementById("question-search")
-            ?.value
-            .trim()
-            .toLowerCase() || "";
+                <div class="question-field">
+
+                    <span class="question-field-label">
+                        Contact
+                    </span>
+
+                    <p>
+                        ${escapeHTML(contact)}
+                    </p>
+
+                </div>
 
 
-    const visible =
-        adminQuestions.filter(question => {
+                <div class="question-field">
 
-            const searchable = [
+                    <label class="question-field-label">
+                        Answer
+                    </label>
 
-                question.question_code,
-                question.question,
-                question.contact,
-                question.answer
+                    <textarea
+                        class="question-answer"
+                        data-id="${question.id}"
+                        placeholder="Write an answer..."
+                    >${escapeHTML(answer)}</textarea>
 
-            ]
-                .join(" ")
-                .toLowerCase();
+                </div>
 
 
-            return searchable.includes(search);
+                <div class="question-actions">
+
+                    <select
+                        class="question-status-select"
+                        data-id="${question.id}"
+                    >
+
+                        <option value="Pending"
+                            ${status === "Pending" ? "selected" : ""}>
+                            Pending
+                        </option>
+
+                        <option value="In Progress"
+                            ${status === "In Progress" ? "selected" : ""}>
+                            In Progress
+                        </option>
+
+                        <option value="Answered"
+                            ${status === "Answered" ? "selected" : ""}>
+                            Answered
+                        </option>
+
+                        <option value="Closed"
+                            ${status === "Closed" ? "selected" : ""}>
+                            Closed
+                        </option>
+
+                    </select>
+
+
+                    <button
+                        class="primary save-question"
+                        data-id="${question.id}"
+                    >
+                        Save Answer
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+
+        container.appendChild(card);
+    });
+
+
+    /*
+     * SAVE ANSWERS
+     */
+
+    container
+        .querySelectorAll(".save-question")
+        .forEach(button => {
+
+            button.addEventListener("click", async () => {
+
+                const id = button.dataset.id;
+
+                const textarea =
+                    container.querySelector(
+                        `.question-answer[data-id="${id}"]`
+                    );
+
+                const statusSelect =
+                    container.querySelector(
+                        `.question-status-select[data-id="${id}"]`
+                    );
+
+                const answer =
+                    textarea.value.trim();
+
+                const status =
+                    statusSelect.value;
+
+                button.disabled = true;
+                button.textContent = "Saving...";
+
+                const { error } = await db
+                    .from("questions")
+                    .update({
+                        answer: answer,
+                        status: status
+                    })
+                    .eq("id", id);
+
+                button.disabled = false;
+                button.textContent = "Save Answer";
+
+                if (error) {
+
+                    console.error(
+                        "Could not update question:",
+                        error
+                    );
+
+                    alert(
+                        "Could not save the question:\n\n" +
+                        error.message
+                    );
+
+                    return;
+                }
+
+                button.textContent = "Saved ✓";
+
+                setTimeout(() => {
+                    button.textContent = "Save Answer";
+                }, 1500);
+
+            });
 
         });
 
-
-    container.replaceChildren();
-
-
-    if (!visible.length) {
-
-        container.append(
-            makeQuestionElement(
-                "p",
-                "",
-                "No questions found."
-            )
-        );
-
-        return;
-    }
+}
 
 
-    visible.forEach(question => {
+/*
+ * ESCAPE HTML
+ */
 
-        container.append(
-            createQuestionCard(question)
-        );
+function escapeHTML(value) {
 
-    });
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 
 }
 
 
-/* =========================
-   QUESTION CARD
-========================= */
-
-function createQuestionCard(question) {
-
-    const card =
-        document.createElement("article");
-
-    card.className =
-        "question-card";
-
-
-    const answered =
-        Boolean(
-            question.answer &&
-            question.answer.trim()
-        );
-
-
-    /* HEADER */
-
-    const header =
-        document.createElement("div");
-
-    header.className =
-        "question-header";
-
-
-    const identity =
-        document.createElement("div");
-
-    identity.className =
-        "question-identity";
-
-
-    const code =
-        makeQuestionElement(
-            "strong",
-            "question-code",
-            question.question_code ||
-                "KXQ-UNKNOWN"
-        );
-
-
-    const contact =
-        makeQuestionElement(
-            "span",
-            "question-contact",
-            question.contact ||
-                "No contact provided"
-        );
-
-
-    const date =
-        makeQuestionElement(
-            "span",
-            "question-date",
-            question.created_at
-                ? new Date(
-                    question.created_at
-                ).toLocaleString()
-                : "Date unavailable"
-        );
-
-
-    identity.append(
-        code,
-        contact,
-        date
-    );
-
-
-    const status =
-        makeQuestionElement(
-            "span",
-            "question-status" +
-                (answered
-                    ? " answered"
-                    : ""),
-            answered
-                ? "Answered"
-                : "Awaiting answer"
-        );
-
-
-    header.append(
-        identity,
-        status
-    );
-
-
-    /* CONTENT */
-
-    const content =
-        document.createElement("div");
-
-    content.className =
-        "question-content";
-
-
-    /* QUESTION */
-
-    const questionLabel =
-        makeQuestionElement(
-            "div",
-            "question-label",
-            "Question"
-        );
-
-
-    const questionBox =
-        makeQuestionElement(
-            "div",
-            "question-box",
-            question.question || ""
-        );
-
-
-    /* ANSWER */
-
-    const answerLabel =
-        makeQuestionElement(
-            "div",
-            "question-label",
-            "Answer"
-        );
-
-
-    answerLabel.style.marginTop =
-        "20px";
-
-
-    const answer =
-        document.createElement("textarea");
-
-    answer.className =
-        "question-answer";
-
-    answer.placeholder =
-        "Write your answer here…";
-
-    answer.value =
-        question.answer || "";
-
-
-    /* ACTIONS */
-
-    const actions =
-        document.createElement("div");
-
-    actions.className =
-        "question-actions";
-
-
-    const deleteButton =
-        document.createElement("button");
-
-    deleteButton.type =
-        "button";
-
-    deleteButton.className =
-        "delete-question";
-
-    deleteButton.textContent =
-        "Delete question";
-
-
-    deleteButton.addEventListener(
-        "click",
-        () =>
-            deleteQuestion(question.id)
-    );
-
-
-    const saveButton =
-        document.createElement("button");
-
-    saveButton.type =
-        "button";
-
-    saveButton.className =
-        "primary";
-
-    saveButton.textContent =
-        answered
-            ? "Update answer"
-            : "Answer question";
-
-
-    saveButton.addEventListener(
-        "click",
-        () =>
-            saveQuestionAnswer(
-                question.id,
-                answer.value,
-                saveButton
-            )
-    );
-
-
-    actions.append(
-        deleteButton,
-        saveButton
-    );
-
-
-    content.append(
-        questionLabel,
-        questionBox,
-        answerLabel,
-        answer,
-        actions
-    );
-
-
-    card.append(
-        header,
-        content
-    );
-
-
-    return card;
-
-}
-
-
-/* =========================
-   SAVE ANSWER
-========================= */
-
-async function saveQuestionAnswer(
-    id,
-    answer,
-    button
-) {
-
-    answer =
-        answer.trim();
-
-
-    if (!answer) {
-
-        alert(
-            "Please enter an answer."
-        );
-
-        return;
-    }
-
-
-    button.disabled =
-        true;
-
-    button.textContent =
-        "Saving…";
-
-
-    const { error } =
-        await db
-            .from("questions")
-            .update({
-
-                answer: answer,
-
-                answered_at:
-                    new Date().toISOString()
-
-            })
-            .eq("id", id);
-
-
-    if (error) {
-
-        console.error(
-            "Could not save answer:",
-            error
-        );
-
-        alert(
-            "Could not save the answer:\n" +
-            error.message
-        );
-
-        button.disabled =
-            false;
-
-        button.textContent =
-            "Save answer";
-
-        return;
-    }
-
-
-    button.disabled =
-        false;
-
-    button.textContent =
-        "Saved ✓";
-
-
-    await loadQuestions();
-
-}
-
-
-/* =========================
-   DELETE QUESTION
-========================= */
-
-async function deleteQuestion(id) {
-
-    if (
-        !confirm(
-            "Delete this question permanently?"
-        )
-    ) {
-        return;
-    }
-
-
-    const { error } =
-        await db
-            .from("questions")
-            .delete()
-            .eq("id", id);
-
-
-    if (error) {
-
-        console.error(
-            "Could not delete question:",
-            error
-        );
-
-        alert(
-            "Could not delete question:\n" +
-            error.message
-        );
-
-        return;
-    }
-
-
-    await loadQuestions();
-
-}
-
-
-/* =========================
-   SEARCH
-========================= */
+/*
+ * SEARCH
+ */
 
 document
     .getElementById("question-search")
-    ?.addEventListener(
-        "input",
-        renderQuestions
-    );
+    ?.addEventListener("input", event => {
 
+        const search =
+            event.target.value
+                .toLowerCase()
+                .trim();
 
-/* =========================
-   HELPER
-========================= */
+        document
+            .querySelectorAll(".question-card")
+            .forEach(card => {
 
-function makeQuestionElement(
-    tag,
-    className,
-    text
-) {
+                card.style.display =
+                    card.textContent
+                        .toLowerCase()
+                        .includes(search)
+                        ? ""
+                        : "none";
 
-    const element =
-        document.createElement(tag);
+            });
 
-    if (className) {
-        element.className =
-            className;
-    }
-
-    if (text !== undefined) {
-        element.textContent =
-            text;
-    }
-
-    return element;
-
-}
+    });
