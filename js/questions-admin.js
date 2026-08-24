@@ -1,104 +1,90 @@
 console.log("questions-admin.js loaded");
 
-
 async function loadQuestions() {
 
-    const container = document.getElementById("questions");
+    // Supports either ID, so we don't get the "container not found" error again
+    const box =
+        document.getElementById("questions-admin") ||
+        document.getElementById("questions");
 
-    if (!container) {
-        console.error("Questions container not found.");
+    if (!box) {
+        console.error(
+            "Questions container not found. Add <div id=\"questions-admin\"></div> to the Questions section."
+        );
         return;
     }
 
-    container.innerHTML = `
-        <p class="empty">
+    box.innerHTML = `
+        <div class="question-loading">
             Loading questions...
-        </p>
+        </div>
     `;
-
 
     const { data, error } = await db
         .from("questions")
         .select("*")
-        .order("created_at", {
-            ascending: false
-        });
-
+        .order("created_at", { ascending: false });
 
     if (error) {
+        console.error("Could not load questions:", error);
 
-        console.error(
-            "Could not load questions:",
-            error
-        );
-
-        container.innerHTML = `
-            <div class="question-card">
-                <p>
-                    Could not load questions.
-                </p>
-
-                <small>
-                    ${escapeHTML(error.message)}
-                </small>
+        box.innerHTML = `
+            <div class="question-error">
+                <strong>Could not load questions</strong>
+                <p>${escapeHTML(error.message)}</p>
             </div>
         `;
 
         return;
     }
-
 
     if (!data || data.length === 0) {
 
-        container.innerHTML = `
-            <div class="question-card">
-                <p class="empty">
-                    No questions yet.
-                </p>
+        box.innerHTML = `
+            <div class="question-empty">
+                <div class="question-empty-icon">❓</div>
+                <h3>No questions yet</h3>
+                <p>Questions submitted by visitors will appear here.</p>
             </div>
         `;
 
         return;
     }
 
-
-    container.innerHTML = "";
-
+    box.replaceChildren();
 
     data.forEach(question => {
 
         const card = document.createElement("article");
-
-        card.className = "question-card";
-
+        card.className = "admin-question-card";
 
         const code =
-            question.question_code || "No code";
-
-        const questionText =
-            question.question || "";
-
-        const contact =
-            question.contact || "";
-
-        const answer =
-            question.answer || "";
+            question.question_code ||
+            "KXQ-UNKNOWN";
 
         const status =
-            question.status || "Pending";
+            question.status ||
+            "Pending";
 
+        const questionText =
+            question.question ||
+            "";
+
+        const contact =
+            question.contact ||
+            "No contact provided";
+
+        const answer =
+            question.answer ||
+            "";
 
         const date =
             question.created_at
-                ? new Date(
-                    question.created_at
-                ).toLocaleString()
-                : "Unknown";
-
+                ? new Date(question.created_at).toLocaleString()
+                : "Unknown date";
 
         card.innerHTML = `
-
-            <div class="question-header">
+            <div class="admin-question-header">
 
                 <div class="question-identity">
 
@@ -116,7 +102,6 @@ async function loadQuestions() {
 
                 </div>
 
-
                 <span class="question-status">
                     ${escapeHTML(status)}
                 </span>
@@ -124,8 +109,7 @@ async function loadQuestions() {
             </div>
 
 
-            <div class="question-content">
-
+            <div class="admin-question-content">
 
                 <div class="question-field">
 
@@ -133,7 +117,7 @@ async function loadQuestions() {
                         Question
                     </span>
 
-                    <p class="question-text">
+                    <p>
                         ${escapeHTML(questionText)}
                     </p>
 
@@ -156,24 +140,10 @@ async function loadQuestions() {
                 <div class="question-field">
 
                     <label class="question-field-label">
-                        Answer
+                        Status
                     </label>
 
-                    <textarea
-                        class="question-answer"
-                        data-id="${question.id}"
-                        placeholder="Write your answer..."
-                    >${escapeHTML(answer)}</textarea>
-
-                </div>
-
-
-                <div class="question-actions">
-
-                    <select
-                        class="question-status-select"
-                        data-id="${question.id}"
-                    >
+                    <select class="question-status-select">
 
                         <option value="Pending"
                             ${status === "Pending" ? "selected" : ""}>
@@ -197,13 +167,37 @@ async function loadQuestions() {
 
                     </select>
 
+                </div>
+
+
+                <div class="question-field full">
+
+                    <label class="question-field-label">
+                        Answer
+                    </label>
+
+                    <textarea
+                        class="question-answer"
+                        placeholder="Write your answer here..."
+                    >${escapeHTML(answer)}</textarea>
+
+                </div>
+
+
+                <div class="question-actions">
 
                     <button
                         type="button"
                         class="primary save-question"
-                        data-id="${question.id}"
                     >
                         Save Answer
+                    </button>
+
+                    <button
+                        type="button"
+                        class="delete-question"
+                    >
+                        Delete
                     </button>
 
                 </div>
@@ -212,149 +206,109 @@ async function loadQuestions() {
         `;
 
 
-        container.appendChild(card);
+        // SAVE
+        const saveButton =
+            card.querySelector(".save-question");
 
-    });
+        saveButton.addEventListener("click", async () => {
 
+            const newStatus =
+                card.querySelector(".question-status-select").value;
 
-    /*
-     * SAVE BUTTONS
-     */
+            const newAnswer =
+                card.querySelector(".question-answer").value.trim();
 
-    container
-        .querySelectorAll(".save-question")
-        .forEach(button => {
+            saveButton.disabled = true;
+            saveButton.textContent = "Saving...";
 
-            button.addEventListener(
-                "click",
-                async () => {
+            const { error } = await db
+                .from("questions")
+                .update({
+                    status: newStatus,
+                    answer: newAnswer
+                })
+                .eq("id", question.id);
 
-                    const id =
-                        button.dataset.id;
+            saveButton.disabled = false;
+            saveButton.textContent = "Save Answer";
 
+            if (error) {
 
-                    const answerBox =
-                        container.querySelector(
-                            `.question-answer[data-id="${id}"]`
-                        );
+                console.error(
+                    "Could not update question:",
+                    error
+                );
 
+                alert(
+                    "Could not save question:\n\n" +
+                    error.message
+                );
 
-                    const statusBox =
-                        container.querySelector(
-                            `.question-status-select[data-id="${id}"]`
-                        );
+                return;
+            }
 
+            alert("Question updated!");
 
-                    const answer =
-                        answerBox.value.trim();
-
-                    const status =
-                        statusBox.value;
-
-
-                    button.disabled = true;
-                    button.textContent = "Saving...";
-
-
-                    const { error } =
-                        await db
-                            .from("questions")
-                            .update({
-                                answer: answer,
-                                status: status
-                            })
-                            .eq("id", id);
-
-
-                    button.disabled = false;
-
-
-                    if (error) {
-
-                        console.error(
-                            "Could not save question:",
-                            error
-                        );
-
-                        alert(
-                            "Could not save question:\n\n" +
-                            error.message
-                        );
-
-                        button.textContent =
-                            "Save Answer";
-
-                        return;
-                    }
-
-
-                    button.textContent =
-                        "Saved ✓";
-
-
-                    setTimeout(() => {
-
-                        button.textContent =
-                            "Save Answer";
-
-                    }, 1500);
-
-                }
-            );
+            loadQuestions();
 
         });
 
-}
 
+        // DELETE
+        const deleteButton =
+            card.querySelector(".delete-question");
 
-/*
- * SEARCH
- */
+        deleteButton.addEventListener("click", async () => {
 
-function setupQuestionSearch() {
-
-    const search =
-        document.getElementById(
-            "question-search"
-        );
-
-    if (!search) return;
-
-
-    search.addEventListener(
-        "input",
-        () => {
-
-            const value =
-                search.value
-                    .toLowerCase()
-                    .trim();
-
-
-            document
-                .querySelectorAll(
-                    ".question-card"
+            if (
+                !confirm(
+                    `Delete question ${code}?`
                 )
-                .forEach(card => {
+            ) {
+                return;
+            }
 
-                    card.style.display =
-                        card.textContent
-                            .toLowerCase()
-                            .includes(value)
-                            ? ""
-                            : "none";
+            deleteButton.disabled = true;
+            deleteButton.textContent = "Deleting...";
 
-                });
+            const { error } = await db
+                .from("questions")
+                .delete()
+                .eq("id", question.id);
 
-        }
-    );
+            if (error) {
+
+                console.error(
+                    "Could not delete question:",
+                    error
+                );
+
+                alert(
+                    "Could not delete question:\n\n" +
+                    error.message
+                );
+
+                deleteButton.disabled = false;
+                deleteButton.textContent = "Delete";
+
+                return;
+            }
+
+            loadQuestions();
+
+        });
+
+
+        box.appendChild(card);
+
+    });
 
 }
 
 
-/*
- * ESCAPE HTML
- */
+/* =========================
+   HTML ESCAPING
+========================= */
 
 function escapeHTML(value) {
 
@@ -368,4 +322,170 @@ function escapeHTML(value) {
 }
 
 
-setupQuestionSearch();
+/* =========================
+   SEARCH
+========================= */
+
+document
+    .getElementById("question-search")
+    ?.addEventListener("input", async function () {
+
+        const search =
+            this.value.trim().toLowerCase();
+
+        const box =
+            document.getElementById("questions-admin") ||
+            document.getElementById("questions");
+
+        if (!box) return;
+
+        const { data, error } = await db
+            .from("questions")
+            .select("*")
+            .order("created_at", {
+                ascending: false
+            });
+
+        if (error) {
+            console.error(error);
+            return;
+        }
+
+        const filtered =
+            data.filter(question => {
+
+                return (
+                    String(question.question || "")
+                        .toLowerCase()
+                        .includes(search) ||
+
+                    String(question.contact || "")
+                        .toLowerCase()
+                        .includes(search) ||
+
+                    String(question.question_code || "")
+                        .toLowerCase()
+                        .includes(search)
+                );
+
+            });
+
+        if (!filtered.length) {
+
+            box.innerHTML = `
+                <div class="question-empty">
+                    <div class="question-empty-icon">
+                        🔎
+                    </div>
+
+                    <h3>
+                        No matching questions
+                    </h3>
+
+                    <p>
+                        Try another search term.
+                    </p>
+                </div>
+            `;
+
+            return;
+        }
+
+        // Temporarily render filtered results
+        box.innerHTML = "";
+
+        filtered.forEach(question => {
+
+            const card =
+                document.createElement("article");
+
+            card.className =
+                "admin-question-card";
+
+            card.innerHTML = `
+                <div class="admin-question-header">
+
+                    <div class="question-identity">
+
+                        <span class="question-label">
+                            QUESTION
+                        </span>
+
+                        <span class="question-code">
+                            ${escapeHTML(
+                                question.question_code ||
+                                "KXQ-UNKNOWN"
+                            )}
+                        </span>
+
+                    </div>
+
+                    <span class="question-status">
+                        ${escapeHTML(
+                            question.status ||
+                            "Pending"
+                        )}
+                    </span>
+
+                </div>
+
+                <div class="admin-question-content">
+
+                    <div class="question-field">
+
+                        <span class="question-field-label">
+                            Question
+                        </span>
+
+                        <p>
+                            ${escapeHTML(
+                                question.question
+                            )}
+                        </p>
+
+                    </div>
+
+                    <div class="question-field">
+
+                        <span class="question-field-label">
+                            Contact
+                        </span>
+
+                        <p>
+                            ${escapeHTML(
+                                question.contact
+                            )}
+                        </p>
+
+                    </div>
+
+                    <div class="question-field full">
+
+                        <span class="question-field-label">
+                            Answer
+                        </span>
+
+                        <p>
+                            ${escapeHTML(
+                                question.answer ||
+                                "Not answered yet."
+                            )}
+                        </p>
+
+                    </div>
+
+                </div>
+            `;
+
+            box.appendChild(card);
+
+        });
+
+    });
+
+
+/* =========================
+   INITIAL LOAD
+========================= */
+
+loadQuestions();
