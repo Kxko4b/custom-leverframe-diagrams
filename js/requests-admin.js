@@ -6,7 +6,7 @@ async function loadRequests() {
 
 
     const container =
-        document.getElementById("requests-list");
+    document.getElementById("requests");
 
 
     if (!container) {
