@@ -499,10 +499,17 @@ async function loadRequests() {
     if (!container) return;
     container.textContent = "Loading requests…";
     const { data, error } = await db.from("requests")
-        .select("*, request_images ( image_url )")
+        .select("*")
         .order("created_at", { ascending: false });
     if (error) return showRequestError(container, "Could not load requests.", error);
-    adminRequests = data || [];
+    adminRequests = await Promise.all((data || []).map(async request => {
+        const { data: images, error: imageError } = await db
+            .from("request_images")
+            .select("image_url")
+            .eq("request_id", request.id);
+        if (imageError) console.error("Could not load request images:", imageError);
+        return { ...request, request_images: images || [] };
+    }));
     renderAdminRequests();
 }
 
