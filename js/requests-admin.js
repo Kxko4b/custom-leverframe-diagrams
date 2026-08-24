@@ -1,1680 +1,624 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+console.log("requests-admin.js loaded");
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Kxko Admin</title>
+async function loadRequests() {
 
-<link rel="icon" href="../favicon.png">
+    const container = document.getElementById("requests");
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../js/supabase.js"></script>
-
-<style>
-
-/* =========================
-   RESET
-========================= */
-
-* {
-    box-sizing: border-box;
-}
-
-:root {
-    --bg: #f5f7f8;
-    --surface: #ffffff;
-    --surface-soft: #f8fafb;
-
-    --text: #182126;
-    --muted: #748087;
-    --border: #e2e7e9;
-
-    --primary: #306778;
-    --primary-dark: #245362;
-    --primary-soft: #eaf2f4;
-
-    --danger: #b42318;
-    --danger-soft: #fff1f0;
-
-    --shadow: 0 10px 35px rgba(20, 35, 40, 0.06);
-}
-
-html {
-    scroll-behavior: smooth;
-}
-
-body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--text);
-    font-family:
-        Inter,
-        Arial,
-        sans-serif;
-}
-
-button,
-input,
-textarea,
-select {
-    font: inherit;
-}
-
-button {
-    cursor: pointer;
-}
-
-.hidden {
-    display: none !important;
-}
-
-
-/* =========================
-   LOGIN
-========================= */
-
-#login {
-    min-height: 100vh;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    padding: 24px;
-
-    background:
-        radial-gradient(
-            circle at top right,
-            #dcecef,
-            transparent 40%
-        ),
-        var(--bg);
-}
-
-.login-box {
-    width: 100%;
-    max-width: 400px;
-
-    background: var(--surface);
-
-    padding: 36px;
-
-    border: 1px solid var(--border);
-    border-radius: 20px;
-
-    box-shadow: var(--shadow);
-}
-
-.login-logo {
-    width: 46px;
-    height: 46px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    margin-bottom: 20px;
-
-    background: var(--primary);
-
-    color: white;
-
-    border-radius: 13px;
-
-    font-weight: 800;
-    font-size: 18px;
-}
-
-.login-box h1 {
-    margin: 0 0 6px;
-
-    font-size: 27px;
-}
-
-.login-box p {
-    margin: 0 0 24px;
-
-    color: var(--muted);
-}
-
-.login-box input {
-    width: 100%;
-
-    padding: 13px 14px;
-
-    margin-top: 10px;
-
-    border: 1px solid var(--border);
-    border-radius: 10px;
-
-    background: var(--surface-soft);
-
-    outline: none;
-
-    transition:
-        border 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-.login-box input:focus {
-    border-color: var(--primary);
-
-    box-shadow:
-        0 0 0 3px rgba(48, 103, 120, 0.12);
-}
-
-.primary {
-    border: 0;
-
-    background: var(--primary);
-    color: white;
-
-    border-radius: 10px;
-
-    padding: 11px 16px;
-
-    font-weight: 700;
-
-    transition:
-        background 0.2s ease,
-        transform 0.15s ease;
-}
-
-.primary:hover {
-    background: var(--primary-dark);
-}
-
-.primary:active {
-    transform: scale(0.98);
-}
-
-.login-box .primary {
-    width: 100%;
-
-    margin-top: 14px;
-}
-
-#error {
-    margin-top: 14px;
-
-    color: var(--danger);
-
-    font-size: 14px;
-}
-
-
-/* =========================
-   APP LAYOUT
-========================= */
-
-#app {
-    min-height: 100vh;
-
-    display: flex;
-}
-
-
-/* =========================
-   SIDEBAR
-========================= */
-
-.sidebar {
-    width: 250px;
-
-    position: fixed;
-
-    top: 0;
-    left: 0;
-    bottom: 0;
-
-    display: flex;
-    flex-direction: column;
-
-    padding: 20px 14px;
-
-    background: #182126;
-
-    color: white;
-
-    z-index: 20;
-}
-
-.brand {
-    display: flex;
-    align-items: center;
-
-    gap: 11px;
-
-    padding: 8px 10px 28px;
-}
-
-.brand-icon {
-    width: 38px;
-    height: 38px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 11px;
-
-    background: var(--primary);
-
-    font-weight: 800;
-}
-
-.brand-text {
-    font-size: 17px;
-    font-weight: 750;
-}
-
-.brand-text span {
-    display: block;
-
-    margin-top: 2px;
-
-    color: #9da8ad;
-
-    font-size: 11px;
-    font-weight: 500;
-}
-
-.sidebar-nav {
-    display: flex;
-    flex-direction: column;
-
-    gap: 5px;
-}
-
-.nav-button {
-    width: 100%;
-
-    display: flex;
-    align-items: center;
-
-    gap: 11px;
-
-    padding: 11px 12px;
-
-    border: 0;
-    border-radius: 10px;
-
-    background: transparent;
-
-    color: #b6c0c4;
-
-    text-align: left;
-}
-
-.nav-button:hover {
-    background: rgba(255,255,255,0.06);
-
-    color: white;
-}
-
-.nav-button.active {
-    background: var(--primary);
-
-    color: white;
-}
-
-.sidebar-bottom {
-    margin-top: auto;
-}
-
-.logout {
-    width: 100%;
-
-    padding: 11px 12px;
-
-    border: 0;
-    border-radius: 10px;
-
-    background: rgba(255,255,255,0.06);
-
-    color: #d5dcdf;
-
-    text-align: left;
-}
-
-.logout:hover {
-    background: rgba(255,255,255,0.1);
-}
-
-
-/* =========================
-   MAIN
-========================= */
-
-.dashboard {
-    width: 100%;
-
-    margin-left: 250px;
-
-    min-height: 100vh;
-}
-
-.dashboard-header {
-    height: 72px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    padding: 0 34px;
-
-    background: rgba(255,255,255,0.9);
-
-    border-bottom: 1px solid var(--border);
-
-    position: sticky;
-    top: 0;
-
-    backdrop-filter: blur(12px);
-
-    z-index: 10;
-}
-
-.header-title {
-    font-size: 15px;
-
-    font-weight: 700;
-}
-
-.admin-status {
-    display: flex;
-    align-items: center;
-
-    gap: 8px;
-
-    color: var(--muted);
-
-    font-size: 13px;
-}
-
-.status-dot {
-    width: 8px;
-    height: 8px;
-
-    border-radius: 50%;
-
-    background: #42a06b;
-}
-
-main {
-    max-width: 1400px;
-
-    margin: auto;
-
-    padding: 36px;
-}
-
-
-/* =========================
-   PAGE HEADER
-========================= */
-
-.page-header {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-
-    gap: 20px;
-
-    margin-bottom: 28px;
-}
-
-.page-header h2 {
-    margin: 0;
-
-    font-size: 30px;
-
-    letter-spacing: -0.7px;
-}
-
-.page-header p {
-    margin: 7px 0 0;
-
-    color: var(--muted);
-}
-
-
-/* =========================
-   VIEWS
-========================= */
-
-.view {
-    display: none;
-}
-
-.view.active {
-    display: block;
-}
-
-
-/* =========================
-   STATS
-========================= */
-
-.stats-grid {
-    display: grid;
-
-    grid-template-columns:
-        repeat(4, 1fr);
-
-    gap: 16px;
-
-    margin-bottom: 28px;
-}
-
-.stat-card {
-    background: var(--surface);
-
-    padding: 20px;
-
-    border: 1px solid var(--border);
-    border-radius: 16px;
-
-    box-shadow:
-        0 4px 15px rgba(0,0,0,0.02);
-}
-
-.stat-label {
-    color: var(--muted);
-
-    font-size: 13px;
-}
-
-.stat-value {
-    margin-top: 8px;
-
-    font-size: 27px;
-    font-weight: 750;
-}
-
-
-/* =========================
-   SECTION CARD
-========================= */
-
-.section-card {
-    background: var(--surface);
-
-    border: 1px solid var(--border);
-    border-radius: 16px;
-
-    padding: 24px;
-
-    box-shadow:
-        0 5px 18px rgba(0,0,0,0.025);
-}
-
-
-/* =========================
-   EXAMPLES
-========================= */
-
-.example-editor {
-    background: var(--surface);
-
-    border: 1px solid var(--border);
-    border-radius: 16px;
-
-    padding: 24px;
-
-    margin-bottom: 24px;
-}
-
-.grid {
-    display: grid;
-
-    grid-template-columns:
-        1fr 1fr;
-
-    gap: 16px;
-}
-
-.field.full {
-    grid-column: 1 / -1;
-}
-
-.field label {
-    display: block;
-
-    margin-bottom: 7px;
-
-    font-size: 13px;
-
-    font-weight: 650;
-
-    color: #526066;
-}
-
-.field input,
-.field textarea,
-.controls input,
-.controls select,
-.request-status-select {
-    width: 100%;
-
-    padding: 11px 12px;
-
-    border: 1px solid var(--border);
-    border-radius: 9px;
-
-    background: var(--surface-soft);
-
-    color: var(--text);
-
-    outline: none;
-}
-
-.field textarea {
-    min-height: 110px;
-
-    resize: vertical;
-}
-
-.field input:focus,
-.field textarea:focus,
-.controls input:focus,
-.controls select:focus {
-    border-color: var(--primary);
-
-    box-shadow:
-        0 0 0 3px rgba(48,103,120,0.1);
-}
-
-.save-row {
-    display: flex;
-    justify-content: flex-end;
-
-    margin-top: 18px;
-}
-
-#example-list {
-    display: grid;
-
-    grid-template-columns:
-        repeat(3, 1fr);
-
-    gap: 18px;
-}
-
-.example {
-    background: var(--surface);
-
-    border: 1px solid var(--border);
-    border-radius: 15px;
-
-    overflow: hidden;
-
-    transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-.example:hover {
-    transform: translateY(-3px);
-
-    box-shadow: var(--shadow);
-}
-
-.example img {
-    width: 100%;
-    height: 210px;
-
-    object-fit: contain;
-
-    background: #f3f5f6;
-
-    display: block;
-}
-
-.example-content {
-    padding: 17px;
-}
-
-.example h3 {
-    margin: 0 0 7px;
-
-    font-size: 16px;
-}
-
-.example p {
-    margin: 0 0 16px;
-
-    color: var(--muted);
-
-    line-height: 1.5;
-
-    font-size: 14px;
-}
-
-.example-actions {
-    display: flex;
-
-    justify-content: flex-end;
-}
-
-.delete-example,
-.delete-request {
-    border: 1px solid #f0cfca;
-
-    background: var(--danger-soft);
-
-    color: var(--danger);
-
-    border-radius: 9px;
-
-    padding: 9px 13px;
-
-    font-weight: 650;
-}
-
-
-/* =========================
-   REQUESTS
-========================= */
-
-.request-toolbar {
-    display: flex;
-
-    gap: 10px;
-
-    margin-bottom: 20px;
-}
-
-.controls {
-    display: flex;
-
-    gap: 10px;
-
-    width: 100%;
-}
-
-.controls input {
-    flex: 1;
-}
-
-.controls select {
-    width: 180px;
-}
-
-#requests {
-    display: grid;
-
-    gap: 15px;
-}
-
-.request-card {
-    background: var(--surface);
-
-    border: 1px solid var(--border);
-    border-radius: 16px;
-
-    overflow: hidden;
-
-    transition:
-        box-shadow 0.2s ease,
-        transform 0.2s ease;
-}
-
-.request-card:hover {
-    box-shadow: var(--shadow);
-}
-
-.request-header {
-    padding: 18px 21px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 20px;
-
-    border-bottom: 1px solid var(--border);
-}
-
-.request-code {
-    margin-bottom: 5px;
-
-    font-size: 16px;
-    font-weight: 750;
-}
-
-.request-name {
-    color: var(--muted);
-
-    font-size: 13px;
-}
-
-.request-meta {
-    display: flex;
-    align-items: center;
-
-    gap: 12px;
-}
-
-.request-date {
-    color: var(--muted);
-
-    font-size: 12px;
-}
-
-.request-status {
-    padding: 6px 11px;
-
-    border-radius: 999px;
-
-    background: var(--primary-soft);
-
-    color: var(--primary);
-
-    font-size: 12px;
-    font-weight: 750;
-}
-
-.request-content {
-    padding: 21px;
-}
-
-.request-grid {
-    display: grid;
-
-    grid-template-columns:
-        1fr 1fr;
-
-    gap: 13px;
-}
-
-.request-field {
-    background: var(--surface-soft);
-
-    border: 1px solid #edf0f1;
-
-    border-radius: 11px;
-
-    padding: 13px;
-}
-
-.request-field.full {
-    grid-column: 1 / -1;
-}
-
-.request-field-label {
-    margin-bottom: 6px;
-
-    color: var(--muted);
-
-    font-size: 10px;
-    font-weight: 750;
-
-    text-transform: uppercase;
-
-    letter-spacing: 0.07em;
-}
-
-.request-field-value {
-    line-height: 1.5;
-
-    word-break: break-word;
-}
-
-.request-description {
-    white-space: pre-wrap;
-}
-
-.request-images {
-    display: flex;
-    flex-wrap: wrap;
-
-    gap: 10px;
-
-    margin-top: 8px;
-}
-
-.request-image {
-    width: 160px;
-    height: 120px;
-
-    overflow: hidden;
-
-    border: 1px solid var(--border);
-    border-radius: 10px;
-
-    background: #f3f5f6;
-}
-
-.request-image img {
-    width: 100%;
-    height: 100%;
-
-    object-fit: contain;
-}
-
-.request-controls {
-    display: flex;
-
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 15px;
-
-    margin-top: 22px;
-    padding-top: 18px;
-
-    border-top: 1px solid var(--border);
-}
-
-
-/* =========================
-   FILES / UPDATES
-========================= */
-
-.file-list,
-.update-files {
-    display: flex;
-
-    flex-wrap: wrap;
-
-    gap: 8px;
-}
-
-.file {
-    padding: 8px 11px;
-
-    background: var(--surface-soft);
-
-    border: 1px solid var(--border);
-    border-radius: 8px;
-}
-
-.file a,
-.update-files a {
-    color: var(--primary);
-
-    text-decoration: none;
-}
-
-.update {
-    margin-top: 10px;
-
-    padding: 15px;
-
-    background: var(--surface-soft);
-
-    border: 1px solid var(--border);
-    border-radius: 11px;
-}
-
-.update-header {
-    display: flex;
-
-    justify-content: space-between;
-
-    gap: 10px;
-
-    margin-bottom: 8px;
-}
-
-.author {
-    font-weight: 700;
-}
-
-.date {
-    color: var(--muted);
-
-    font-size: 12px;
-}
-
-.message {
-    white-space: pre-wrap;
-
-    line-height: 1.5;
-}
-
-.new-update {
-    margin-top: 15px;
-}
-
-.new-message {
-    width: 100%;
-
-    min-height: 110px;
-
-    padding: 12px;
-
-    border: 1px solid var(--border);
-    border-radius: 9px;
-
-    resize: vertical;
-}
-
-.update-actions {
-    display: flex;
-
-    justify-content: space-between;
-    align-items: center;
-
-    gap: 10px;
-
-    margin-top: 10px;
-}
-
-.file-button {
-    display: inline-block;
-
-    padding: 10px 13px;
-
-    border: 1px solid var(--border);
-    border-radius: 9px;
-
-    background: var(--surface-soft);
-}
-
-.file-button input {
-    display: none;
-}
-
-
-/* =========================
-   TOAST
-========================= */
-
-#toast {
-    position: fixed;
-
-    right: 24px;
-    bottom: 24px;
-
-    padding: 13px 17px;
-
-    border-radius: 10px;
-
-    background: #182126;
-
-    color: white;
-
-    opacity: 0;
-
-    transform: translateY(10px);
-
-    pointer-events: none;
-
-    transition:
-        opacity 0.25s ease,
-        transform 0.25s ease;
-
-    z-index: 100;
-}
-
-#toast.show {
-    opacity: 1;
-
-    transform: translateY(0);
-}
-
-
-/* =========================
-   MOBILE
-========================= */
-
-@media (max-width: 1100px) {
-
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
+    if (!container) {
+        console.error("requests container not found");
+        return;
     }
 
-    #example-list {
-        grid-template-columns: repeat(2, 1fr);
+    const { data: requests, error } =
+        await db
+            .from("requests")
+            .select("*")
+            .order("created_at", {
+                ascending: false
+            });
+
+    if (error) {
+
+        console.error("Loading requests failed:", error);
+
+        container.innerHTML =
+            "<p>Could not load requests.</p>";
+
+        return;
     }
 
-}
+    container.innerHTML = "";
 
-@media (max-width: 750px) {
+    if (!requests || requests.length === 0) {
 
-    .sidebar {
-        width: 72px;
+        container.innerHTML =
+            "<p>No requests yet.</p>";
 
-        padding: 18px 10px;
+        return;
     }
 
-    .brand {
-        justify-content: center;
 
-        padding-bottom: 25px;
-    }
-
-    .brand-text,
-    .nav-button span,
-    .logout span {
-        display: none;
-    }
-
-    .nav-button,
-    .logout {
-        display: flex;
-
-        justify-content: center;
-    }
-
-    .dashboard {
-        margin-left: 72px;
-    }
-
-    .dashboard-header {
-        padding: 0 20px;
-    }
-
-    main {
-        padding: 24px 18px;
-    }
-
-    .page-header {
-        display: block;
-    }
-
-    .request-toolbar,
-    .controls {
-        flex-direction: column;
-    }
-
-    .controls select {
-        width: 100%;
-    }
-
-    .request-header {
-        align-items: flex-start;
-
-        flex-direction: column;
-    }
-
-    .request-meta {
-        width: 100%;
-
-        justify-content: space-between;
-    }
-
-    .request-grid,
-    .grid {
-        grid-template-columns: 1fr;
-    }
-
-    .field.full,
-    .request-field.full {
-        grid-column: auto;
-    }
-
-}
-
-@media (max-width: 500px) {
-
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-
-    #example-list {
-        grid-template-columns: 1fr;
-    }
-
-    .request-controls,
-    .update-actions {
-        flex-direction: column;
-
-        align-items: stretch;
-    }
-
-    .request-status-select,
-    .delete-request {
-        width: 100%;
-    }
-
-}
-
-/* Request card interaction and edit/update controls */
-.request-header { width: 100%; border: 0; background: var(--surface); text-align: left; cursor: pointer; }
-.request-header:hover { background: #fbfcfc; }
-.request-identity { min-width: 0; display: grid; gap: 3px; }
-.request-code-label { color: var(--muted); font-size: 10px; font-weight: 750; text-transform: uppercase; letter-spacing: .08em; }
-.request-code { display: inline-flex; width: fit-content; padding: 4px 8px; border-radius: 6px; background: var(--primary-soft); color: var(--primary); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; letter-spacing: .03em; }
-.request-toggle { color: var(--primary); font-size: 12px; font-weight: 700; }
-.request-card .request-content { display: none; }
-.request-card.open .request-content { display: block; }
-.request-edit-form input, .request-edit-form textarea, .request-edit-form select { width: 100%; border: 1px solid var(--border); border-radius: 8px; background: #fff; color: var(--text); padding: 10px 11px; }
-.request-edit-form textarea { min-height: 110px; resize: vertical; }
-.request-updates-section { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--border); }
-.updates-title { margin: 0 0 12px; font-size: 15px; }
-.new-update { margin-top: 14px; }
-.delete-request { border: 1px solid #f0cfca; background: var(--danger-soft); color: var(--danger); border-radius: 9px; padding: 9px 13px; font-weight: 650; }
-@media (max-width: 750px) { .request-meta { flex-wrap: wrap; } .request-toggle { width: 100%; } }
-</style>
-</head>
-
-
-<body>
-
-
-<!-- LOGIN -->
-
-<div id="login">
-
-    <div class="login-box">
-
-        <div class="login-logo">
-            K
-        </div>
-
-        <h1>Kxko Admin</h1>
-
-        <p>
-            Sign in to manage your website.
-        </p>
-
-        <input
-            id="admin-email"
-            type="email"
-            placeholder="Email"
-        >
-
-        <input
-            id="admin-password"
-            type="password"
-            placeholder="Password"
-        >
-
-        <button
-            id="login-button"
-            class="primary"
-            type="button"
-        >
-            Sign In
-        </button>
-
-        <div id="error"></div>
-
-    </div>
-
-</div>
-
-
-<!-- APP -->
-
-<div id="app" class="hidden">
-
-
-    <!-- SIDEBAR -->
-
-    <aside class="sidebar">
-
-        <div class="brand">
-
-            <div class="brand-icon">
-                K
-            </div>
-
-            <div class="brand-text">
-
-                Kxko Admin
-
-                <span>
-                    Dashboard
-                </span>
-
-            </div>
-
-        </div>
-
-
-        <nav class="sidebar-nav">
-
-            <button
-                class="nav-button active"
-                data-view="overview"
-                type="button"
-            >
-                📊
-                <span>Overview</span>
-            </button>
-
-
-            <button
-                class="nav-button"
-                data-view="requests"
-                type="button"
-            >
-                📬
-                <span>Requests</span>
-            </button>
-
-
-            <button
-                class="nav-button"
-                data-view="examples"
-                type="button"
-            >
-                🖼️
-                <span>Examples</span>
-            </button>
-
-        </nav>
-
-
-        <div class="sidebar-bottom">
-
-            <button
-                id="logout-button"
-                class="logout"
-                type="button"
-            >
-                ↪
-                <span>Log out</span>
-            </button>
-
-        </div>
-
-    </aside>
-
-
-    <!-- DASHBOARD -->
-
-    <div class="dashboard">
-
-
-        <header class="dashboard-header">
-
-            <div class="header-title">
-                Kxko Admin Panel
-            </div>
-
-            <div class="admin-status">
-
-                <div class="status-dot"></div>
-
-                Connected
-
-            </div>
-
-        </header>
-
-
-        <main>
-
-
-            <!-- OVERVIEW -->
-
-            <section
-                id="overview-view"
-                class="view active"
-            >
-
-                <div class="page-header">
-
-                    <div>
-
-                        <h2>
-                            Overview
-                        </h2>
-
-                        <p>
-                            A quick look at your website activity.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="stats-grid">
-
-                    <div class="stat-card">
-
-                        <div class="stat-label">
-                            Total Requests
-                        </div>
-
-                        <div
-                            class="stat-value"
-                            id="stat-total-requests"
-                        >
-                            —
-                        </div>
-
-                    </div>
-
-
-                    <div class="stat-card">
-
-                        <div class="stat-label">
-                            Pending
-                        </div>
-
-                        <div
-                            class="stat-value"
-                            id="stat-pending"
-                        >
-                            —
-                        </div>
-
-                    </div>
-
-
-                    <div class="stat-card">
-
-                        <div class="stat-label">
-                            In Progress
-                        </div>
-
-                        <div
-                            class="stat-value"
-                            id="stat-progress"
-                        >
-                            —
-                        </div>
-
-                    </div>
-
-
-                    <div class="stat-card">
-
-                        <div class="stat-label">
-                            Completed
-                        </div>
-
-                        <div
-                            class="stat-value"
-                            id="stat-completed"
-                        >
-                            —
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="section-card">
-
-                    <h3>
-                        Quick actions
-                    </h3>
-
-                    <p style="color: var(--muted); margin-bottom: 18px;">
-                        Jump straight to the things you need to manage.
-                    </p>
-
-                    <button
-                        class="primary"
-                        onclick="showAdminView('requests')"
-                    >
-                        Manage Requests
-                    </button>
-
-                    <button
-                        class="nav-button"
-                        style="
-                            display:inline-flex;
-                            color:var(--text);
-                            margin-left:8px;
-                            background:#f3f5f6;
-                            width:auto;
-                        "
-                        onclick="showAdminView('examples')"
-                    >
-                        Manage Examples
-                    </button>
-
-                </div>
-
-            </section>
-
-
-            <!-- REQUESTS -->
-
-            <section
-                id="requests-view"
-                class="view"
-            >
-
-                <div class="page-header">
-
-                    <div>
-
-                        <h2>
-                            Requests
-                        </h2>
-
-                        <p>
-                            Manage customer requests, files and updates.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="request-toolbar">
-
-                    <div class="controls">
-
-                        <input
-                            id="search"
-                            type="text"
-                            placeholder="Search requests..."
-                        >
-
-                        <select id="filter">
-
-                            <option value="all">
-                                All statuses
-                            </option>
-
-                            <option value="Pending">
-                                Pending
-                            </option>
-
-                            <option value="Accepted">
-                                Accepted
-                            </option>
-
-                            <option value="In Progress">
-                                In Progress
-                            </option>
-
-                            <option value="Completed">
-                                Completed
-                            </option>
-
-                            <option value="Cancelled">
-                                Cancelled
-                            </option>
-
-                        </select>
-
-                    </div>
-
-                </div>
-
-
-                <div id="requests"></div>
-
-            </section>
-
-
-            <!-- EXAMPLES -->
-
-            <section
-                id="examples-view"
-                class="view"
-            >
-
-                <div class="page-header">
-
-                    <div>
-
-                        <h2>
-                            Examples
-                        </h2>
-
-                        <p>
-                            Manage the diagrams shown on your website.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="example-editor">
-
-                    <div class="grid">
-
-
-                        <div class="field">
-
-                            <label>
-                                Diagram title
-                            </label>
-
-                            <input
-                                id="example-title"
-                                placeholder="Diagram title"
-                            >
-
-                        </div>
-
-
-                        <div class="field">
-
-                            <label>
-                                Image
-                            </label>
-
-                            <input
-                                id="example-image"
-                                type="file"
-                                accept="image/*"
-                            >
-
-                        </div>
-
-
-                        <div class="field full">
-
-                            <label>
-                                Description
-                            </label>
-
-                            <textarea
-                                id="example-description"
-                                placeholder="Description..."
-                            ></textarea>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="save-row">
-
-                        <button
-                            id="add-example"
-                            class="primary"
-                            type="button"
-                        >
-                            Add Example
-                        </button>
-
-                    </div>
-
-                </div>
-
-
-                <div id="example-list">
-
-                    <p>
-                        Loading examples...
-                    </p>
-
-                </div>
-
-            </section>
-
-
-        </main>
-
-    </div>
-
-</div>
-
-
-<div id="toast"></div>
-
-
-<script src="../js/admin.js"></script>
-
-<script src="../js/requests-admin.js"></script>
-
-
-<script>
-
-/* =========================
-   NAVIGATION
-========================= */
-
-function showAdminView(view) {
-
-    document
-        .querySelectorAll(".view")
-        .forEach(element => {
-
-            element.classList.remove("active");
-
-        });
-
-
-    document
-        .getElementById(view + "-view")
-        ?.classList.add("active");
-
-
-    document
-        .querySelectorAll(".nav-button")
-        .forEach(button => {
-
-            button.classList.remove("active");
-
-        });
-
-
-    document
-        .querySelector(
-            `.nav-button[data-view="${view}"]`
-        )
-        ?.classList.add("active");
-
-}
-
-
-/* NAV BUTTONS */
-
-document
-    .querySelectorAll(".nav-button[data-view]")
-    .forEach(button => {
-
-        button.addEventListener("click", () => {
-
-            showAdminView(
-                button.dataset.view
+    for (const request of requests) {
+
+        const { data: images, error: imageError } =
+            await db
+                .from("request_images")
+                .select("image_url")
+                .eq("request_id", request.id);
+
+        if (imageError) {
+            console.error(
+                "Image loading error:",
+                imageError
             );
+        }
 
-        });
 
+        let imageHTML = "";
+
+        if (images && images.length > 0) {
+
+            imageHTML = `
+                <div class="file-list">
+            `;
+
+            images.forEach((image, index) => {
+
+                imageHTML += `
+                    <div class="file">
+                        <a
+                            href="${image.image_url}"
+                            target="_blank"
+                        >
+                            Reference image ${index + 1}
+                        </a>
+                    </div>
+                `;
+
+            });
+
+            imageHTML += `
+                </div>
+            `;
+
+        } else {
+
+            imageHTML =
+                "<p>No files uploaded.</p>";
+
+        }
+
+
+        const createdDate =
+            request.created_at
+                ? new Date(request.created_at).toLocaleString()
+                : "Unknown";
+
+
+        container.innerHTML += `
+
+            <div
+                class="request"
+                data-request-id="${request.id}"
+            >
+
+                <button
+                    class="request-head"
+                    type="button"
+                    onclick="toggleRequest(this)"
+                >
+
+                    <div class="code">
+                        ${escapeHTML(request.request_code)}
+                    </div>
+
+                    <div class="name">
+                        ${escapeHTML(request.name || "Unknown")}
+                    </div>
+
+                    <div class="status">
+                        ${escapeHTML(request.status || "Pending")}
+                    </div>
+
+                    <div class="arrow">
+                        ▼
+                    </div>
+
+                </button>
+
+
+                <div class="details">
+
+                    <div class="details-inner">
+
+                        <div class="content">
+
+                            <div class="grid">
+
+
+                                <div class="field">
+
+                                    <label>
+                                        Name
+                                    </label>
+
+                                    <input
+                                        value="${escapeHTML(request.name || "")}"
+                                        readonly
+                                    >
+
+                                </div>
+
+
+                                <div class="field">
+
+                                    <label>
+                                        Email
+                                    </label>
+
+                                    <input
+                                        value="${escapeHTML(request.email || "Not provided")}"
+                                        readonly
+                                    >
+
+                                </div>
+
+
+                                <div class="field">
+
+                                    <label>
+                                        Discord
+                                    </label>
+
+                                    <input
+                                        value="${escapeHTML(request.discord || "Not provided")}"
+                                        readonly
+                                    >
+
+                                </div>
+
+
+                                <div class="field">
+
+                                    <label>
+                                        Size
+                                    </label>
+
+                                    <input
+                                        value="${escapeHTML(request.size || "")}"
+                                        readonly
+                                    >
+
+                                </div>
+
+
+                                <div class="field">
+
+                                    <label>
+                                        Type
+                                    </label>
+
+                                    <input
+                                        value="${escapeHTML(request.type || "")}"
+                                        readonly
+                                    >
+
+                                </div>
+
+
+                                <div class="field">
+
+                                    <label>
+                                        Created
+                                    </label>
+
+                                    <input
+                                        value="${escapeHTML(createdDate)}"
+                                        readonly
+                                    >
+
+                                </div>
+
+
+                                <div class="field full">
+
+                                    <label>
+                                        Description
+                                    </label>
+
+                                    <textarea readonly>${escapeHTML(request.description || "")}</textarea>
+
+                                </div>
+
+
+                                <div class="field full">
+
+                                    <label>
+                                        Reference Images
+                                    </label>
+
+                                    ${imageHTML}
+
+                                </div>
+
+
+                                <div class="field">
+
+                                    <label>
+                                        Status
+                                    </label>
+
+                                    <select
+                                        onchange="updateRequestStatus(${request.id}, this.value)"
+                                    >
+
+                                        <option
+                                            value="Pending"
+                                            ${request.status === "Pending" ? "selected" : ""}
+                                        >
+                                            Pending
+                                        </option>
+
+                                        <option
+                                            value="Accepted"
+                                            ${request.status === "Accepted" ? "selected" : ""}
+                                        >
+                                            Accepted
+                                        </option>
+
+                                        <option
+                                            value="In Progress"
+                                            ${request.status === "In Progress" ? "selected" : ""}
+                                        >
+                                            In Progress
+                                        </option>
+
+                                        <option
+                                            value="Completed"
+                                            ${request.status === "Completed" ? "selected" : ""}
+                                        >
+                                            Completed
+                                        </option>
+
+                                        <option
+                                            value="Cancelled"
+                                            ${request.status === "Cancelled" ? "selected" : ""}
+                                        >
+                                            Cancelled
+                                        </option>
+
+                                    </select>
+
+                                </div>
+
+
+                            </div>
+
+
+                            <div class="save-row">
+
+                                <button
+                                    class="delete-example"
+                                    type="button"
+                                    onclick="deleteRequest(${request.id})"
+                                >
+                                    Delete Request
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        `;
+    }
+}
+
+
+/* =========================
+   OPEN / CLOSE REQUEST
+========================= */
+
+function toggleRequest(button) {
+
+    const request =
+        button.closest(".request");
+
+    if (!request) return;
+
+    request.classList.toggle("open");
+}
+
+
+/* =========================
+   UPDATE STATUS
+========================= */
+
+async function updateRequestStatus(id, status) {
+
+    const { error } =
+        await db
+            .from("requests")
+            .update({
+                status: status
+            })
+            .eq("id", id);
+
+    if (error) {
+
+        console.error(error);
+
+        alert("Could not update status.");
+
+        return;
+    }
+
+
+    /*
+     * Update the status displayed
+     * in the collapsed request header.
+     */
+
+    const request =
+        document.querySelector(
+            `.request[data-request-id="${id}"]`
+        );
+
+    if (request) {
+
+        const statusElement =
+            request.querySelector(".request-head .status");
+
+        if (statusElement) {
+            statusElement.textContent = status;
+        }
+    }
+
+}
+
+
+/* =========================
+   DELETE REQUEST
+========================= */
+
+async function deleteRequest(id) {
+
+    if (!confirm("Delete this request?")) {
+        return;
+    }
+
+
+    /*
+     * Find associated images
+     */
+
+    const { data: images } =
+        await db
+            .from("request_images")
+            .select("image_url")
+            .eq("request_id", id);
+
+
+    /*
+     * Delete images from storage
+     */
+
+    if (images) {
+
+        for (const image of images) {
+
+            const parts =
+                image.image_url.split("/diagram-files/");
+
+            const path = parts[1];
+
+            if (path) {
+
+                await db.storage
+                    .from("diagram-files")
+                    .remove([path]);
+
+            }
+        }
+    }
+
+
+    /*
+     * Delete image database records
+     */
+
+    const { error: imageDeleteError } =
+        await db
+            .from("request_images")
+            .delete()
+            .eq("request_id", id);
+
+
+    if (imageDeleteError) {
+
+        console.error(
+            "Could not delete request images:",
+            imageDeleteError
+        );
+
+    }
+
+
+    /*
+     * Delete request
+     */
+
+    const { error } =
+        await db
+            .from("requests")
+            .delete()
+            .eq("id", id);
+
+
+    if (error) {
+
+        console.error(error);
+
+        alert("Delete failed.");
+
+        return;
+    }
+
+
+    loadRequests();
+}
+
+
+/* =========================
+   HTML ESCAPING
+========================= */
+
+function escapeHTML(value) {
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+/* Redesigned request cards with editing and customer-facing updates. */
+const REQUEST_STATUSES = ["Pending", "Accepted", "In Progress", "Completed", "Cancelled"];
+const UPDATE_AUTHOR = "Kxko";
+let adminRequests = [];
+
+async function loadRequests() {
+    const container = document.getElementById("requests");
+    if (!container) return;
+    container.textContent = "Loading requests…";
+    const { data, error } = await db.from("requests")
+        .select("*, request_images ( image_url )")
+        .order("created_at", { ascending: false });
+    if (error) return showRequestError(container, "Could not load requests.", error);
+    adminRequests = data || [];
+    renderAdminRequests();
+}
+
+function renderAdminRequests() {
+    const container = document.getElementById("requests");
+    if (!container) return;
+    const query = (document.getElementById("search")?.value || "").trim().toLowerCase();
+    const filter = document.getElementById("filter")?.value || "all";
+    const visible = adminRequests.filter(request => {
+        const searchable = [request.request_code, request.name, request.email, request.discord, request.type].join(" ").toLowerCase();
+        return (!query || searchable.includes(query)) && (filter === "all" || request.status === filter);
+    });
+    container.replaceChildren();
+    if (!visible.length) return container.append(makeElement("p", "", "No requests match your filters."));
+    visible.forEach(request => container.append(makeRequestCard(request)));
+}
+
+function makeRequestCard(request) {
+    const card = makeElement("article", "request-card");
+    const header = makeElement("button", "request-header");
+    header.type = "button";
+    const identity = makeElement("div", "request-identity");
+    identity.append(makeElement("span", "request-code-label", "Request code"));
+    identity.append(makeElement("strong", "request-code", request.request_code || `KXD-${String(request.id).padStart(4, "0")}`));
+    identity.append(makeElement("span", "request-name", request.name || "Unnamed request"));
+    const meta = makeElement("div", "request-meta");
+    meta.append(makeElement("span", "request-date", request.created_at ? new Date(request.created_at).toLocaleString() : "Date unavailable"));
+    meta.append(makeElement("span", "request-status", request.status || "Pending"));
+    meta.append(makeElement("span", "request-toggle", "View details"));
+    header.append(identity, meta);
+    header.addEventListener("click", () => {
+        const opened = card.classList.toggle("open");
+        header.setAttribute("aria-expanded", String(opened));
+        meta.querySelector(".request-toggle").textContent = opened ? "Hide details" : "View details";
     });
 
-</script>
+    const content = makeElement("div", "request-content");
+    const form = document.createElement("form");
+    form.className = "request-edit-form";
+    form.addEventListener("submit", event => saveRequestEdits(event, request.id));
+    const grid = makeElement("div", "request-grid");
+    grid.append(editField("Name", "name", request.name), editField("Email", "email", request.email, "email"));
+    grid.append(editField("Discord", "discord", request.discord), editField("Size", "size", request.size));
+    grid.append(editField("Type", "type", request.type), statusField(request.status || "Pending"));
+    grid.append(editField("Description", "description", request.description, "textarea", true));
+    grid.append(referenceImages(request.request_images || []));
+    const controls = makeElement("div", "request-controls");
+    const save = makeElement("button", "primary", "Save changes"); save.type = "submit";
+    const remove = makeElement("button", "delete-request", "Delete request"); remove.type = "button";
+    remove.addEventListener("click", () => deleteRequest(request.id));
+    controls.append(save, remove); form.append(grid, controls);
+    content.append(form, createUpdatesPanel(request.id)); card.append(header, content);
+    loadAdminUpdates(request.id, content.querySelector(".updates-list"));
+    return card;
+}
 
-</body>
-</html>
+function editField(label, name, value, type = "text", full = false) {
+    const wrapper = makeElement("label", `request-field${full ? " full" : ""}`);
+    wrapper.append(makeElement("span", "request-field-label", label));
+    const input = type === "textarea" ? document.createElement("textarea") : document.createElement("input");
+    input.name = name; input.value = value || ""; if (type !== "textarea") input.type = type;
+    wrapper.append(input); return wrapper;
+}
+
+function statusField(current) {
+    const wrapper = makeElement("label", "request-field"); wrapper.append(makeElement("span", "request-field-label", "Status"));
+    const select = document.createElement("select"); select.name = "status"; select.className = "request-status-select";
+    REQUEST_STATUSES.forEach(status => select.add(new Option(status, status, status === current, status === current)));
+    wrapper.append(select); return wrapper;
+}
+
+function referenceImages(images) {
+    const wrapper = makeElement("div", "request-field full"); wrapper.append(makeElement("div", "request-field-label", "Reference images"));
+    const list = makeElement("div", "request-images");
+    if (!images.length) list.append(makeElement("span", "request-field-value", "No reference images uploaded."));
+    images.forEach((image, index) => { const link = document.createElement("a"); link.className = "request-image"; link.href = image.image_url; link.target = "_blank"; link.rel = "noopener"; const picture = document.createElement("img"); picture.src = image.image_url; picture.alt = `Reference image ${index + 1}`; link.append(picture); list.append(link); });
+    wrapper.append(list); return wrapper;
+}
+
+function createUpdatesPanel(requestId) {
+    const panel = makeElement("section", "request-updates-section"); panel.append(makeElement("h3", "updates-title", "Customer updates")); panel.append(makeElement("div", "updates-list", "Loading updates…"));
+    const form = document.createElement("form"); form.className = "new-update"; form.addEventListener("submit", event => postRequestUpdate(event, requestId));
+    const message = document.createElement("textarea"); message.className = "new-message"; message.name = "message"; message.placeholder = "Write an update for the customer…"; message.required = true;
+    const actions = makeElement("div", "update-actions"); const attach = makeElement("label", "file-button", "Attach files"); const files = document.createElement("input"); files.type = "file"; files.name = "files"; files.multiple = true; attach.append(files);
+    const submit = makeElement("button", "primary", "Post update"); submit.type = "submit"; actions.append(attach, submit); form.append(message, actions); panel.append(form); return panel;
+}
+
+async function saveRequestEdits(event, id) {
+    event.preventDefault(); const form = event.currentTarget; const button = form.querySelector('[type="submit"]'); button.disabled = true; button.textContent = "Saving…";
+    const values = Object.fromEntries(new FormData(form)); const { error } = await db.from("requests").update(values).eq("id", id);
+    button.disabled = false; button.textContent = "Save changes"; if (error) return showRequestError(null, "Could not save request changes.", error); await loadRequests();
+}
+
+async function postRequestUpdate(event, requestId) {
+    event.preventDefault(); const form = event.currentTarget; const message = form.elements.message.value.trim(); const button = form.querySelector('[type="submit"]'); if (!message) return;
+    button.disabled = true; button.textContent = "Posting…";
+    const { data: update, error } = await db.from("request_updates").insert({ request_id: requestId, author: UPDATE_AUTHOR, message }).select().single();
+    if (error) { button.disabled = false; button.textContent = "Post update"; return showRequestError(null, "Could not post the update.", error); }
+    for (const file of Array.from(form.elements.files.files || [])) await uploadAdminUpdateFile(update.id, requestId, file);
+    form.reset(); button.disabled = false; button.textContent = "Post update"; await loadAdminUpdates(requestId, form.closest(".request-updates-section").querySelector(".updates-list"));
+}
+
+async function uploadAdminUpdateFile(updateId, requestId, file) {
+    const path = `request-updates/${requestId}/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "-")}`;
+    const { error: uploadError } = await db.storage.from("diagram-files").upload(path, file); if (uploadError) return showRequestError(null, `Could not upload ${file.name}.`, uploadError);
+    const publicUrl = db.storage.from("diagram-files").getPublicUrl(path).data.publicUrl;
+    const { error } = await db.from("request_update_files").insert({ update_id: updateId, file_name: file.name, file_url: publicUrl }); if (error) showRequestError(null, `Could not attach ${file.name}.`, error);
+}
+
+async function loadAdminUpdates(requestId, container) {
+    const { data, error } = await db.from("request_updates").select("*, request_update_files (*)").eq("request_id", requestId).order("created_at", { ascending: true });
+    if (error) return showRequestError(container, "Could not load updates.", error); container.replaceChildren(); if (!data?.length) return container.append(makeElement("p", "empty", "No updates yet."));
+    data.forEach(update => { const item = makeElement("article", "update"); const heading = makeElement("div", "update-header"); heading.append(makeElement("span", "author", update.author || UPDATE_AUTHOR), makeElement("span", "date", new Date(update.created_at).toLocaleString())); item.append(heading, makeElement("div", "message", update.message || "")); if (update.request_update_files?.length) { const files = makeElement("div", "update-files"); update.request_update_files.forEach(file => { const link = document.createElement("a"); link.href = file.file_url; link.target = "_blank"; link.rel = "noopener"; link.textContent = `📎 ${file.file_name}`; files.append(link); }); item.append(files); } container.append(item); });
+}
+
+function makeElement(tag, className, text) { const node = document.createElement(tag); if (className) node.className = className; if (text !== undefined) node.textContent = text; return node; }
+function showRequestError(container, message, error) { console.error(message, error); if (container) container.textContent = message; else alert(`${message} ${error?.message || ""}`.trim()); }
+document.getElementById("search")?.addEventListener("input", renderAdminRequests);
+document.getElementById("filter")?.addEventListener("change", renderAdminRequests);
