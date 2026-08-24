@@ -14,53 +14,47 @@ if (questionForm) {
         const contact =
             document.getElementById("contact").value.trim();
 
-
         if (!question || !contact) {
-
             alert("Please fill in all fields.");
-
             return;
         }
 
 
-        /*
-         * Generate question code
-         *
-         * Example:
-         * KXKO-QSTN-7F3A
-         */
+        // Generate a question code
+        // Example: KXQ-A7F3-92KM
 
-        const questionCode =
-            "KXKO-QSTN-" +
+        const part1 =
             Math.random()
                 .toString(36)
                 .substring(2, 6)
                 .toUpperCase();
 
+        const part2 =
+            Math.random()
+                .toString(36)
+                .substring(2, 6)
+                .toUpperCase();
 
-        /*
-         * Insert question
-         */
-
-        const { data, error } =
-
-            await db
-                .from("questions")
-                .insert({
-
-                    question: question,
-                    contact: contact,
-                    question_code: questionCode,
-                    status: "Pending"
-
-                })
-                .select("*")
-                .single();
+        const questionCode =
+            `KXQ-${part1}-${part2}`;
 
 
-        /*
-         * Handle error
-         */
+        console.log("Generated question code:", questionCode);
+
+
+        // Submit question
+
+        const { data, error } = await db
+            .from("questions")
+            .insert({
+                question: question,
+                contact: contact,
+                question_code: questionCode,
+                status: "Pending"
+            })
+            .select("question_code")
+            .single();
+
 
         if (error) {
 
@@ -75,20 +69,14 @@ if (questionForm) {
         }
 
 
-        /*
-         * Success
-         */
+        // Success
 
         alert(
             "Question submitted!\n\n" +
-
-            "Your question code is:\n" +
-
+            "Your question code is:\n\n" +
             data.question_code +
-
             "\n\n" +
-
-            "Keep this code so you can check your answer later."
+            "Keep this code to check your answer later."
         );
 
 
