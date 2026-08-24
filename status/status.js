@@ -1,97 +1,139 @@
+console.log("status.js loaded");
+
+
+/* =========================
+   HTML ESCAPING
+========================= */
+
 function escapeHTML(value) {
+
     return String(value ?? "")
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
+
 }
 
-const form =
+
+/* =========================
+   ELEMENTS
+========================= */
+
+const statusForm =
     document.getElementById("status-form");
 
-const result =
+const statusInput =
+    document.getElementById("request-code");
+
+const statusError =
+    document.getElementById("status-error");
+
+const requestResult =
     document.getElementById("request-result");
 
 const questionResult =
     document.getElementById("question-result");
 
-const errorText =
-    document.getElementById("status-error");
+
+/* =========================
+   STATUS FORM
+========================= */
+
+if (statusForm) {
+
+    statusForm.addEventListener("submit", async (event) => {
+
+        event.preventDefault();
+
+        statusError.textContent = "";
+
+        requestResult.hidden = true;
+        questionResult.hidden = true;
 
 
-form.addEventListener("submit", async (event) => {
-
-    event.preventDefault();
-
-    errorText.textContent = "";
-    result.hidden = true;
-
-    const code = document
-        .getElementById("request-code")
-        .value
-        .trim()
-        .toUpperCase();
-
-    if (!code) {
-        errorText.textContent = "Please enter a code.";
-        return;
-    }
+        const code =
+            statusInput.value
+                .trim()
+                .toUpperCase();
 
 
-    /*
-     * =========================
-     * QUESTION CODE
-     * =========================
-     */
-
-    if (code.startsWith("KXQ-")) {
-
-        const { data: question, error } = await db
-    .from("questions")
-    .select("*")
-    .eq("question_code", code)
-    .maybeSingle();
+        if (!code) {
+            return;
+        }
 
 
-        if (error || !question) {
+        /* =========================
+           QUESTION
+        ========================= */
 
-            console.error("Question lookup failed:", error);
+        if (code.startsWith("KXQ-")) {
 
-            errorText.textContent =
-                "No question could be found with that code.";
+            await checkQuestion(code);
 
             return;
         }
 
 
-        displayQuestion(question);
+        /* =========================
+           REQUEST
+        ========================= */
 
-        result.hidden = false;
+        if (code.startsWith("KXKO-")) {
+
+            await checkRequest(code);
+
+            return;
+        }
+
+
+        /* =========================
+           INVALID CODE
+        ========================= */
+
+        statusError.textContent =
+            "Invalid code. Codes must start with KXKO- or KXQ-.";
+
+    });
+
+}
+
+
+/* =========================
+   CHECK REQUEST
+========================= */
+
+async function checkRequest(code) {
+
+    const {
+        data: request,
+        error
+    } = await db
+        .from("requests")
+        .select("*")
+        .eq("request_code", code)
+        .maybeSingle();
+
+
+    if (error) {
+
+        console.error(
+            "Request lookup failed:",
+            error
+        );
+
+        statusError.textContent =
+            "Could not check this request.";
 
         return;
     }
 
 
-    /*
-     * =========================
-     * REQUEST CODE
-     * =========================
-     */
+    if (!request) {
 
-    const { data: request, error } = await db
-        .from("requests")
-        .select("*")
-        .eq("request_code", code)
-        .single();
-
-
-    if (error || !request) {
-
-        console.error("Request lookup failed:", error);
-
-        errorText.textContent =
-            "No request or question could be found with that code.";
+        statusError.textContent =
+            "No request could be found with that code.";
 
         return;
     }
@@ -103,299 +145,86 @@ form.addEventListener("submit", async (event) => {
 
     await loadUpdates(request.id);
 
-    result.hidden = false;
-
-});
-
-async function loadQuestionStatus(code) {
-
-    const {
-        data: question,
-        error
-    } =
-        await db
-            .from("questions")
-            .select("*")
-            .eq(
-                "question_code",
-                code
-            )
-            .single();
-
-
-    if (
-        error ||
-        !question
-    ) {
-
-        console.error(error);
-
-        errorText.textContent =
-            "No question could be found with that code.";
-
-        return;
-    }
-
-
-    document
-        .getElementById(
-            "question-display-code"
-        )
-        .textContent =
-            question.question_code;
-
-
-    document
-        .getElementById(
-            "question-display-status"
-        )
-        .textContent =
-            question.status ||
-            "Pending";
-
-
-    document
-        .getElementById(
-            "question-display-question"
-        )
-        .textContent =
-            question.question;
-
-
-    document
-        .getElementById(
-            "question-display-answer"
-        )
-        .textContent =
-            question.answer ||
-            "Your question hasn't been answered yet.";
-
-
-    questionResult.hidden =
-        false;
+    requestResult.hidden = false;
 
 }
-const questionStatusForm =
-    document.getElementById("question-status-form");
 
-if (questionStatusForm) {
 
-    questionStatusForm.addEventListener("submit", async (event) => {
-
-        event.preventDefault();
-
-        const errorText =
-            document.getElementById("question-status-error");
-
-        const result =
-            document.getElementById("question-result");
-
-        errorText.textContent = "";
-        result.hidden = true;
-
-        const code =
-            document
-                .getElementById("question-code")
-                .value
-                .trim()
-                .toUpperCase();
-
-        if (!code) {
-            return;
-        }
-
-        const { data: question, error } =
-            await db
-                .from("questions")
-                .select("*")
-                .eq("question_code", code)
-                .maybeSingle();
-
-        if (error) {
-
-            console.error(
-                "Question lookup failed:",
-                error
-            );
-
-            errorText.textContent =
-                "Could not check this question.";
-
-            return;
-        }
-
-        if (!question) {
-
-            errorText.textContent =
-                "No question could be found with that code.";
-
-            return;
-        }
-
-        displayQuestion(question);
-
-        result.hidden = false;
-
-    });
-
-}
+/* =========================
+   DISPLAY REQUEST
+========================= */
 
 function displayRequest(request) {
 
-    document.getElementById("display-code").textContent =
-        request.request_code;
+    document.getElementById(
+        "display-code"
+    ).textContent =
+        request.request_code || "—";
 
-    document.getElementById("display-status").textContent =
-        request.status;
 
-    document.getElementById("display-name").textContent =
+    document.getElementById(
+        "display-status"
+    ).textContent =
+        request.status || "Pending";
+
+
+    document.getElementById(
+        "display-name"
+    ).textContent =
         request.name || "—";
 
-    document.getElementById("display-type").textContent =
+
+    document.getElementById(
+        "display-type"
+    ).textContent =
         request.type || "—";
 
-    document.getElementById("display-size").textContent =
+
+    document.getElementById(
+        "display-size"
+    ).textContent =
         request.size || "—";
 
 
-    document.getElementById("display-date").textContent =
-        new Date(request.created_at)
-        .toLocaleDateString();
+    document.getElementById(
+        "display-date"
+    ).textContent =
+        request.created_at
+            ? new Date(
+                request.created_at
+            ).toLocaleString()
+            : "—";
 
 
-    document.getElementById("display-description").textContent =
-        request.description || "No description provided.";
-
-}
-function displayQuestion(question) {
-
-    /*
-     * Hide request-specific information
-     */
-
-    const requestDetails = document.getElementById("request-details");
-
-    if (requestDetails) {
-        requestDetails.hidden = true;
-    }
-
-
-    /*
-     * Question result container
-     */
-
-    let questionDetails =
-        document.getElementById("question-details");
-
-
-    if (!questionDetails) {
-
-        questionDetails =
-            document.createElement("div");
-
-        questionDetails.id = "question-details";
-
-        result.appendChild(questionDetails);
-    }
-
-
-    questionDetails.hidden = false;
-
-
-    const date = question.created_at
-        ? new Date(question.created_at).toLocaleString()
-        : "Unknown";
-
-
-    const status =
-        question.status || "Pending";
-
-
-    const answer =
-        question.answer;
-
-
-    questionDetails.innerHTML = `
-        <div class="question-result">
-
-            <div class="question-result-header">
-
-                <div>
-
-                    <div class="result-label">
-                        Question code
-                    </div>
-
-                    <strong>
-                        ${escapeHTML(question.question_code)}
-                    </strong>
-
-                </div>
-
-                <span class="question-status">
-                    ${escapeHTML(status)}
-                </span>
-
-            </div>
-
-
-            <div class="question-result-field">
-
-                <div class="result-label">
-                    Your question
-                </div>
-
-                <p>
-                    ${escapeHTML(question.question)}
-                </p>
-
-            </div>
-
-
-            <div class="question-result-field">
-
-                <div class="result-label">
-                    Submitted
-                </div>
-
-                <p>
-                    ${escapeHTML(date)}
-                </p>
-
-            </div>
-
-
-            <div class="question-result-field">
-
-                <div class="result-label">
-                    Answer
-                </div>
-
-                <p>
-                    ${
-                        answer
-                            ? escapeHTML(answer)
-                            : "Your question has not been answered yet."
-                    }
-                </p>
-
-            </div>
-
-        </div>
-    `;
+    document.getElementById(
+        "display-description"
+    ).textContent =
+        request.description ||
+        "No description provided.";
 
 }
+
+
+/* =========================
+   REQUEST FILES
+========================= */
 
 async function loadRequestFiles(requestId) {
 
     const container =
-        document.getElementById("request-files");
+        document.getElementById(
+            "request-files"
+        );
 
-    container.innerHTML = "";
+
+    container.innerHTML =
+        "<p>Loading files...</p>";
 
 
-    const { data, error } =
-        await db
+    const {
+        data,
+        error
+    } = await db
         .from("request_images")
         .select("*")
         .eq("request_id", requestId);
@@ -403,31 +232,31 @@ async function loadRequestFiles(requestId) {
 
     if (error) {
 
-        console.error(error);
+        console.error(
+            "Could not load request files:",
+            error
+        );
 
         container.innerHTML =
-            '<p class="empty">Could not load files.</p>';
+            "<p>Could not load files.</p>";
 
         return;
     }
 
 
-    if (!data.length) {
+    container.innerHTML = "";
+
+
+    if (!data || data.length === 0) {
 
         container.innerHTML =
-            '<p class="empty">No files attached.</p>';
+            "<p>No files attached.</p>";
 
         return;
     }
 
 
-    for (const file of data) {
-
-        const element =
-            document.createElement("div");
-
-        element.className = "file";
-
+    data.forEach((file, index) => {
 
         const link =
             document.createElement("a");
@@ -438,28 +267,37 @@ async function loadRequestFiles(requestId) {
 
         link.rel = "noopener";
 
-        link.textContent = "📎 View file";
+        link.textContent =
+            `📎 Reference file ${index + 1}`;
 
 
-        element.appendChild(link);
+        container.appendChild(link);
 
-        container.appendChild(element);
-
-    }
+    });
 
 }
 
 
+/* =========================
+   REQUEST UPDATES
+========================= */
+
 async function loadUpdates(requestId) {
 
     const container =
-        document.getElementById("request-updates");
+        document.getElementById(
+            "request-updates"
+        );
 
-    container.innerHTML = "";
+
+    container.innerHTML =
+        "<p>Loading updates...</p>";
 
 
-    const { data: updates, error } =
-        await db
+    const {
+        data: updates,
+        error
+    } = await db
         .from("request_updates")
         .select("*")
         .eq("request_id", requestId)
@@ -470,19 +308,25 @@ async function loadUpdates(requestId) {
 
     if (error) {
 
-        console.error(error);
+        console.error(
+            "Could not load updates:",
+            error
+        );
 
         container.innerHTML =
-            '<p class="empty">Could not load updates.</p>';
+            "<p>Could not load updates.</p>";
 
         return;
     }
 
 
-    if (!updates.length) {
+    container.innerHTML = "";
+
+
+    if (!updates || updates.length === 0) {
 
         container.innerHTML =
-            '<p class="empty">No updates yet.</p>';
+            "<p>No updates yet.</p>";
 
         return;
     }
@@ -490,22 +334,21 @@ async function loadUpdates(requestId) {
 
     for (const update of updates) {
 
-        const element =
+        const article =
             document.createElement("article");
 
-        element.className = "update";
+        article.className = "update";
 
 
         const header =
             document.createElement("div");
 
-        header.className = "update-header";
+        header.className =
+            "update-header";
 
 
         const author =
-            document.createElement("span");
-
-        author.className = "update-author";
+            document.createElement("strong");
 
         author.textContent =
             update.author || "Kxko";
@@ -514,77 +357,134 @@ async function loadUpdates(requestId) {
         const date =
             document.createElement("span");
 
-        date.className = "update-date";
-
         date.textContent =
-            new Date(update.created_at)
-            .toLocaleString();
+            update.created_at
+                ? new Date(
+                    update.created_at
+                ).toLocaleString()
+                : "";
 
 
-        header.appendChild(author);
-
-        header.appendChild(date);
+        header.append(
+            author,
+            date
+        );
 
 
         const message =
-            document.createElement("div");
-
-        message.className = "update-message";
+            document.createElement("p");
 
         message.textContent =
-            update.message;
+            update.message || "";
 
 
-        element.appendChild(header);
-
-        element.appendChild(message);
-
-
-        const {
-            data: files
-        } = await db
-        .from("request_update_files")
-        .select("*")
-        .eq("update_id", update.id);
+        article.append(
+            header,
+            message
+        );
 
 
-        if (files && files.length) {
-
-            const fileContainer =
-                document.createElement("div");
-
-            fileContainer.className =
-                "update-files";
-
-
-            for (const file of files) {
-
-                const link =
-                    document.createElement("a");
-
-                link.href =
-                    file.file_url;
-
-                link.target = "_blank";
-
-                link.rel = "noopener";
-
-                link.textContent =
-                    `📎 ${file.file_name}`;
-
-
-                fileContainer.appendChild(link);
-
-            }
-
-
-            element.appendChild(fileContainer);
-
-        }
-
-
-        container.appendChild(element);
+        container.appendChild(article);
 
     }
+
+}
+
+
+/* =========================
+   CHECK QUESTION
+========================= */
+
+async function checkQuestion(code) {
+
+    const {
+        data: question,
+        error
+    } = await db
+        .from("questions")
+        .select("*")
+        .eq("question_code", code)
+        .maybeSingle();
+
+
+    if (error) {
+
+        console.error(
+            "Question lookup failed:",
+            error
+        );
+
+        statusError.textContent =
+            "Could not check this question.";
+
+        return;
+    }
+
+
+    if (!question) {
+
+        statusError.textContent =
+            "No question could be found with that code.";
+
+        return;
+    }
+
+
+    displayQuestion(question);
+
+    questionResult.hidden = false;
+
+}
+
+
+/* =========================
+   DISPLAY QUESTION
+========================= */
+
+function displayQuestion(question) {
+
+    document.getElementById(
+        "question-display-code"
+    ).textContent =
+        question.question_code || "—";
+
+
+    document.getElementById(
+        "question-display-status"
+    ).textContent =
+        question.status || "Pending";
+
+
+    document.getElementById(
+        "question-display-question"
+    ).textContent =
+        question.question ||
+        "No question text available.";
+
+
+    document.getElementById(
+        "question-display-answer"
+    ).textContent =
+        question.answer ||
+        "No answer yet. Please check back later.";
+
+}
+
+
+/* =========================
+   INPUT FORMATTING
+========================= */
+
+if (statusInput) {
+
+    statusInput.addEventListener(
+        "input",
+        () => {
+
+            statusInput.value =
+                statusInput.value.toUpperCase();
+
+        }
+    );
 
 }
