@@ -1,56 +1,85 @@
 console.log("questions.js loaded");
 
+const questionForm = document.getElementById("question-form");
 
-const questionForm =
-document.getElementById("question-form");
+if (questionForm) {
 
+    questionForm.addEventListener("submit", async (event) => {
 
-if(questionForm){
+        event.preventDefault();
 
+        const question =
+            document.getElementById("question").value.trim();
 
-questionForm.addEventListener("submit", async(event)=>{
+        const contact =
+            document.getElementById("contact").value.trim();
 
+        if (!question || !contact) {
+            alert("Please fill in all fields.");
+            return;
+        }
 
-event.preventDefault();
+        /*
+         * Generate a question code.
+         *
+         * Example:
+         * KXKO-QSTN-7F3A
+         */
 
-
-const question =
-document.getElementById("question").value;
-
-
-const contact =
-document.getElementById("contact").value;
-
-
-
-const {error} =
-await db
-.from("questions")
-.insert({
-
-    question: question,
-    contact: contact
-
-});
-
-
-
-if(error){
-
-console.error(error);
-alert(error.message);
-return;
-
-}
+        const questionCode =
+            "KXKO-QSTN-" +
+            Math.random()
+                .toString(36)
+                .substring(2, 6)
+                .toUpperCase();
 
 
+        const { error } =
+            await db
+                .from("questions")
+                .insert({
 
-alert("Question submitted! I will answer as soon as possible.");
+                    question_code: questionCode,
 
-questionForm.reset();
+                    question: question,
+
+                    contact: contact,
+
+                    status: "Pending",
+
+                    answer: null
+
+                });
 
 
-});
+        if (error) {
 
+            console.error(
+                "Question submission failed:",
+                error
+            );
+
+            alert(error.message);
+
+            return;
+        }
+
+
+        /*
+         * Show the code to the customer.
+         */
+
+        alert(
+            "Question submitted!\n\n" +
+            "Your question code is:\n" +
+            questionCode +
+            "\n\n" +
+            "Keep this code so you can check your answer later."
+        );
+
+
+        questionForm.reset();
+
+    });
 
 }
