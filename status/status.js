@@ -175,7 +175,70 @@ async function loadQuestionStatus(code) {
         false;
 
 }
+const questionStatusForm =
+    document.getElementById("question-status-form");
 
+if (questionStatusForm) {
+
+    questionStatusForm.addEventListener("submit", async (event) => {
+
+        event.preventDefault();
+
+        const errorText =
+            document.getElementById("question-status-error");
+
+        const result =
+            document.getElementById("question-result");
+
+        errorText.textContent = "";
+        result.hidden = true;
+
+        const code =
+            document
+                .getElementById("question-code")
+                .value
+                .trim()
+                .toUpperCase();
+
+        if (!code) {
+            return;
+        }
+
+        const { data: question, error } =
+            await db
+                .from("questions")
+                .select("*")
+                .eq("question_code", code)
+                .maybeSingle();
+
+        if (error) {
+
+            console.error(
+                "Question lookup failed:",
+                error
+            );
+
+            errorText.textContent =
+                "Could not check this question.";
+
+            return;
+        }
+
+        if (!question) {
+
+            errorText.textContent =
+                "No question could be found with that code.";
+
+            return;
+        }
+
+        displayQuestion(question);
+
+        result.hidden = false;
+
+    });
+
+}
 
 function displayRequest(request) {
 
