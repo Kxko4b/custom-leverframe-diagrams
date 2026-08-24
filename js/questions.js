@@ -34,22 +34,26 @@ if (questionForm) {
                 .toUpperCase();
 
 
-        const { error } =
-            await db
-                .from("questions")
-                .insert({
+       const { data, error } = await db
+    .from("questions")
+    .insert({
+        question,
+        contact
+    })
+    .select("question_code")
+    .single();
 
-                    question_code: questionCode,
+if (error) {
+    console.error(error);
+    alert(error.message);
+    return;
+}
 
-                    question: question,
+alert(
+    `Question submitted!\n\nYour question code is:\n${data.question_code}\n\nSave this code to check your answer later.`
+);
 
-                    contact: contact,
-
-                    status: "Pending",
-
-                    answer: null
-
-                });
+questionForm.reset();
 
 
         if (error) {
