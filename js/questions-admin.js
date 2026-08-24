@@ -1,5 +1,6 @@
 console.log("questions-admin.js loaded");
 
+
 async function loadQuestions() {
 
     const container = document.getElementById("questions");
@@ -10,8 +11,11 @@ async function loadQuestions() {
     }
 
     container.innerHTML = `
-        <p class="empty">Loading questions...</p>
+        <p class="empty">
+            Loading questions...
+        </p>
     `;
+
 
     const { data, error } = await db
         .from("questions")
@@ -20,28 +24,36 @@ async function loadQuestions() {
             ascending: false
         });
 
+
     if (error) {
 
-        console.error("Could not load questions:", error);
+        console.error(
+            "Could not load questions:",
+            error
+        );
 
         container.innerHTML = `
             <div class="question-card">
-                <p class="empty">
+                <p>
                     Could not load questions.
                 </p>
-                <small>${escapeHTML(error.message)}</small>
+
+                <small>
+                    ${escapeHTML(error.message)}
+                </small>
             </div>
         `;
 
         return;
     }
+
 
     if (!data || data.length === 0) {
 
         container.innerHTML = `
             <div class="question-card">
                 <p class="empty">
-                    No questions have been submitted yet.
+                    No questions yet.
                 </p>
             </div>
         `;
@@ -49,7 +61,9 @@ async function loadQuestions() {
         return;
     }
 
+
     container.innerHTML = "";
+
 
     data.forEach(question => {
 
@@ -57,15 +71,30 @@ async function loadQuestions() {
 
         card.className = "question-card";
 
-        const code = question.question_code || "No code";
-        const status = question.status || "Pending";
-        const text = question.question || "";
-        const contact = question.contact || "";
-        const answer = question.answer || "";
 
-        const date = question.created_at
-            ? new Date(question.created_at).toLocaleString()
-            : "Unknown";
+        const code =
+            question.question_code || "No code";
+
+        const questionText =
+            question.question || "";
+
+        const contact =
+            question.contact || "";
+
+        const answer =
+            question.answer || "";
+
+        const status =
+            question.status || "Pending";
+
+
+        const date =
+            question.created_at
+                ? new Date(
+                    question.created_at
+                ).toLocaleString()
+                : "Unknown";
+
 
         card.innerHTML = `
 
@@ -87,6 +116,7 @@ async function loadQuestions() {
 
                 </div>
 
+
                 <span class="question-status">
                     ${escapeHTML(status)}
                 </span>
@@ -96,14 +126,15 @@ async function loadQuestions() {
 
             <div class="question-content">
 
+
                 <div class="question-field">
 
                     <span class="question-field-label">
                         Question
                     </span>
 
-                    <p>
-                        ${escapeHTML(text)}
+                    <p class="question-text">
+                        ${escapeHTML(questionText)}
                     </p>
 
                 </div>
@@ -131,7 +162,7 @@ async function loadQuestions() {
                     <textarea
                         class="question-answer"
                         data-id="${question.id}"
-                        placeholder="Write an answer..."
+                        placeholder="Write your answer..."
                     >${escapeHTML(answer)}</textarea>
 
                 </div>
@@ -168,6 +199,7 @@ async function loadQuestions() {
 
 
                     <button
+                        type="button"
                         class="primary save-question"
                         data-id="${question.id}"
                     >
@@ -179,76 +211,143 @@ async function loadQuestions() {
             </div>
         `;
 
+
         container.appendChild(card);
+
     });
 
 
     /*
-     * SAVE ANSWERS
+     * SAVE BUTTONS
      */
 
     container
         .querySelectorAll(".save-question")
         .forEach(button => {
 
-            button.addEventListener("click", async () => {
+            button.addEventListener(
+                "click",
+                async () => {
 
-                const id = button.dataset.id;
+                    const id =
+                        button.dataset.id;
 
-                const textarea =
-                    container.querySelector(
-                        `.question-answer[data-id="${id}"]`
-                    );
 
-                const statusSelect =
-                    container.querySelector(
-                        `.question-status-select[data-id="${id}"]`
-                    );
+                    const answerBox =
+                        container.querySelector(
+                            `.question-answer[data-id="${id}"]`
+                        );
 
-                const answer =
-                    textarea.value.trim();
 
-                const status =
-                    statusSelect.value;
+                    const statusBox =
+                        container.querySelector(
+                            `.question-status-select[data-id="${id}"]`
+                        );
 
-                button.disabled = true;
-                button.textContent = "Saving...";
 
-                const { error } = await db
-                    .from("questions")
-                    .update({
-                        answer: answer,
-                        status: status
-                    })
-                    .eq("id", id);
+                    const answer =
+                        answerBox.value.trim();
 
-                button.disabled = false;
-                button.textContent = "Save Answer";
+                    const status =
+                        statusBox.value;
 
-                if (error) {
 
-                    console.error(
-                        "Could not update question:",
-                        error
-                    );
+                    button.disabled = true;
+                    button.textContent = "Saving...";
 
-                    alert(
-                        "Could not save the question:\n\n" +
-                        error.message
-                    );
 
-                    return;
+                    const { error } =
+                        await db
+                            .from("questions")
+                            .update({
+                                answer: answer,
+                                status: status
+                            })
+                            .eq("id", id);
+
+
+                    button.disabled = false;
+
+
+                    if (error) {
+
+                        console.error(
+                            "Could not save question:",
+                            error
+                        );
+
+                        alert(
+                            "Could not save question:\n\n" +
+                            error.message
+                        );
+
+                        button.textContent =
+                            "Save Answer";
+
+                        return;
+                    }
+
+
+                    button.textContent =
+                        "Saved ✓";
+
+
+                    setTimeout(() => {
+
+                        button.textContent =
+                            "Save Answer";
+
+                    }, 1500);
+
                 }
-
-                button.textContent = "Saved ✓";
-
-                setTimeout(() => {
-                    button.textContent = "Save Answer";
-                }, 1500);
-
-            });
+            );
 
         });
+
+}
+
+
+/*
+ * SEARCH
+ */
+
+function setupQuestionSearch() {
+
+    const search =
+        document.getElementById(
+            "question-search"
+        );
+
+    if (!search) return;
+
+
+    search.addEventListener(
+        "input",
+        () => {
+
+            const value =
+                search.value
+                    .toLowerCase()
+                    .trim();
+
+
+            document
+                .querySelectorAll(
+                    ".question-card"
+                )
+                .forEach(card => {
+
+                    card.style.display =
+                        card.textContent
+                            .toLowerCase()
+                            .includes(value)
+                            ? ""
+                            : "none";
+
+                });
+
+        }
+    );
 
 }
 
@@ -269,30 +368,4 @@ function escapeHTML(value) {
 }
 
 
-/*
- * SEARCH
- */
-
-document
-    .getElementById("question-search")
-    ?.addEventListener("input", event => {
-
-        const search =
-            event.target.value
-                .toLowerCase()
-                .trim();
-
-        document
-            .querySelectorAll(".question-card")
-            .forEach(card => {
-
-                card.style.display =
-                    card.textContent
-                        .toLowerCase()
-                        .includes(search)
-                        ? ""
-                        : "none";
-
-            });
-
-    });
+setupQuestionSearch();
