@@ -11,95 +11,92 @@ const errorText =
     document.getElementById("status-error");
 
 
-form.addEventListener(
-    "submit",
-    async (event) => {
+form.addEventListener("submit", async (event) => {
 
-        event.preventDefault();
+    event.preventDefault();
 
-        errorText.textContent = "";
+    errorText.textContent = "";
+    result.hidden = true;
 
-        result.hidden = true;
+    const code = document
+        .getElementById("request-code")
+        .value
+        .trim()
+        .toUpperCase();
 
-        if (questionResult) {
-            questionResult.hidden = true;
-        }
-
-
-        const code =
-            document
-                .getElementById("request-code")
-                .value
-                .trim()
-                .toUpperCase();
+    if (!code) {
+        errorText.textContent = "Please enter a code.";
+        return;
+    }
 
 
-        if (!code) {
-            return;
-        }
+    /*
+     * =========================
+     * QUESTION CODE
+     * =========================
+     */
+
+    if (code.startsWith("KXQ-")) {
+
+        const { data: question, error } = await db
+            .from("questions")
+            .select("*")
+            .eq("question_code", code)
+            .single();
 
 
-        /*
-         * QUESTION
-         */
+        if (error || !question) {
 
-        if (
-            code.startsWith(
-                "KXKO-QSTN-"
-            )
-        ) {
-
-            await loadQuestionStatus(
-                code
-            );
-
-            return;
-        }
-
-
-        /*
-         * REQUEST
-         */
-
-        const {
-            data: request,
-            error
-        } =
-            await db
-                .from("requests")
-                .select("*")
-                .eq(
-                    "request_code",
-                    code
-                )
-                .single();
-
-
-        if (error || !request) {
-
-            console.error(error);
+            console.error("Question lookup failed:", error);
 
             errorText.textContent =
-                "No request or question could be found with that code.";
+                "No question could be found with that code.";
 
             return;
         }
 
 
-        displayRequest(request);
-
-        await loadRequestFiles(
-            request.id
-        );
-
-        await loadUpdates(
-            request.id
-        );
+        displayQuestion(question);
 
         result.hidden = false;
 
+        return;
     }
-);
+
+
+    /*
+     * =========================
+     * REQUEST CODE
+     * =========================
+     */
+
+    const { data: request, error } = await db
+        .from("requests")
+        .select("*")
+        .eq("request_code", code)
+        .single();
+
+
+    if (error || !request) {
+
+        console.error("Request lookup failed:", error);
+
+        errorText.textContent =
+            "No request or question could be found with that code.";
+
+        return;
+    }
+
+
+    displayRequest(request);
+
+    await loadRequestFiles(request.id);
+
+    await loadUpdates(request.id);
+
+    result.hidden = false;
+
+});
 
 async function loadQuestionStatus(code) {
 
