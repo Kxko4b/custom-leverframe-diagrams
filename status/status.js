@@ -1,60 +1,174 @@
-const form = document.getElementById("status-form");
+const form =
+    document.getElementById("status-form");
 
-const result = document.getElementById("request-result");
+const result =
+    document.getElementById("request-result");
 
-const errorText = document.getElementById("status-error");
+const questionResult =
+    document.getElementById("question-result");
 
-
-form.addEventListener("submit", async (event) => {
-
-    event.preventDefault();
-
-    errorText.textContent = "";
-
-    result.hidden = true;
+const errorText =
+    document.getElementById("status-error");
 
 
-    const code =
-        document
-        .getElementById("request-code")
-        .value
-        .trim()
-        .toUpperCase();
+form.addEventListener(
+    "submit",
+    async (event) => {
+
+        event.preventDefault();
+
+        errorText.textContent = "";
+
+        result.hidden = true;
+
+        if (questionResult) {
+            questionResult.hidden = true;
+        }
 
 
-    if (!code) {
-        return;
+        const code =
+            document
+                .getElementById("request-code")
+                .value
+                .trim()
+                .toUpperCase();
+
+
+        if (!code) {
+            return;
+        }
+
+
+        /*
+         * QUESTION
+         */
+
+        if (
+            code.startsWith(
+                "KXKO-QSTN-"
+            )
+        ) {
+
+            await loadQuestionStatus(
+                code
+            );
+
+            return;
+        }
+
+
+        /*
+         * REQUEST
+         */
+
+        const {
+            data: request,
+            error
+        } =
+            await db
+                .from("requests")
+                .select("*")
+                .eq(
+                    "request_code",
+                    code
+                )
+                .single();
+
+
+        if (error || !request) {
+
+            console.error(error);
+
+            errorText.textContent =
+                "No request or question could be found with that code.";
+
+            return;
+        }
+
+
+        displayRequest(request);
+
+        await loadRequestFiles(
+            request.id
+        );
+
+        await loadUpdates(
+            request.id
+        );
+
+        result.hidden = false;
+
     }
+);
 
+async function loadQuestionStatus(code) {
 
-    const { data: request, error } =
+    const {
+        data: question,
+        error
+    } =
         await db
-        .from("requests")
-        .select("*")
-        .eq("request_code", code)
-        .single();
+            .from("questions")
+            .select("*")
+            .eq(
+                "question_code",
+                code
+            )
+            .single();
 
 
-    if (error || !request) {
+    if (
+        error ||
+        !question
+    ) {
 
         console.error(error);
 
         errorText.textContent =
-            "No request could be found with that code.";
+            "No question could be found with that code.";
 
         return;
     }
 
 
-    displayRequest(request);
+    document
+        .getElementById(
+            "question-display-code"
+        )
+        .textContent =
+            question.question_code;
 
-    await loadRequestFiles(request.id);
 
-    await loadUpdates(request.id);
+    document
+        .getElementById(
+            "question-display-status"
+        )
+        .textContent =
+            question.status ||
+            "Pending";
 
-    result.hidden = false;
 
-});
+    document
+        .getElementById(
+            "question-display-question"
+        )
+        .textContent =
+            question.question;
+
+
+    document
+        .getElementById(
+            "question-display-answer"
+        )
+        .textContent =
+            question.answer ||
+            "Your question hasn't been answered yet.";
+
+
+    questionResult.hidden =
+        false;
+
+}
 
 
 function displayRequest(request) {
