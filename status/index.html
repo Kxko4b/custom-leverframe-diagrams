@@ -49,53 +49,29 @@
 
 <main>
 
-    <!-- =========================
-         STATUS SEARCH
-    ========================== -->
+    <!-- CHECK FORM -->
 
     <section class="status-search">
 
         <h1>Check Status</h1>
 
         <p>
-            Check the status of a request or question using the code you received.
+            Enter the code you received after submitting
+            a request or question.
         </p>
-
-    </section>
-
-
-    <!-- =========================
-         REQUEST CHECKER
-    ========================== -->
-
-    <section class="status-search">
-
-        <div class="status-type-header">
-            <span class="status-type-icon">📦</span>
-
-            <div>
-                <h2>Check a Request</h2>
-
-                <p>
-                    Enter your request code to see its current status,
-                    files and updates.
-                </p>
-            </div>
-        </div>
-
 
         <form id="status-form">
 
             <input
                 id="request-code"
                 type="text"
-                placeholder="KXKO-XXXX-XXXX"
+                placeholder="KXKO-XXXX-XXXX or KXQ-XXXX-XXXX"
                 autocomplete="off"
                 required
             >
 
             <button type="submit">
-                Check Request
+                Check Status
             </button>
 
         </form>
@@ -105,50 +81,7 @@
     </section>
 
 
-    <!-- =========================
-         QUESTION CHECKER
-    ========================== -->
-
-    <section class="status-search question-search">
-
-        <div class="status-type-header">
-            <span class="status-type-icon">❓</span>
-
-            <div>
-                <h2>Check a Question</h2>
-
-                <p>
-                    Enter your question code to see whether your question
-                    has been answered.
-                </p>
-            </div>
-        </div>
-
-
-        <form id="question-status-form">
-
-            <input
-                id="question-code"
-                type="text"
-                placeholder="KXQ-XXXX-XXXX"
-                autocomplete="off"
-                required
-            >
-
-            <button type="submit">
-                Check Question
-            </button>
-
-        </form>
-
-        <p id="question-status-error"></p>
-
-    </section>
-
-
-    <!-- =========================
-         REQUEST RESULT
-    ========================== -->
+    <!-- REQUEST RESULT -->
 
     <section
         id="request-result"
@@ -236,13 +169,11 @@
     </section>
 
 
-    <!-- =========================
-         QUESTION RESULT
-    ========================== -->
+    <!-- QUESTION RESULT -->
 
     <section
         id="question-result"
-        class="request-result question-result"
+        class="request-result"
         hidden
     >
 
@@ -254,27 +185,21 @@
                     QUESTION CODE
                 </p>
 
-                <h2 id="question-display-code">
-                    —
-                </h2>
+                <h2 id="question-display-code"></h2>
 
             </div>
 
             <span
                 id="question-display-status"
                 class="status-badge"
-            >
-                Pending
-            </span>
+            ></span>
 
         </div>
 
 
         <div class="request-section">
 
-            <h3>
-                Your Question
-            </h3>
+            <h3>Your Question</h3>
 
             <p
                 id="question-display-question"
@@ -286,9 +211,7 @@
 
         <div class="request-section">
 
-            <h3>
-                Answer
-            </h3>
+            <h3>Answer</h3>
 
             <p
                 id="question-display-answer"
