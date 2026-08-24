@@ -39,10 +39,10 @@ form.addEventListener("submit", async (event) => {
     if (code.startsWith("KXQ-")) {
 
         const { data: question, error } = await db
-            .from("questions")
-            .select("*")
-            .eq("question_code", code)
-            .single();
+    .from("questions")
+    .select("*")
+    .eq("question_code", code)
+    .maybeSingle();
 
 
         if (error || !question) {
