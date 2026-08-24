@@ -36,11 +36,12 @@
 }
 
 
+
 /* =========================
    DARK MODE
    ========================= */
 
-:root:has(#dark-mode-toggle:checked) {
+body.dark-mode {
     --bg-color: #17191a;
     --text-color: #e5e7e8;
 
@@ -65,7 +66,6 @@
     --toggle-bg: #4b5052;
     --toggle-circle: #e5e7e8;
 }
-
 
 /* =========================
    BODY
