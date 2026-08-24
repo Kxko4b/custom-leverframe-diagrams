@@ -243,7 +243,66 @@ main {
     padding: 0 20px;
 }
 
+/* =========================
+   STATUS TYPE SECTIONS
+========================= */
 
+.status-type-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.status-type-icon {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 12px;
+
+    background: var(--primary-soft, #eaf2f4);
+
+    font-size: 20px;
+}
+
+.status-type-header h2 {
+    margin: 0 0 5px;
+}
+
+.status-type-header p {
+    margin: 0;
+
+    color: var(--muted);
+}
+
+.question-search {
+    margin-top: 20px;
+}
+
+#status-error,
+#question-status-error {
+    margin: 12px 0 0;
+
+    color: #b42318;
+
+    font-size: 14px;
+}
+
+#question-display-answer {
+    white-space: pre-wrap;
+
+    min-height: 30px;
+}
+
+.question-result {
+    margin-top: 25px;
+}
 /* =========================
    SEARCH
    ========================= */
