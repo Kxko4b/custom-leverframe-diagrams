@@ -248,7 +248,406 @@
     }
 
 }
+/* =========================================================
+   QUESTIONS ADMIN
+========================================================= */
 
+#questions-admin {
+    display: grid;
+    gap: 16px;
+}
+
+.admin-question-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 3px 12px rgba(20, 35, 40, 0.025);
+    transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        border-color 0.18s ease;
+}
+
+.admin-question-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+
+/* =========================
+   QUESTION HEADER
+========================= */
+
+.admin-question-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
+    padding: 18px 21px;
+
+    background: var(--surface);
+
+    border-bottom: 1px solid var(--border);
+}
+
+.question-identity {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.question-label {
+    color: var(--muted);
+
+    font-size: 10px;
+    font-weight: 800;
+
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.question-code {
+    padding: 5px 9px;
+
+    border-radius: 7px;
+
+    background: var(--primary-soft);
+    color: var(--primary);
+
+    font-family:
+        ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        monospace;
+
+    font-size: 12px;
+    font-weight: 750;
+
+    letter-spacing: 0.03em;
+}
+
+.question-date {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+
+/* =========================
+   STATUS
+========================= */
+
+.question-status {
+    padding: 6px 11px;
+
+    border-radius: 999px;
+
+    background: var(--primary-soft);
+    color: var(--primary);
+
+    font-size: 12px;
+    font-weight: 750;
+
+    white-space: nowrap;
+}
+
+
+/* =========================
+   CONTENT
+========================= */
+
+.admin-question-content {
+    padding: 21px;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    gap: 14px;
+}
+
+.question-field {
+    min-width: 0;
+
+    padding: 15px;
+
+    background: var(--surface-soft);
+
+    border: 1px solid #edf0f1;
+    border-radius: 12px;
+}
+
+.question-field.full {
+    grid-column: 1 / -1;
+}
+
+.question-field-label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: var(--muted);
+
+    font-size: 10px;
+    font-weight: 800;
+
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+}
+
+.question-field p {
+    margin: 0;
+
+    color: var(--text);
+
+    font-size: 14px;
+    line-height: 1.55;
+
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+
+/* =========================
+   ANSWER BOX
+========================= */
+
+.question-answer {
+    width: 100%;
+
+    min-height: 130px;
+
+    padding: 12px 13px;
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    background: white;
+    color: var(--text);
+
+    font: inherit;
+    line-height: 1.5;
+
+    resize: vertical;
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.question-answer:focus {
+    border-color: var(--primary);
+
+    box-shadow:
+        0 0 0 3px rgba(48, 103, 120, 0.1);
+}
+
+
+/* =========================
+   STATUS SELECT
+========================= */
+
+.question-status-select {
+    width: 100%;
+
+    padding: 11px 12px;
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    background: white;
+    color: var(--text);
+
+    outline: none;
+
+    cursor: pointer;
+}
+
+.question-status-select:focus {
+    border-color: var(--primary);
+
+    box-shadow:
+        0 0 0 3px rgba(48, 103, 120, 0.1);
+}
+
+
+/* =========================
+   ACTIONS
+========================= */
+
+.question-actions {
+    grid-column: 1 / -1;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-top: 4px;
+    padding-top: 17px;
+
+    border-top: 1px solid var(--border);
+}
+
+.save-question {
+    min-width: 130px;
+}
+
+.delete-question {
+    padding: 10px 14px;
+
+    border: 1px solid #f0cfca;
+    border-radius: 9px;
+
+    background: var(--danger-soft);
+    color: var(--danger);
+
+    font-weight: 650;
+
+    cursor: pointer;
+
+    transition: background 0.2s ease;
+}
+
+.delete-question:hover {
+    background: #ffe5e2;
+}
+
+
+/* =========================
+   SEARCH
+========================= */
+
+.question-toolbar {
+    display: flex;
+    gap: 10px;
+
+    margin-bottom: 20px;
+}
+
+#question-search {
+    width: 100%;
+
+    padding: 12px 14px;
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    background: var(--surface);
+
+    color: var(--text);
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+#question-search:focus {
+    border-color: var(--primary);
+
+    box-shadow:
+        0 0 0 3px rgba(48, 103, 120, 0.1);
+}
+
+
+/* =========================
+   EMPTY / LOADING / ERROR
+========================= */
+
+.question-empty,
+.question-loading,
+.question-error {
+    padding: 50px 25px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+    border-radius: 16px;
+
+    text-align: center;
+}
+
+.question-empty-icon {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 14px;
+
+    border-radius: 14px;
+
+    background: var(--primary-soft);
+
+    font-size: 22px;
+}
+
+.question-empty h3 {
+    margin: 0 0 6px;
+
+    font-size: 17px;
+}
+
+.question-empty p,
+.question-error p {
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 14px;
+}
+
+.question-error {
+    border-color: #f0cfca;
+    background: var(--danger-soft);
+}
+
+.question-error strong {
+    color: var(--danger);
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 750px) {
+
+    .admin-question-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .question-identity {
+        flex-wrap: wrap;
+    }
+
+    .admin-question-content {
+        grid-template-columns: 1fr;
+    }
+
+    .question-field.full {
+        grid-column: auto;
+    }
+
+    .question-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .question-actions button {
+        width: 100%;
+    }
+
+}
         /* =========================
            LOGIN
         ========================= */
