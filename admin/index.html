@@ -517,7 +517,20 @@
     background: #ffe5e2;
 }
 
+<section id="reviews-view" class="view">
 
+    <div class="page-header">
+        <div>
+            <h2>Reviews</h2>
+            <p>Manage reviews submitted by visitors.</p>
+        </div>
+    </div>
+
+    <div id="admin-reviews">
+        <p class="empty">Loading reviews...</p>
+    </div>
+
+</section>
 /* =========================
    SEARCH
 ========================= */
@@ -1936,6 +1949,14 @@
                 <span>Questions</span>
             </button>
 
+            <button
+    class="nav-button"
+    data-view="reviews"
+    type="button"
+>
+    ★
+    <span>Reviews</span>
+</button>
 
             <button
                 class="nav-button"
@@ -2366,7 +2387,7 @@
 <script src="../js/admin.js"></script>
 <script src="../js/questions-admin.js"></script>
 <script src="../js/requests-admin.js"></script>
-
+<script src="../js/reviews-admin.js"></script>
 
 <script>
 
