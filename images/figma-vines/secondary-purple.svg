@@ -50,7 +50,7 @@
   <clipPath id="vine-slice-46" clipPathUnits="userSpaceOnUse"><rect x="-216" y="4611,000" width="540" height="124,500"/></clipPath>
   <clipPath id="vine-slice-47" clipPathUnits="userSpaceOnUse"><rect x="-216" y="4712,000" width="540" height="112,000"/></clipPath>
 </defs>
-<style>.vine-still{display:none;}@media(prefers-reduced-motion: reduce){.vine-motion{display:none}.vine-still{display:inline;}}</style>
+
 <g class="vine-motion">
   <use href="#vine-shape-source" clip-path="url(#vine-slice-00)"><animateTransform attributeName="transform" type="translate" values="0 0;27 0;0 0;-27 0;0 0" dur="13s" begin="0s" repeatCount="indefinite" calcMode="linear"/></use>
   <use href="#vine-shape-source" clip-path="url(#vine-slice-01)"><animateTransform attributeName="transform" type="translate" values="0 0;27 0;0 0;-27 0;0 0" dur="13s" begin="-0.2708s" repeatCount="indefinite" calcMode="linear"/></use>
@@ -101,6 +101,6 @@
   <use href="#vine-shape-source" clip-path="url(#vine-slice-46)"><animateTransform attributeName="transform" type="translate" values="0 0;27 0;0 0;-27 0;0 0" dur="13s" begin="-12.4583s" repeatCount="indefinite" calcMode="linear"/></use>
   <use href="#vine-shape-source" clip-path="url(#vine-slice-47)"><animateTransform attributeName="transform" type="translate" values="0 0;27 0;0 0;-27 0;0 0" dur="13s" begin="-12.7292s" repeatCount="indefinite" calcMode="linear"/></use>
 </g>
-<use href="#vine-shape-source" class="vine-still"/>
+
 
 </svg>
