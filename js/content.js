@@ -1,4 +1,14 @@
 // Read the same `content` rows used by the admin content editor.
+async function trackVisit() {
+  const { error } = await db.from("page_views").insert([
+    { page: window.location.pathname },
+  ]);
+
+  if (error) {
+    console.error("View tracking error:", error);
+  }
+}
+
 async function loadContent() {
   const targets = { about: "about-text", terms: "terms-text" };
   const { data, error } = await db.from("site_content").select("section, content");
@@ -17,4 +27,5 @@ async function loadContent() {
   }
 }
 
+trackVisit();
 loadContent();
