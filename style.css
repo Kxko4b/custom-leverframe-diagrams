@@ -30,31 +30,7 @@ body {
   line-height: 1.6;
 }
 
-body::before {
-  content: "";
-  position: fixed;
-  z-index: 0;
-  inset: -18%;
-  pointer-events: none;
-  background:
-    radial-gradient(ellipse at 18% 24%, rgb(59 130 246 / 20%), transparent 38%),
-    radial-gradient(ellipse at 82% 35%, rgb(147 51 234 / 17%), transparent 40%),
-    radial-gradient(ellipse at 54% 82%, rgb(34 197 94 / 15%), transparent 42%);
-  filter: blur(30px);
-  animation: ambient-drift 30s ease-in-out infinite alternate;
-}
-
-@keyframes ambient-drift {
-  from { transform: translate3d(-2%, -1%, 0) scale(1); }
-  to { transform: translate3d(2%, 1.5%, 0) scale(1.06); }
-}
-
 main, .site-footer { position: relative; z-index: 1; }
-
-@media (prefers-reduced-motion: reduce) {
-  body::before { animation: none; }
-  html { scroll-behavior: auto; }
-}
 
 img { display: block; max-width: 100%; height: auto; border-radius: var(--radius); }
 a { color: inherit; text-decoration: none; }
@@ -107,7 +83,26 @@ a { color: inherit; text-decoration: none; }
 .btn.block { display: block; width: 100%; margin-top: 0.75rem; }
 
 /* Sections */
-.section { border-bottom: 1px solid var(--border); padding: clamp(3rem, 6vw, 5rem) 0; scroll-margin-top: 4.5rem; }
+.section { position: relative; isolation: isolate; border-bottom: 1px solid var(--border); padding: clamp(3rem, 6vw, 5rem) 0; scroll-margin-top: 4.5rem; }
+.section > .wrap { position: relative; z-index: 1; }
+.section:nth-of-type(even)::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: 8%;
+  right: clamp(0.5rem, 2.5vw, 2.5rem);
+  bottom: 8%;
+  width: clamp(5rem, 11vw, 9rem);
+  pointer-events: none;
+  background: url("images/vine-accent.svg") center / contain no-repeat;
+  opacity: 0.26;
+  transform-origin: 50% 100%;
+  animation: vine-sway 8s ease-in-out infinite alternate;
+}
+@keyframes vine-sway {
+  from { transform: rotate(-2deg); }
+  to { transform: rotate(2deg); }
+}
 .section.tinted { background: color-mix(in oklab, var(--card) 50%, var(--background)); }
 .eyebrow { font-family: var(--mono); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.25em; color: var(--muted-fg); margin: 0; }
 h1 { font-family: var(--display); font-size: clamp(2.25rem, 6vw, 3rem); font-weight: 600; text-transform: uppercase; line-height: 0.95; margin: 1rem 0 0; }
@@ -220,4 +215,13 @@ textarea { resize: vertical; }
   .brand-name { max-width: 9rem; white-space: normal; line-height: 1.1; letter-spacing: 0.07em; }
   .header-inner > .btn { flex: none; padding: 0.4rem 0.55rem; font-size: 0.58rem; letter-spacing: 0.02em; }
   .tiers { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .section:nth-of-type(even)::after { right: 0.25rem; width: 3.75rem; opacity: 0.18; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section:nth-of-type(even)::after { animation: none; }
+  html { scroll-behavior: auto; }
 }
