@@ -46,6 +46,31 @@
     </header>
 
     <div class="vine-background" aria-hidden="true">
+      <svg class="vine-filter-defs" xmlns="http://www.w3.org/2000/svg" width="0" height="0" focusable="false">
+        <defs>
+          <filter id="vine-wiggle-a" x="-100%" y="-5%" width="300%" height="110%" color-interpolation-filters="sRGB">
+            <feTurbulence type="fractalNoise" baseFrequency="0.008 0.00055" numOctaves="1" seed="3" result="vine-noise" />
+            <feOffset in="vine-noise" dx="0" dy="-720" result="flowing-noise">
+              <animate attributeName="dy" values="-720;720;-720" dur="10s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.42 0 0.58 1;0.42 0 0.58 1" />
+            </feOffset>
+            <feDisplacementMap in="SourceGraphic" in2="flowing-noise" scale="180" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+          <filter id="vine-wiggle-b" x="-100%" y="-5%" width="300%" height="110%" color-interpolation-filters="sRGB">
+            <feTurbulence type="fractalNoise" baseFrequency="0.0065 0.0007" numOctaves="1" seed="8" result="vine-noise" />
+            <feOffset in="vine-noise" dx="0" dy="-920" result="flowing-noise">
+              <animate attributeName="dy" values="-920;920;-920" dur="13s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.42 0 0.58 1;0.42 0 0.58 1" />
+            </feOffset>
+            <feDisplacementMap in="SourceGraphic" in2="flowing-noise" scale="200" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+          <filter id="vine-wiggle-c" x="-100%" y="-5%" width="300%" height="110%" color-interpolation-filters="sRGB">
+            <feTurbulence type="fractalNoise" baseFrequency="0.009 0.00045" numOctaves="1" seed="14" result="vine-noise" />
+            <feOffset in="vine-noise" dx="0" dy="-650" result="flowing-noise">
+              <animate attributeName="dy" values="-650;650;-650" dur="11s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.42 0 0.58 1;0.42 0 0.58 1" />
+            </feOffset>
+            <feDisplacementMap in="SourceGraphic" in2="flowing-noise" scale="160" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+        </defs>
+      </svg>
       <div class="vine-column vine-1"><img src="images/figma-vines/main-navy.svg" alt="" /></div>
       <div class="vine-column vine-2"><img src="images/figma-vines/main-purple.svg" alt="" /></div>
       <div class="vine-column vine-3"><img src="images/figma-vines/main-teal.svg" alt="" /></div>
