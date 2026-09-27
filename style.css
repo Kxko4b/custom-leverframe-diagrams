@@ -85,23 +85,45 @@ a { color: inherit; text-decoration: none; }
 /* Sections */
 .section { position: relative; isolation: isolate; border-bottom: 1px solid var(--border); padding: clamp(3rem, 6vw, 5rem) 0; scroll-margin-top: 4.5rem; }
 .section > .wrap { position: relative; z-index: 1; }
-.section:nth-of-type(even)::after {
-  content: "";
+.vine-window {
   position: absolute;
   z-index: 0;
-  top: 8%;
-  right: clamp(0.5rem, 2.5vw, 2.5rem);
-  bottom: 8%;
-  width: clamp(5rem, 11vw, 9rem);
+  top: 10%;
+  right: max(0.5rem, calc((100vw - 72rem) / 2 - 11rem));
+  bottom: 10%;
+  width: clamp(7rem, 10vw, 9rem);
+  overflow: hidden;
   pointer-events: none;
-  background: url("images/vine-accent.svg") center / contain no-repeat;
-  opacity: 0.26;
-  transform-origin: 50% 100%;
-  animation: vine-sway 8s ease-in-out infinite alternate;
 }
-@keyframes vine-sway {
-  from { transform: rotate(-2deg); }
-  to { transform: rotate(2deg); }
+.vine-garden {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 939px;
+  height: 5211px;
+  transform: translate(-50%, -50%) scale(0.13, 0.085);
+  transform-origin: center;
+  opacity: 0.58;
+}
+.vine-strand {
+  position: absolute;
+  top: 0;
+  max-width: none;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  transform-origin: 50% 100%;
+  animation: strand-slither 7s ease-in-out infinite alternate;
+}
+.strand-1 { left: 0; animation-duration: 7.2s; }
+.strand-2 { left: 224px; animation-duration: 8.4s; animation-delay: -2s; }
+.strand-3 { left: 413px; animation-duration: 7.8s; animation-delay: -4s; }
+.strand-4 { left: 596px; animation-duration: 9s; animation-delay: -1s; }
+.strand-5 { left: 709px; animation-duration: 8s; animation-delay: -5s; }
+.strand-6 { left: 817px; animation-duration: 7.5s; animation-delay: -3s; }
+@keyframes strand-slither {
+  from { transform: translateX(-42px) rotate(-0.5deg); }
+  to { transform: translateX(42px) rotate(0.5deg); }
 }
 .section.tinted { background: color-mix(in oklab, var(--card) 50%, var(--background)); }
 .eyebrow { font-family: var(--mono); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.25em; color: var(--muted-fg); margin: 0; }
@@ -218,10 +240,11 @@ textarea { resize: vertical; }
 }
 
 @media (max-width: 640px) {
-  .section:nth-of-type(even)::after { right: 0.25rem; width: 3.75rem; opacity: 0.18; }
+  .vine-window { right: 0.25rem; width: 4.5rem; }
+  .vine-garden { transform: translate(-50%, -50%) scale(0.095, 0.065); opacity: 0.4; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .section:nth-of-type(even)::after { animation: none; }
+  .vine-strand { animation: none; }
   html { scroll-behavior: auto; }
 }
