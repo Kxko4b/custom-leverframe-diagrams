@@ -1,60 +1,92 @@
+// Public review display and submission use the `message` field edited in admin.
 async function loadReviews() {
-    const box = document.getElementById("review-list");
-    if (!box) return;
-    box.textContent = "Loading reviews…";
+  const box = document.getElementById("review-list");
+  if (!box) return;
+  box.textContent = "Loading reviews…";
 
-    const { data, error } = await db
-        .from("reviews")
-        .select("*")
-        .order("created_at", { ascending: false });
+  const { data, error } = await db
+    .from("reviews")
+    .select("name, rating, message, created_at")
+    .order("created_at", { ascending: false });
 
-    if (error) {
-        console.error("Could not load reviews:", error);
-        box.textContent = "Reviews are unavailable right now.";
-        return;
-    }
+  if (error) {
+    console.error("Could not load reviews:", error);
+    box.textContent = "Reviews are unavailable right now.";
+    return;
+  }
 
-    box.replaceChildren();
-    if (!data?.length) {
-        box.textContent = "No reviews yet.";
-        return;
-    }
+  box.replaceChildren();
+  if (!data?.length) {
+    box.textContent = "No reviews yet.";
+    return;
+  }
 
-    data.forEach(review => {
-        const card = document.createElement("article");
-        card.className = "review";
-        const stars = document.createElement("div");
-        stars.className = "stars";
-        const rating = Math.max(0, Math.min(5, Number(review.rating) || 0));
-        stars.textContent = "★".repeat(rating) + "☆".repeat(5 - rating);
-        const message = document.createElement("p");
-        message.textContent = `“${review.message || ""}”`;
-        const name = document.createElement("strong");
-        name.textContent = `— ${review.name || "Anonymous"}`;
-        card.append(stars, message, name);
-        box.append(card);
-    });
+  for (const review of data) {
+    const card = document.createElement("article");
+    card.className = "card review";
+    const stars = document.createElement("div");
+    stars.className = "stars";
+    const rating = Math.max(0, Math.min(5, Number(review.rating) || 0));
+    stars.textContent = "★".repeat(rating) + "☆".repeat(5 - rating);
+    const message = document.createElement("p");
+    message.textContent = `“${review.message || ""}”`;
+    const name = document.createElement("strong");
+    name.textContent = `— ${review.name || "Anonymous"}`;
+    card.append(stars, message, name);
+    box.append(card);
+  }
 }
 
-async function submitReview(event) {
-    event.preventDefault();
-    const form = event.currentTarget;
-    const button = form.querySelector('button[type="submit"]');
-    button.disabled = true;
-    const { error } = await db.from("reviews").insert({
-        name: document.getElementById("review-name").value.trim(),
-        rating: Number(document.getElementById("review-rating").value),
-        message: document.getElementById("review-message").value.trim()
+let reviewRating = 0;
+const starsWrap = document.getElementById("review-stars");
+starsWrap?.querySelectorAll("button").forEach((button) => {
+  button.addEventListener("click", () => {
+    reviewRating = Number(button.dataset.value) || 0;
+    starsWrap.querySelectorAll("button").forEach((star) => {
+      star.classList.toggle("on", Number(star.dataset.value) <= reviewRating);
+      star.setAttribute("aria-pressed", String(Number(star.dataset.value) === reviewRating));
     });
-    button.disabled = false;
-    if (error) {
-        console.error("Could not submit review:", error);
-        alert("Could not submit your review.");
-        return;
-    }
-    form.reset();
-    loadReviews();
-}
+  });
+});
 
-document.getElementById("review-form")?.addEventListener("submit", submitReview);
+document.getElementById("review-form")?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const msg = document.getElementById("review-msg");
+  const button = form.querySelector('[type="submit"]');
+  const showMessage = (text, isError = false) => {
+    msg.textContent = text;
+    msg.classList.remove("hidden", "error", "moss");
+    msg.classList.add(isError ? "error" : "moss");
+  };
+
+  if (!reviewRating) {
+    showMessage("Choose a star rating first.", true);
+    return;
+  }
+
+  button.disabled = true;
+  const { error } = await db.from("reviews").insert({
+    name: document.getElementById("review-name").value.trim().slice(0, 60),
+    rating: reviewRating,
+    message: document.getElementById("review-text").value.trim().slice(0, 500),
+  });
+  button.disabled = false;
+
+  if (error) {
+    console.error("Could not submit review:", error);
+    showMessage("Could not submit your review. Please try again.", true);
+    return;
+  }
+
+  form.reset();
+  reviewRating = 0;
+  starsWrap?.querySelectorAll("button").forEach((star) => {
+    star.classList.remove("on");
+    star.setAttribute("aria-pressed", "false");
+  });
+  showMessage("Thanks! Your review has been sent.");
+  await loadReviews();
+});
+
 loadReviews();

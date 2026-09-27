@@ -265,7 +265,7 @@ async function loadRequestFiles(requestId) {
 
         link.target = "_blank";
 
-        link.rel = "noopener";
+        link.rel = "noopener noreferrer";
 
         link.textContent =
             `📎 Reference file ${index + 1}`;
@@ -299,7 +299,7 @@ async function loadUpdates(requestId) {
         error
     } = await db
         .from("request_updates")
-        .select("*")
+        .select("*, request_update_files (*)")
         .eq("request_id", requestId)
         .order("created_at", {
             ascending: true
@@ -382,6 +382,20 @@ async function loadUpdates(requestId) {
             header,
             message
         );
+
+        if (update.request_update_files?.length) {
+            const files = document.createElement("div");
+            files.className = "update-files";
+            update.request_update_files.forEach((file) => {
+                const link = document.createElement("a");
+                link.href = file.file_url;
+                link.target = "_blank";
+                link.rel = "noopener noreferrer";
+                link.textContent = `📎 ${file.file_name || "Attached file"}`;
+                files.append(link);
+            });
+            article.append(files);
+        }
 
 
         container.appendChild(article);

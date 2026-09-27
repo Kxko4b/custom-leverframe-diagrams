@@ -7,7 +7,7 @@
 
     <title>Kxko Admin</title>
 
-    <link rel="icon" href="../favicon.png">
+    <link rel="icon" href="../favicon.ico">
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/supabase.js"></script>
@@ -1863,6 +1863,16 @@
                 <span>Examples</span>
             </button>
 
+
+            <button
+                class="nav-button"
+                data-view="content"
+                type="button"
+            >
+                ✎
+                <span>Website copy</span>
+            </button>
+
         </nav>
 
 
@@ -2241,6 +2251,35 @@
 
 
             <!-- =========================
+                 WEBSITE COPY
+            ========================= -->
+
+            <section id="content-view" class="view">
+                <div class="page-header">
+                    <div>
+                        <h2>Website copy</h2>
+                        <p>Edit the About and Terms text displayed on the public site.</p>
+                    </div>
+                </div>
+
+                <div class="section-card">
+                    <div class="field full">
+                        <label for="content-about">About</label>
+                        <textarea id="content-about" rows="6" placeholder="About text shown on the website"></textarea>
+                    </div>
+                    <div class="field full">
+                        <label for="content-terms">Terms</label>
+                        <textarea id="content-terms" rows="6" placeholder="Terms text shown on the website"></textarea>
+                    </div>
+                    <div class="save-row">
+                        <button id="content-save" class="primary" type="button">Save website copy</button>
+                        <p id="content-message" class="muted" role="status"></p>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- =========================
                  EXAMPLES
             ========================= -->
 
@@ -2355,6 +2394,7 @@
      JAVASCRIPT
 ========================= -->
 
+<script src="../js/content-admin.js"></script>
 <script src="../js/admin.js"></script>
 <script src="../js/questions-admin.js"></script>
 <script src="../js/requests-admin.js"></script>

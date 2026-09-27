@@ -1,67 +1,20 @@
-console.log("content.js loaded");
-
+// Read the same `content` rows used by the admin content editor.
 async function loadContent() {
+  const targets = { about: "about-text", terms: "terms-text" };
+  const { data, error } = await db.from("site_content").select("section, content");
 
-    const { data, error } = await db
-        .from("site_content")
-        .select("*");
+  if (error) {
+    console.error("Could not load site content:", error);
+    return;
+  }
 
-    if (error) {
-        console.error("Content error:", error);
-        return;
+  for (const item of data || []) {
+    const target = document.getElementById(targets[item.section]);
+    if (target && typeof item.content === "string" && item.content.trim()) {
+      target.textContent = item.content.trim();
+      target.classList.add("database-copy");
     }
-
-    console.log("Loaded content:", data);
-
-    data.forEach(item => {
-
-        const text =
-            marked.parse(item.content || "");
-
-        if (item.section === "about") {
-
-            const about =
-                document.getElementById("about-text");
-
-            if (about) {
-                about.innerHTML = text;
-            }
-        }
-
-        if (item.section === "terms") {
-
-            const terms =
-                document.getElementById("terms-text");
-
-            if (terms) {
-                terms.innerHTML = text;
-            }
-        }
-    });
+  }
 }
-
-
-/* PAGE VIEW TRACKING */
-
-async function trackVisit() {
-
-    const { error } = await db
-        .from("page_views")
-        .insert([
-            {
-                page: window.location.pathname
-            }
-        ]);
-
-    if (error) {
-        console.error(
-            "View tracking error:",
-            error
-        );
-    }
-}
-
-
-trackVisit();
 
 loadContent();

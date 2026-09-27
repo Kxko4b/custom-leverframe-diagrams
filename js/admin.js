@@ -254,6 +254,10 @@ function showDashboard() {
 
     dashboard.classList.remove("hidden");
 
+    if (typeof loadSiteContentAdmin === "function") {
+        loadSiteContentAdmin();
+    }
+
     loadAdminExamples();
 
     if (typeof loadRequests === "function") {

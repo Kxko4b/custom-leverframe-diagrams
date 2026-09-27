@@ -1,93 +1,55 @@
 async function loadGallery() {
+  const gallery = document.getElementById("gallery");
+  if (!gallery) return;
 
-    const gallery = document.getElementById("gallery");
+  const { data, error } = await db
+    .from("examples")
+    .select("title, description, image_url, created_at")
+    .order("created_at", { ascending: false });
 
+  gallery.replaceChildren();
+  if (error) {
+    console.error("Could not load examples:", error);
+    gallery.append(makeGalleryMessage("Examples are unavailable right now."));
+    return;
+  }
+  if (!data?.length) {
+    gallery.append(makeGalleryMessage("Examples will appear here soon."));
+    return;
+  }
 
-    const { data, error } = await db
-        .from("examples")
-        .select("*")
-        .order("created_at", {
-            ascending: false
-        });
+  for (const example of data) {
+    const card = document.createElement("article");
+    card.className = "card example-card";
 
-
-    if (error) {
-
-        console.error(error);
-
-        gallery.innerHTML = "<p>Unable to load examples.</p>";
-
-        return;
-
+    if (example.image_url) {
+      const image = document.createElement("img");
+      image.src = example.image_url;
+      image.alt = example.title ? `${example.title} diagram` : "Leverframe diagram example";
+      image.loading = "lazy";
+      image.addEventListener("error", () => image.remove(), { once: true });
+      card.append(image);
     }
 
+    const title = document.createElement("h3");
+    title.textContent = example.title || "Custom diagram";
+    card.append(title);
 
-    gallery.innerHTML = "";
-
-
-    data.forEach(example => {
-
-        gallery.innerHTML += `
-
-        <div class="example">
-
-            <img 
-            src="${example.image_url}"
-            alt="${example.title}"
-            loading="lazy"
-            class="zoom-image">
-
-            <h3>${example.title}</h3>
-
-            <p>${example.description ?? ""}</p>
-
-        </div>
-
-        `;
-
-    });
-
-
-    addZoom();
-
+    if (example.description) {
+      const description = document.createElement("p");
+      description.className = "muted small";
+      description.textContent = example.description;
+      card.append(description);
+    }
+    gallery.append(card);
+  }
 }
 
-
-
-function addZoom() {
-
-    const lightbox = document.getElementById("lightbox");
-    const lightboxImg = document.getElementById("lightbox-img");
-
-
-    document.querySelectorAll(".zoom-image").forEach(img => {
-
-
-        img.onclick = function() {
-
-            lightboxImg.src = this.src;
-
-           document.getElementById("lightbox-close").onclick = function() {
-
-    lightbox.style.display = "none";
-
-};
-        };
-
-
-    });
-
-
-
-    lightbox.onclick = function() {
-
-        lightbox.style.display = "none";
-
-    };
-
-
+function makeGalleryMessage(text) {
+  const message = document.createElement("p");
+  message.className = "muted small gallery-message";
+  message.textContent = text;
+  return message;
 }
-
-
 
 loadGallery();

@@ -33,12 +33,13 @@
           <span class="mark">K</span>
           <span class="brand-name">Kxko · Leverframe Diagrams</span>
         </a>
-        <nav class="nav">
+        <nav class="nav" aria-label="Main navigation">
           <a href="#about">About</a>
           <a href="#services">Services</a>
           <a href="#examples">Examples</a>
           <a href="#reviews">Reviews</a>
           <a href="#status">Check status</a>
+          <a href="#terms">Terms</a>
         </nav>
         <a href="#request" class="btn btn-signal btn-sm">Request a diagram</a>
       </div>
@@ -62,16 +63,20 @@
               <a href="#examples" class="btn btn-ghost">See examples</a>
             </div>
           </div>
-          <figure class="card figure">
-            <img
-              src="assets/track-plan.jpg"
-              alt="Hand-drawn railway signal box track plan with a brass KXKO BOX nameplate"
-              width="1024"
-              height="1024"
-            />
-            <figcaption>
-              <span>Track plan · Sheet A</span><span class="brass">Rev. 3</span>
-            </figcaption>
+          <figure class="card figure hero-board">
+            <svg class="track-diagram" viewBox="0 0 640 430" role="img" aria-labelledby="track-title track-desc">
+              <title id="track-title">Leverframe track plan</title>
+              <desc id="track-desc">A schematic railway junction with signals, points, and a lever order panel.</desc>
+              <rect x="12" y="12" width="616" height="406" rx="8" class="board-outline" />
+              <path d="M72 118H568 M72 215H568 M72 312H568 M220 118V312 M420 118V312 M220 215L420 118 M220 215L420 312" class="track-line" />
+              <path d="M95 90V146 M188 188V242 M392 90V146 M542 188V242 M300 285V339" class="signal-line" />
+              <circle cx="95" cy="90" r="9" class="signal-dot"/><circle cx="188" cy="188" r="9" class="signal-dot"/><circle cx="392" cy="90" r="9" class="signal-dot"/><circle cx="542" cy="188" r="9" class="signal-dot"/><circle cx="300" cy="339" r="9" class="signal-dot"/>
+              <path d="M82 372H558" class="lever-line" />
+              <g class="lever-marks"><path d="M100 357V387 M130 357V387 M160 357V387 M190 357V387 M220 357V387 M250 357V387 M280 357V387 M310 357V387 M340 357V387 M370 357V387 M400 357V387 M430 357V387 M460 357V387 M490 357V387 M520 357V387 M550 357V387" /></g>
+              <text x="32" y="52" class="board-label">SIGNAL BOX · TRACK &amp; LEVER PLAN</text>
+              <text x="32" y="402" class="board-note">ROUTES · POINTS · LOCKING</text>
+            </svg>
+            <figcaption><span>Each layout drawn to order</span><span class="brass">KXKO</span></figcaption>
           </figure>
         </div>
       </section>
@@ -83,9 +88,7 @@
           <h2>A one-person signal box</h2>
           <div class="two-col muted">
             <p>
-              I'm a diagram maker obsessed with how a real lever frame reads.
-              Every route, every locking lever and every point gets its own line,
-              the way it would on a printed board in a working box.
+              <span id="about-text">I'm a diagram maker obsessed with how a real lever frame reads. Every route, every locking lever and every point gets its own line, the way it would on a printed board in a working box.</span>
             </p>
             <p>
               It's a small personal studio — nothing corporate about it. Don't be
@@ -132,44 +135,7 @@
         <div class="wrap">
           <p class="eyebrow">03 — Examples</p>
           <h2>From the workbench</h2>
-          <div class="grid-3">
-            <figure class="card figure">
-              <img
-                src="assets/track-plan.jpg"
-                alt="Historical recreation of a signal box track plan with brass nameplate"
-                width="1024"
-                height="1024"
-                loading="lazy"
-              />
-              <figcaption>
-                <span>Box 12 · Historical</span><span class="moss">Done</span>
-              </figcaption>
-            </figure>
-            <figure class="card figure">
-              <img
-                src="assets/lever-frame.jpg"
-                alt="Custom lever frame board with brass handles and enamel nameplates"
-                width="1024"
-                height="1024"
-                loading="lazy"
-              />
-              <figcaption>
-                <span>Club Box · Custom</span><span class="moss">Done</span>
-              </figcaption>
-            </figure>
-            <figure class="card figure">
-              <img
-                src="assets/game-set.jpg"
-                alt="Stylised game-art signal box with a glowing track diagram board"
-                width="1024"
-                height="1024"
-                loading="lazy"
-              />
-              <figcaption>
-                <span>Rail Sim · Game</span><span class="brass">In work</span>
-              </figcaption>
-            </figure>
-          </div>
+          <div id="gallery" class="grid-3" aria-live="polite"><p class="muted small">Loading examples…</p></div>
         </div>
       </section>
 
@@ -248,6 +214,7 @@
                   <input id="req-name" maxlength="80" required placeholder="Your name" />
                   <input id="req-email" type="email" maxlength="120" placeholder="Email (optional)" />
                 </div>
+                <input id="req-discord" maxlength="120" placeholder="Discord username (optional)" />
                 <textarea
                   id="req-description"
                   maxlength="2000"
@@ -281,7 +248,7 @@
                 <h3>Check status</h3>
                 <p class="muted small">Got a code? See where your diagram is.</p>
                 <form id="status-form" class="row-form">
-                  <input id="status-code" maxlength="10" placeholder="KX-XXXX" class="mono up" />
+                  <input id="status-code" maxlength="14" placeholder="KXKO-XXXX-XXXX or KXQ-XXXX-XXXX" class="mono up" autocomplete="off" required />
                   <button type="submit" class="btn btn-primary">Find</button>
                 </form>
                 <div id="status-result" class="hidden"></div>
@@ -309,11 +276,19 @@
         </div>
       </section>
 
+      <section id="terms" class="section">
+        <div class="wrap">
+          <p class="eyebrow">06 — Terms</p>
+          <h2>Terms of service</h2>
+          <p id="terms-text" class="muted measure terms-copy">Each diagram is drawn to your brief. We’ll agree the scope, price, and timing before work begins.</p>
+        </div>
+      </section>
+
       <!-- CONTACT -->
       <section id="contact" class="section tinted">
         <div class="wrap two-col">
           <div>
-            <p class="eyebrow">06 — Contact</p>
+            <p class="eyebrow">07 — Contact</p>
             <h2>Don't be shy</h2>
             <p class="muted measure">
               Quick question or a half-formed idea? Ping me and I'll get back to
@@ -347,10 +322,12 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-    <script src="js/db.js"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/content.js"></script>
+    <script src="js/gallery.js"></script>
     <script src="js/reviews.js"></script>
-    <script src="js/request.js"></script>
-    <script src="js/question.js"></script>
-    <script src="js/status.js"></script>
+    <script src="js/requests.js"></script>
+    <script src="js/questions.js"></script>
+    <script src="js/home-status.js"></script>
   </body>
 </html>

@@ -1,203 +1,61 @@
 function generateRequestCode() {
-
-    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-
-    let code = "";
-
-    for (let i = 0; i < 8; i++) {
-
-        code += chars.charAt(
-            Math.floor(Math.random() * chars.length)
-        );
-
-    }
-
-    return "KXKO-" + code.slice(0,4) + "-" + code.slice(4,8);
-
+  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const random = new Uint32Array(8);
+  crypto.getRandomValues(random);
+  const part = Array.from(random, (value) => alphabet[value % alphabet.length]).join("");
+  return `KXKO-${part.slice(0, 4)}-${part.slice(4)}`;
 }
 
-
-
-
-
-document
-.getElementById("request-form")
-.addEventListener("submit", async (event) => {
-
-
-    event.preventDefault();
-
-
-    const submitButton =
-        event.target.querySelector("button");
-
-
-    submitButton.disabled = true;
-    submitButton.textContent = "Sending...";
-
-
-
-    const requestCode =
-        generateRequestCode();
-
-
-
-    const name =
-        document.getElementById("request-name").value;
-
-
-    const discord =
-        document.getElementById("request-discord").value;
-
-
-    const email =
-        document.getElementById("request-email").value;
-
-
-    const size =
-        document.getElementById("request-size").value;
-
-
-    const type =
-        document.getElementById("request-type").value;
-
-
-    const description =
-        document.getElementById("request-description").value;
-
-
-    const files =
-        document.getElementById("request-images").files;
-
-
-
-
-    const { data: request, error } =
-        await db
-        .from("requests")
-        .insert({
-
-            name,
-            discord,
-            email,
-            size,
-            type,
-            description,
-
-            status: "Pending",
-
-            request_code: requestCode
-
-        })
-        .select()
-        .single();
-
-
-
-
-    if(error){
-
-        alert(error.message);
-
-        console.error(error);
-
-        submitButton.disabled = false;
-        submitButton.textContent = "Send Request";
-
-        return;
-
-    }
-
-
-
-
-
-    for(const file of files){
-
-
-        const filename =
-        `requests/${request.id}-${Date.now()}-${file.name}`;
-
-
-
-
-
-        const upload =
-        await db.storage
-        .from("diagram-files")
-        .upload(
-            filename,
-            file
-        );
-
-
-
-
-        if(upload.error){
-
-            console.error(upload.error);
-
-            continue;
-
-        }
-
-
-
-
-        const url =
-        db.storage
-        .from("diagram-files")
-        .getPublicUrl(filename)
-        .data
-        .publicUrl;
-
-
-
-
-
-        await db
-        .from("request_images")
-        .insert({
-
-            request_id: request.id,
-
-            image_url: url
-
-        });
-
-
-    }
-
-
-
-
-
-    alert(
-`Request submitted successfully!
-
-Your request code:
-
-${requestCode}
-
-Save this code to check your progress.`
-    );
-
-
-
-
-
-    event.target.reset();
-
-
-    submitButton.disabled = false;
-    submitButton.textContent = "Send Request";
-
-
+document.getElementById("request-form")?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const button = form.querySelector('[type="submit"]');
+  const msg = document.getElementById("request-msg");
+  const showMessage = (text, isError = false) => {
+    msg.textContent = text;
+    msg.classList.remove("hidden", "error", "moss");
+    msg.classList.add(isError ? "error" : "moss");
+  };
+
+  button.disabled = true;
+  showMessage("Sending your request…");
+  const tier = form.querySelector('input[name="tier"]:checked')?.value || "custom";
+  const values = {
+    name: document.getElementById("req-name").value.trim().slice(0, 80),
+    discord: document.getElementById("req-discord").value.trim().slice(0, 120) || null,
+    email: document.getElementById("req-email").value.trim().slice(0, 120) || null,
+    size: tier,
+    type: document.getElementById("req-type").value,
+    description: document.getElementById("req-description").value.trim().slice(0, 2000),
+    status: "Pending",
+  };
+
+  let requestCode = null;
+  let error = null;
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    requestCode = generateRequestCode();
+    ({ error } = await db.from("requests").insert({ ...values, request_code: requestCode }));
+    if (!error) break;
+    if (error.code !== "23505") break;
+  }
+  button.disabled = false;
+
+  if (error || !requestCode) {
+    console.error("Could not submit request:", error);
+    showMessage("Could not send your request. Please try again.", true);
+    return;
+  }
+
+  msg.classList.add("hidden");
+  form.reset();
+  form.classList.add("hidden");
+  document.getElementById("request-code").textContent = requestCode;
+  document.getElementById("request-done").classList.remove("hidden");
 });
 
-
-
-console.log(
-"Supabase loaded:",
-SUPABASE_KEY.substring(0,15)
-);
+document.getElementById("request-again")?.addEventListener("click", () => {
+  const form = document.getElementById("request-form");
+  form.reset();
+  form.classList.remove("hidden");
+  document.getElementById("request-done").classList.add("hidden");
+});
