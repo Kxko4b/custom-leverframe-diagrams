@@ -39,7 +39,6 @@ main, .site-footer { position: relative; z-index: 1; }
   overflow: hidden;
   pointer-events: none;
 }
-.vine-filter-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
 .vine-column {
   position: absolute;
   top: 50%;
@@ -55,9 +54,6 @@ main, .site-footer { position: relative; z-index: 1; }
   animation-delay: var(--sway-delay, 0s);
   will-change: transform;
 }
-.vine-1 img, .vine-4 img { filter: url("#vine-wiggle-a"); }
-.vine-2 img, .vine-5 img { filter: url("#vine-wiggle-b"); }
-.vine-3 img, .vine-6 img { filter: url("#vine-wiggle-c"); }
 .vine-1 { left: -3%; width: 224px; height: 4812px; transform: translate(-50%, -50%) rotate(-8deg) scale(0.76, 0.2); --sway-left: -112px; --sway-right: 112px; --sway-time: 9s; --sway-delay: -2s; }
 .vine-2 { left: 6%; width: 189px; height: 5045px; transform: translate(-50%, -50%) rotate(12deg) scale(0.7, 0.18); --sway-left: -86px; --sway-right: 86px; --sway-time: 13s; --sway-delay: -8s; }
 .vine-3 { left: 22%; width: 183px; height: 5211px; transform: translate(-50%, -50%) rotate(-5deg) scale(0.82, 0.2); --sway-left: -96px; --sway-right: 96px; --sway-time: 11s; --sway-delay: -4s; }
@@ -252,6 +248,6 @@ textarea { resize: vertical; }
 
 @media (prefers-reduced-motion: reduce) {
   .vine-column { --sway-left: -32px; --sway-right: 32px; }
-  .vine-column img { animation-duration: 13s; filter: none; }
+  .vine-column img { animation-duration: 13s; }
   html { scroll-behavior: auto; }
 }
