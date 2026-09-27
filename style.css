@@ -42,7 +42,6 @@ main, .site-footer { position: relative; z-index: 1; }
 .vine-column {
   position: absolute;
   top: 50%;
-  transform: translate(-50%, -50%) scale(0.2, 0.22);
   transform-origin: center;
 }
 .vine-column img {
@@ -51,22 +50,19 @@ main, .site-footer { position: relative; z-index: 1; }
   height: auto;
   max-width: none;
   border-radius: 0;
-  animation: vine-slither 12s ease-in-out infinite;
+  animation: vine-slither var(--sway-time, 9s) ease-in-out infinite alternate;
+  animation-delay: var(--sway-delay, 0s);
+  will-change: transform;
 }
-.vine-1 { left: 8%; width: 224px; height: 4812px; }
-.vine-2 { left: 24%; width: 189px; height: 5045px; }
-.vine-3 { left: 40%; width: 183px; height: 5211px; }
-.vine-4 { left: 56%; width: 113px; height: 4608px; }
-.vine-5 { left: 72%; width: 108px; height: 4824px; }
-.vine-6 { left: 88%; width: 122px; height: 4709px; }
-.vine-2 img { animation-duration: 14s; animation-delay: -5s; }
-.vine-3 img { animation-duration: 11s; animation-delay: -2s; }
-.vine-4 img { animation-duration: 16s; animation-delay: -8s; }
-.vine-5 img { animation-duration: 13s; animation-delay: -4s; }
-.vine-6 img { animation-duration: 15s; animation-delay: -10s; }
+.vine-1 { left: -3%; width: 224px; height: 4812px; transform: translate(-50%, -50%) rotate(-8deg) scale(0.76, 0.2); --sway-left: -112px; --sway-right: 112px; --sway-time: 9s; --sway-delay: -2s; }
+.vine-2 { left: 6%; width: 189px; height: 5045px; transform: translate(-50%, -50%) rotate(12deg) scale(0.7, 0.18); --sway-left: -86px; --sway-right: 86px; --sway-time: 13s; --sway-delay: -8s; }
+.vine-3 { left: 22%; width: 183px; height: 5211px; transform: translate(-50%, -50%) rotate(-5deg) scale(0.82, 0.2); --sway-left: -96px; --sway-right: 96px; --sway-time: 11s; --sway-delay: -4s; }
+.vine-4 { left: 77%; width: 113px; height: 4608px; transform: translate(-50%, -50%) rotate(9deg) scale(1.08, 0.19); --sway-left: -78px; --sway-right: 78px; --sway-time: 15s; --sway-delay: -11s; }
+.vine-5 { left: 95%; width: 108px; height: 4824px; transform: translate(-50%, -50%) rotate(-13deg) scale(1.12, 0.18); --sway-left: -84px; --sway-right: 84px; --sway-time: 10s; --sway-delay: -6s; }
+.vine-6 { left: 101%; width: 122px; height: 4709px; transform: translate(-50%, -50%) rotate(6deg) scale(0.98, 0.2); --sway-left: -106px; --sway-right: 106px; --sway-time: 12s; --sway-delay: -9s; }
 @keyframes vine-slither {
-  0%, 100% { transform: translateX(-120px) rotate(-0.8deg); }
-  50% { transform: translateX(120px) rotate(0.8deg); }
+  from { transform: translate3d(var(--sway-left), 0, 0) rotate(-1.6deg); }
+  to { transform: translate3d(var(--sway-right), 0, 0) rotate(1.6deg); }
 }
 
 img { display: block; max-width: 100%; height: auto; border-radius: var(--radius); }
@@ -227,6 +223,9 @@ textarea { resize: vertical; }
 .footer-inner { display: flex; flex-direction: column; gap: 1rem; padding-top: 2.5rem; padding-bottom: 2.5rem; }
 @media (min-width: 640px) { .footer-inner { flex-direction: row; align-items: center; justify-content: space-between; } }
 .footer-inner p { margin: 0; opacity: 0.6; }
+.kofi-footer-link { display: inline-flex; width: fit-content; align-items: center; gap: 0.55rem; border: 1px solid color-mix(in oklab, #ff5e5b 75%, white); border-radius: 999px; background: #ff5e5b; color: #241416; padding: 0.6rem 1rem; font-weight: 700; box-shadow: 0 3px 0 #b93d43; transition: transform 180ms ease, box-shadow 180ms ease; }
+.kofi-footer-link:hover { transform: translateY(-2px); box-shadow: 0 5px 0 #b93d43; }
+.kofi-footer-link:focus-visible { outline: 3px solid var(--primary-fg); outline-offset: 3px; }
 
 @media (max-width: 480px) {
   .header-inner { gap: 0.5rem; }
@@ -236,12 +235,19 @@ textarea { resize: vertical; }
   .tiers { grid-template-columns: 1fr; }
 }
 
+@media (max-width: 900px) {
+  .vine-2, .vine-3, .vine-5, .vine-6 { display: none; }
+  .vine-1 { left: -12%; }
+  .vine-4 { left: 112%; }
+}
+
 @media (max-width: 640px) {
-  .vine-column { transform: translate(-50%, -50%) scale(0.14, 0.17); }
-  .vine-2, .vine-5 { display: none; }
+  .vine-1 { left: -21%; transform: translate(-50%, -50%) rotate(-8deg) scale(0.76, 0.16); }
+  .vine-4 { left: 121%; transform: translate(-50%, -50%) rotate(9deg) scale(1.08, 0.16); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .vine-column img { animation: none; }
+  .vine-column { --sway-left: -32px; --sway-right: 32px; }
+  .vine-column img { animation-duration: 13s; }
   html { scroll-behavior: auto; }
 }
