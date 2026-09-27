@@ -63,21 +63,6 @@
               <a href="#examples" class="btn btn-ghost">See examples</a>
             </div>
           </div>
-          <figure class="card figure hero-board">
-            <svg class="track-diagram" viewBox="0 0 640 430" role="img" aria-labelledby="track-title track-desc">
-              <title id="track-title">Leverframe track plan</title>
-              <desc id="track-desc">A schematic railway junction with signals, points, and a lever order panel.</desc>
-              <rect x="12" y="12" width="616" height="406" rx="8" class="board-outline" />
-              <path d="M72 118H568 M72 215H568 M72 312H568 M220 118V312 M420 118V312 M220 215L420 118 M220 215L420 312" class="track-line" />
-              <path d="M95 90V146 M188 188V242 M392 90V146 M542 188V242 M300 285V339" class="signal-line" />
-              <circle cx="95" cy="90" r="9" class="signal-dot"/><circle cx="188" cy="188" r="9" class="signal-dot"/><circle cx="392" cy="90" r="9" class="signal-dot"/><circle cx="542" cy="188" r="9" class="signal-dot"/><circle cx="300" cy="339" r="9" class="signal-dot"/>
-              <path d="M82 372H558" class="lever-line" />
-              <g class="lever-marks"><path d="M100 357V387 M130 357V387 M160 357V387 M190 357V387 M220 357V387 M250 357V387 M280 357V387 M310 357V387 M340 357V387 M370 357V387 M400 357V387 M430 357V387 M460 357V387 M490 357V387 M520 357V387 M550 357V387" /></g>
-              <text x="32" y="52" class="board-label">SIGNAL BOX · TRACK &amp; LEVER PLAN</text>
-              <text x="32" y="402" class="board-note">ROUTES · POINTS · LOCKING</text>
-            </svg>
-            <figcaption><span>Each layout drawn to order</span><span class="brass">KXKO</span></figcaption>
-          </figure>
         </div>
       </section>
 
@@ -87,9 +72,7 @@
           <p class="eyebrow">01 — About</p>
           <h2>A one-person signal box</h2>
           <div class="two-col muted">
-            <p>
-              <span id="about-text">I'm a diagram maker obsessed with how a real lever frame reads. Every route, every locking lever and every point gets its own line, the way it would on a printed board in a working box.</span>
-            </p>
+            <div id="about-text" class="formatted-copy">I'm a diagram maker obsessed with how a real lever frame reads. Every route, every locking lever and every point gets its own line, the way it would on a printed board in a working box.</div>
             <p>
               It's a small personal studio — nothing corporate about it. Don't be
               shy, I don't bite. The more detail you give me, the better the board
@@ -280,7 +263,7 @@
         <div class="wrap">
           <p class="eyebrow">06 — Terms</p>
           <h2>Terms of service</h2>
-          <p id="terms-text" class="muted measure terms-copy">Each diagram is drawn to your brief. We’ll agree the scope, price, and timing before work begins.</p>
+          <div id="terms-text" class="muted measure terms-copy">Each diagram is drawn to your brief. We’ll agree the scope, price, and timing before work begins.</div>
         </div>
       </section>
 
@@ -323,6 +306,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
     <script src="js/supabase.js"></script>
+    <script src="js/markdown.js"></script>
     <script src="js/content.js"></script>
     <script src="js/gallery.js"></script>
     <script src="js/reviews.js"></script>

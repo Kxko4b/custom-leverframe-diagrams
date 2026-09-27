@@ -11,8 +11,8 @@ async function loadContent() {
   for (const item of data || []) {
     const target = document.getElementById(targets[item.section]);
     if (target && typeof item.content === "string" && item.content.trim()) {
-      target.textContent = item.content.trim();
-      target.classList.add("database-copy");
+      target.innerHTML = window.renderSiteMarkdown(item.content.trim());
+      target.classList.add("database-copy", "formatted-copy");
     }
   }
 }

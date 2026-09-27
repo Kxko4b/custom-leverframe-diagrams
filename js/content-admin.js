@@ -14,7 +14,7 @@ async function loadSiteContentAdmin() {
       document.getElementById(`content-${item.section}`).value = item.content || "";
     }
   }
-  message.textContent = "Website copy loaded.";
+  message.textContent = "Website copy loaded. Use ## for headings, **text** for bold, - for lists, and /br for a line break.";
 }
 
 document.getElementById("content-save")?.addEventListener("click", async (event) => {
