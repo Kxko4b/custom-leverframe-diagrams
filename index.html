@@ -1,550 +1,356 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<link rel="canonical" href="https://kxko4b.github.io/custom-leverframe-diagrams/">
-<meta name="google-site-verification" content="u74UXFDpo8I3l_uasX4Xikjp42K57c5RvVOHOTXY710" />
-
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<meta charset="UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
-<title>
-Custom Lever Frame Diagrams | Kxko
-</title>
-
-<link rel="icon" type="image/png" href="favicon.png">
-
-<meta name="description" content="Custom leverframe diagrams, historical railway signal box recreations and railway signalling layouts created by Kxko.">
-
-
-<link rel="stylesheet" href="style.css">
-
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-
-
-</head>
-
-
-<body>
-
-
-<div id="lightbox" class="lightbox">
-
-<img id="lightbox-img">
-
-</div>
-
-
-
-
-<header>
-
-<nav>
-
-<h2>
-Kxko Leverframe Diagrams
-</h2>
-
-
-<div class="nav-actions">
-
-<div class="theme-toggle-wrapper">
-
-<input type="checkbox" id="dark-mode-toggle">
-
-<label for="dark-mode-toggle" class="toggle" aria-label="Toggle dark mode">
-<span class="theme-icon sun">☀️</span>
-<span class="toggle-moon">🌙</span>
-</label>
-
-</div>
-
-<div class="nav-links">
-
-<a href="#about">About</a>
-
-<a href="#services">Services</a>
-
-<a href="#examples">Examples</a>
-
-<a href="#reviews">Reviews</a>
-
-<a href="#request">Request</a>
-
-<a href="status/">Check Status</a>
-
-<a href="#question">Ask Questions</a>
-
-</div>
-
-</div>
-
-
-</nav>
-
-</header>
-
-
-
-
-
-<main>
-
-
-
-<section class="hero">
-
-<div class="hero-content">
-
-
-<h1>
-Custom Leverframe Diagrams
-</h1>
-
-
-<p>
-Historical recreations, custom layouts and railway signalling diagrams made with accuracy.
-</p>
-
-
-<a href="#request" class="button">
-Request a Diagram
-</a>
-
-
-</div>
-
-</section>
-
-
-
-
-
-
-<section id="about">
-
-<h2>
-About Me
-</h2>
-
-
-<p id="about-text">
-
-</p>
-
-
-</section>
-
-
-
-
-
-
-
-<section id="services">
-
-<h2>
-Services
-</h2>
-
-
-<div class="cards">
-
-
-<div class="card">
-
-<h3>
-Historical Recreations
-</h3>
-
-<p>
-Detailed recreations of real signal boxes and railway layouts.
-</p>
-
-</div>
-
-
-
-<div class="card">
-
-<h3>
-Custom Designs
-</h3>
-
-<p>
-Unique leverframe diagrams based on your own ideas.
-</p>
-
-</div>
-
-
-
-
-<div class="card">
-
-<h3>
-Game Projects
-</h3>
-
-<p>
-Diagrams for railway simulations and games.
-</p>
-
-</div>
-
-
-</div>
-
-</section>
-
-
-
-
-
-
-
-<section id="examples">
-
-<h2>Examples</h2>
-
-<div id="gallery" class="gallery">
-
-</div>
-
-
-<div id="lightbox" class="lightbox">
-
-    <button id="lightbox-close">
-        ✕
-    </button>
-
-    <img id="lightbox-img">
-
-</div>
-
-
-</section>
-
-
-
-
-
-
-
-<section id="reviews">
-
-
-<h2>
-Customer Reviews
-</h2>
-
-
-
-<div id="review-list">
-
-</div>
-
-
-
-
-
-<form id="review-form">
-
-
-<input id="review-name" placeholder="Your name" required>
-
-
-<select id="review-rating">
-
-<option value="5">★★★★★</option>
-
-<option value="4">★★★★☆</option>
-
-<option value="3">★★★☆☆</option>
-
-<option value="2">★★☆☆☆</option>
-
-<option value="1">★☆☆☆☆</option>
-
-</select>
-
-
-
-
-<textarea id="review-message" placeholder="Your review" required></textarea>
-
-<button id="review-submit" type="submit">
-    Submit
-</button>
-
-
-
-</form>
-
-
-</section>
-
-
-
-<div class="divider"></div>
-
-
-
-
-
-<section id="request">
-
-
-<h2>
-Request a Diagram
-</h2>
-
-
-<p>
-Prices start at €2. Final pricing depends on size, complexity and required research. If you request a diagram, I will review the diagram and with the code that you'll get after submitting, you can check the status of your order. Nothings final and you also won't be forced to pay directly after submitting. Don't be shy, I don't bite.
-</p>
-
-
-
-
-<form id="request-form">
-
-
-<input id="request-name" placeholder="Name" required>
-
-
-<input id="request-discord" placeholder="Discord username">
-
-
-<input id="request-email" placeholder="Email (optional)">
-
-
-
-
-
-<select id="request-size">
-
-
-<option>
-Custom request (from €2)
-</option>
-
-
-<option>
-Small diagram (€2)
-</option>
-
-
-<option>
-Medium diagram (€3.50)
-</option>
-
-
-<option>
-Large diagram (€4+)
-</option>
-
-
-</select>
-
-
-
-
-
-
-<select id="request-type">
-
-
-<option>
-Historical Recreation
-</option>
-
-
-<option>
-Custom Template
-</option>
-
-
-<option>
-Fictional Design
-</option>
-
-
-</select>
-
-
-
-
-
-<textarea id="request-description" placeholder="Describe your idea"></textarea>
-
-
-
-
-
-<input 
-type="file"
-id="request-images"
-multiple
-accept="image/*">
-
-
-
-
-
-<button>
-Send Request
-</button>
-
-
-</form>
-
-<p>
-Keep your code well. It may take sometime until the status says accepted. If it was "cancelled", then you either submitted something wrong, or I just don't want to do it.
-
-
-</section>
-
-
-
-
-
-
-
-<section id="terms">
-
-
-<h2>
-Terms
-</h2>
-
-
-<div id="terms-text">
-
-</div>
-
-
-</section>
-
-
-<section id="questions">
-
-<h2>
-Ask a Question
-</h2>
-
-
-<form id="question-form">
-
-
-<input 
-id="question"
-placeholder="Ask your question"
-required>
-
-
-<input 
-id="contact"
-placeholder="Email or Discord"
-required>
-
-
-<button type="submit">
-Send Question
-</button>
-
-
-</form>
-
-
-<p>
-Answer should arrive within 5 hours.
-</p>
-
-
-</section>
-<section id="contact">
-
-
-<h2>
-Contact
-</h2>
-
-
-<p>
-Discord: kxkosnuss4b
-</p>
-
-
-<p>
-Email: haleannson@gmail.com
-</p>
-
-<script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support me on Ko-fi', '#306778', 'Z6X323OK6B');kofiwidget2.draw();</script> 
-</section>
-
-
-
-
-
-</main>
-
-
-
-
-
-
-<footer>
-
-© 2026 Kxko Leverframe Diagrams
-
-</footer>
-
-
-
-
-
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script src="js/supabase.js"></script>
-
-<script src="js/gallery.js"></script>
-
-<script src="js/reviews.js"></script>
-
-<script src="js/requests.js"></script>
-
-<script src="js/content.js"></script>
-
-<script src="js/questions.js"></script>
-<script>
-const themeToggle = document.getElementById("dark-mode-toggle");
-
-const savedTheme = localStorage.getItem("theme");
-
-if (savedTheme === "dark") {
-    document.body.classList.add("dark-mode");
-    themeToggle.checked = true;
-}
-
-themeToggle.addEventListener("change", () => {
-    if (themeToggle.checked) {
-        document.body.classList.add("dark-mode");
-        localStorage.setItem("theme", "dark");
-    } else {
-        document.body.classList.remove("dark-mode");
-        localStorage.setItem("theme", "light");
-    }
-});
-</script>
-</body>
-
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kxko — Custom Leverframe Diagrams</title>
+    <meta
+      name="description"
+      content="Hand-drawn custom leverframe diagrams, historical signal box recreations and railway signalling layouts by Kxko. Prices from €2."
+    />
+    <meta name="author" content="Kxko" />
+    <link rel="canonical" href="https://kxko4b.github.io/custom-leverframe-diagrams/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Kxko — Custom Leverframe Diagrams" />
+    <meta
+      property="og:description"
+      content="Hand-drawn custom leverframe diagrams, historical signal box recreations and railway signalling layouts. Prices from €2."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap header-inner">
+        <a href="#top" class="brand">
+          <span class="mark">K</span>
+          <span class="brand-name">Kxko · Leverframe Diagrams</span>
+        </a>
+        <nav class="nav">
+          <a href="#about">About</a>
+          <a href="#services">Services</a>
+          <a href="#examples">Examples</a>
+          <a href="#reviews">Reviews</a>
+          <a href="#status">Check status</a>
+        </nav>
+        <a href="#request" class="btn btn-signal btn-sm">Request a diagram</a>
+      </div>
+    </header>
+
+    <main>
+      <!-- HERO -->
+      <section id="top" class="section hero">
+        <div class="wrap hero-grid">
+          <div>
+            <p class="eyebrow brass">Custom leverframe diagrams</p>
+            <h1>Every lever, every point, drawn by hand.</h1>
+            <p class="lead">
+              I make signal box track plans and lever frames — historical
+              recreations, custom layouts, and diagrams for games and models.
+              Precise, mechanical, and a genuine labour of love. Prices start at
+              €2.
+            </p>
+            <div class="row">
+              <a href="#request" class="btn btn-signal">Request a diagram</a>
+              <a href="#examples" class="btn btn-ghost">See examples</a>
+            </div>
+          </div>
+          <figure class="card figure">
+            <img
+              src="assets/track-plan.jpg"
+              alt="Hand-drawn railway signal box track plan with a brass KXKO BOX nameplate"
+              width="1024"
+              height="1024"
+            />
+            <figcaption>
+              <span>Track plan · Sheet A</span><span class="brass">Rev. 3</span>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <!-- ABOUT -->
+      <section id="about" class="section">
+        <div class="wrap">
+          <p class="eyebrow">01 — About</p>
+          <h2>A one-person signal box</h2>
+          <div class="two-col muted">
+            <p>
+              I'm a diagram maker obsessed with how a real lever frame reads.
+              Every route, every locking lever and every point gets its own line,
+              the way it would on a printed board in a working box.
+            </p>
+            <p>
+              It's a small personal studio — nothing corporate about it. Don't be
+              shy, I don't bite. The more detail you give me, the better the board
+              turns out.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SERVICES -->
+      <section id="services" class="section tinted">
+        <div class="wrap">
+          <p class="eyebrow">02 — Services</p>
+          <h2>What I can draw for you</h2>
+          <div class="stack">
+            <div class="card service">
+              <span class="num">01</span>
+              <div>
+                <h3>Historical recreations</h3>
+                <p class="muted small">
+                  Detailed recreations of real signal boxes and railway layouts,
+                  lever order matched to the source.
+                </p>
+              </div>
+            </div>
+            <div class="card service">
+              <span class="num">02</span>
+              <div>
+                <h3>Custom designs</h3>
+                <p class="muted small">
+                  Unique leverframe diagrams based on your own ideas — a model
+                  box, a club layout, or a game project, sized and formatted to
+                  fit.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- EXAMPLES -->
+      <section id="examples" class="section">
+        <div class="wrap">
+          <p class="eyebrow">03 — Examples</p>
+          <h2>From the workbench</h2>
+          <div class="grid-3">
+            <figure class="card figure">
+              <img
+                src="assets/track-plan.jpg"
+                alt="Historical recreation of a signal box track plan with brass nameplate"
+                width="1024"
+                height="1024"
+                loading="lazy"
+              />
+              <figcaption>
+                <span>Box 12 · Historical</span><span class="moss">Done</span>
+              </figcaption>
+            </figure>
+            <figure class="card figure">
+              <img
+                src="assets/lever-frame.jpg"
+                alt="Custom lever frame board with brass handles and enamel nameplates"
+                width="1024"
+                height="1024"
+                loading="lazy"
+              />
+              <figcaption>
+                <span>Club Box · Custom</span><span class="moss">Done</span>
+              </figcaption>
+            </figure>
+            <figure class="card figure">
+              <img
+                src="assets/game-set.jpg"
+                alt="Stylised game-art signal box with a glowing track diagram board"
+                width="1024"
+                height="1024"
+                loading="lazy"
+              />
+              <figcaption>
+                <span>Rail Sim · Game</span><span class="brass">In work</span>
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <!-- REVIEWS -->
+      <section id="reviews" class="section tinted">
+        <div class="wrap">
+          <p class="eyebrow">04 — Reviews</p>
+          <h2>Customer reviews</h2>
+          <div class="two-col">
+            <div id="review-list" class="stack">
+              <p class="muted small">Loading reviews…</p>
+            </div>
+            <form id="review-form" class="card form">
+              <h3>Leave a review</h3>
+              <div id="review-stars" class="stars-input" role="radiogroup" aria-label="Rating">
+                <button type="button" data-value="1" aria-label="1 star">★</button>
+                <button type="button" data-value="2" aria-label="2 stars">★</button>
+                <button type="button" data-value="3" aria-label="3 stars">★</button>
+                <button type="button" data-value="4" aria-label="4 stars">★</button>
+                <button type="button" data-value="5" aria-label="5 stars">★</button>
+              </div>
+              <input id="review-name" maxlength="60" required placeholder="Your name" />
+              <textarea id="review-text" maxlength="500" required rows="3" placeholder="Your review…"></textarea>
+              <button type="submit" class="btn btn-primary">Submit</button>
+              <p id="review-msg" class="mono small hidden"></p>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- REQUEST -->
+      <section id="request" class="section">
+        <div class="wrap">
+          <p class="eyebrow">05 — Request</p>
+          <h2>Request a diagram</h2>
+          <p class="muted small measure">
+            Prices start at €2. Final pricing depends on size, complexity and
+            required research. After submitting you'll get a code to check the
+            status of your order. Nothing is final, and you won't be forced to pay
+            directly after submitting. Don't be shy, I don't bite.
+          </p>
+
+          <div class="two-col">
+            <div>
+              <form id="request-form" class="card form">
+                <div>
+                  <span class="label">Size</span>
+                  <div class="tiers">
+                    <label>
+                      <input type="radio" name="tier" value="custom" checked />
+                      <span><strong>Custom request</strong><em>from €2</em></span>
+                    </label>
+                    <label>
+                      <input type="radio" name="tier" value="small" />
+                      <span><strong>Small diagram</strong><em>€2</em></span>
+                    </label>
+                    <label>
+                      <input type="radio" name="tier" value="medium" />
+                      <span><strong>Medium diagram</strong><em>€3.50</em></span>
+                    </label>
+                    <label>
+                      <input type="radio" name="tier" value="large" />
+                      <span><strong>Large diagram</strong><em>€4+</em></span>
+                    </label>
+                  </div>
+                </div>
+                <div>
+                  <label class="label" for="req-type">Type</label>
+                  <select id="req-type">
+                    <option>Historical Recreation</option>
+                    <option>Custom Template</option>
+                    <option>Fictional Design</option>
+                  </select>
+                </div>
+                <div class="grid-2">
+                  <input id="req-name" maxlength="80" required placeholder="Your name" />
+                  <input id="req-email" type="email" maxlength="120" placeholder="Email (optional)" />
+                </div>
+                <textarea
+                  id="req-description"
+                  maxlength="2000"
+                  required
+                  rows="4"
+                  placeholder="Describe the diagram — signal box name, layout, references…"
+                ></textarea>
+                <button type="submit" class="btn btn-signal block">Send request</button>
+                <p id="request-msg" class="mono small hidden"></p>
+              </form>
+
+              <div id="request-done" class="card hidden">
+                <h3>Request sent</h3>
+                <p class="muted small">Keep your code well — you'll need it to check the status:</p>
+                <p id="request-code" class="code-badge"></p>
+                <button type="button" class="btn btn-ghost block copy-btn" data-copy="request-code">
+                  Copy code
+                </button>
+                <p class="mono small muted">
+                  It may take some time until the status says accepted. If it was
+                  "cancelled", then you either submitted something wrong, or I just
+                  don't want to do it.
+                </p>
+                <button type="button" id="request-again" class="btn btn-ghost">Send another request</button>
+              </div>
+            </div>
+
+            <div class="stack-lg">
+              <!-- STATUS -->
+              <div id="status" class="card">
+                <h3>Check status</h3>
+                <p class="muted small">Got a code? See where your diagram is.</p>
+                <form id="status-form" class="row-form">
+                  <input id="status-code" maxlength="10" placeholder="KX-XXXX" class="mono up" />
+                  <button type="submit" class="btn btn-primary">Find</button>
+                </form>
+                <div id="status-result" class="hidden"></div>
+                <p id="status-msg" class="mono small hidden"></p>
+              </div>
+
+              <!-- QUESTION -->
+              <form id="question-form" class="card form">
+                <h3>Ask a question</h3>
+                <textarea id="question-text" maxlength="1000" required rows="3" placeholder="What do you want to know?"></textarea>
+                <input id="question-contact" maxlength="120" placeholder="Email or Discord (optional, for the answer)" />
+                <button type="submit" class="btn btn-primary">Send question</button>
+                <p id="question-msg" class="mono small hidden"></p>
+                <div id="question-done" class="hidden">
+                  <p class="mono small moss">Sent! The answer should arrive within 5 hours.</p>
+                  <p class="mono small muted">Your code, if you want to check the status:</p>
+                  <p id="question-code" class="code-badge small-badge"></p>
+                  <button type="button" class="btn btn-ghost block copy-btn" data-copy="question-code">
+                    Copy code
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONTACT -->
+      <section id="contact" class="section tinted">
+        <div class="wrap two-col">
+          <div>
+            <p class="eyebrow">06 — Contact</p>
+            <h2>Don't be shy</h2>
+            <p class="muted measure">
+              Quick question or a half-formed idea? Ping me and I'll get back to
+              you — usually with a little sketch attached.
+            </p>
+          </div>
+          <div class="grid-2">
+            <div class="card">
+              <span class="label">Discord</span>
+              <p class="mono">kxkosnuss4b</p>
+              <p class="muted small">Fastest for questions</p>
+            </div>
+            <a href="mailto:haleannson@gmail.com" class="card link-card">
+              <span class="label">Email</span>
+              <p class="mono">haleannson@gmail.com</p>
+              <p class="muted small">For full commissions</p>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap footer-inner">
+        <div class="brand">
+          <span class="mark invert">K</span>
+          <span class="brand-name">Kxko</span>
+        </div>
+        <p class="mono tiny">© 2026 Kxko Leverframe Diagrams · Prices from €2 · Made by hand</p>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <script src="js/db.js"></script>
+    <script src="js/reviews.js"></script>
+    <script src="js/request.js"></script>
+    <script src="js/question.js"></script>
+    <script src="js/status.js"></script>
+  </body>
 </html>
