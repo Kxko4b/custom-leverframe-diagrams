@@ -147,6 +147,11 @@
                 <button type="button" data-value="5" aria-label="5 stars">★</button>
               </div>
               <input id="review-name" maxlength="60" required placeholder="Your name" />
+              <input
+                     type="file"
+                     id="review-images"
+                     multiple
+                     accept="image/*">
               <textarea id="review-text" maxlength="500" required rows="3" placeholder="Your review…"></textarea>
               <button type="submit" class="btn btn-primary">Submit</button>
               <p id="review-msg" class="mono small hidden"></p>
