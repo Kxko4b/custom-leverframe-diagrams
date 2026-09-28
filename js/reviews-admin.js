@@ -151,10 +151,40 @@ async function loadAdminReviews() {
         );
 
 
+        /* IMAGE */
+
+        const imageField = document.createElement("div");
+        imageField.className = "review-field review-field-full";
+
+        const imageLabel = document.createElement("label");
+        imageLabel.textContent = "Photo URL";
+
+        const imageInput = document.createElement("input");
+        imageInput.type = "url";
+        imageInput.value = review.image_url || "";
+        imageInput.placeholder = "https://...";
+
+        imageField.append(
+            imageLabel,
+            imageInput
+        );
+
+        if (review.image_url) {
+
+            const image = document.createElement("img");
+            image.className = "admin-review-image";
+            image.src = review.image_url;
+            image.alt = `Photo for ${review.name || "this"} review`;
+            imageField.append(image);
+
+        }
+
+
         fields.append(
             nameField,
             ratingField,
-            messageField
+            messageField,
+            imageField
         );
 
 
@@ -191,7 +221,8 @@ async function loadAdminReviews() {
                     .update({
                         name: nameInput.value.trim(),
                         rating: Number(ratingSelect.value),
-                        message: messageInput.value.trim()
+                        message: messageInput.value.trim(),
+                        image_url: imageInput.value.trim() || null
                     })
                     .eq("id", review.id);
 
