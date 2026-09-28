@@ -151,11 +151,6 @@
                 <button type="button" data-value="5" aria-label="5 stars">★</button>
               </div>
               <input id="review-name" maxlength="60" required placeholder="Your name" />
-              <input
-                     type="file"
-                     id="review-images"
-                     multiple
-                     accept="image/*">
               <textarea id="review-text" maxlength="500" required rows="3" placeholder="Your review…"></textarea>
               <label class="label" for="review-image">Photo (optional)</label>
               <input id="review-image" type="file" accept="image/png,image/jpeg,image/webp" />
@@ -186,19 +181,18 @@
                   <div class="tiers">
                     <label>
                       <input type="radio" name="tier" value="custom" checked />
-                      <span><strong>Custom request</strong><em>from €2</em></span>
                     </label>
                     <label>
                       <input type="radio" name="tier" value="small" />
-                      <span><strong>Small diagram</strong><em>€2</em></span>
+                      <span><strong>Small diagram</strong></span>
                     </label>
                     <label>
                       <input type="radio" name="tier" value="medium" />
-                      <span><strong>Medium diagram</strong><em>€3.50</em></span>
+                      <span><strong>Medium diagram</strong></span>
                     </label>
                     <label>
                       <input type="radio" name="tier" value="large" />
-                      <span><strong>Large diagram</strong><em>€4+</em></span>
+                      <span><strong>Large diagram</strong></span>
                     </label>
                   </div>
                 </div>
@@ -207,7 +201,6 @@
                   <select id="req-type">
                     <option>Historical Recreation</option>
                     <option>Custom Template</option>
-                    <option>Fictional Design</option>
                   </select>
                 </div>
                 <div class="grid-2">
@@ -221,6 +214,13 @@
                   required
                   rows="4"
                   placeholder="Describe the diagram — signal box name, layout, references…"
+                ></textarea>
+                <textarea
+                  id="req-price"
+                  maxlength="2000"
+                  required
+                  rows="4"
+                  placeholder="What would you pay for the diagram?"
                 ></textarea>
                 <div>
                   <label class="label" for="request-images">Reference images (optional)</label>
