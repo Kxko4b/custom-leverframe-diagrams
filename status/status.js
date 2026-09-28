@@ -2,6 +2,52 @@ console.log("status.js loaded");
 
 
 /* =========================
+   THEME
+========================= */
+
+const themeToggle =
+    document.getElementById("dark-mode-toggle");
+
+const savedTheme =
+    localStorage.getItem("theme");
+
+const prefersDarkTheme =
+    window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+const useDarkTheme =
+    savedTheme
+        ? savedTheme === "dark"
+        : prefersDarkTheme;
+
+document.body.classList.toggle(
+    "theme-dark",
+    useDarkTheme
+);
+
+if (themeToggle) {
+
+    themeToggle.checked = useDarkTheme;
+
+    themeToggle.addEventListener("change", () => {
+
+        const theme =
+            themeToggle.checked
+                ? "dark"
+                : "light";
+
+        document.body.classList.toggle(
+            "theme-dark",
+            theme === "dark"
+        );
+
+        localStorage.setItem("theme", theme);
+
+    });
+
+}
+
+
+/* =========================
    HTML ESCAPING
 ========================= */
 

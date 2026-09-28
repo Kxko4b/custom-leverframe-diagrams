@@ -6,7 +6,7 @@ async function loadReviews() {
 
   const { data, error } = await db
     .from("reviews")
-    .select("name, rating, message, created_at")
+    .select("name, rating, message, image_url, created_at")
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -30,6 +30,15 @@ async function loadReviews() {
     stars.textContent = "★".repeat(rating) + "☆".repeat(5 - rating);
     const message = document.createElement("p");
     message.textContent = `“${review.message || ""}”`;
+    if (review.image_url) {
+      const image = document.createElement("img");
+      image.className = "review-image";
+      image.src = review.image_url;
+      image.alt = `Photo shared with ${review.name || "Anonymous"}'s review`;
+      image.loading = "lazy";
+      image.addEventListener("error", () => image.remove(), { once: true });
+      card.append(image);
+    }
     const name = document.createElement("strong");
     name.textContent = `— ${review.name || "Anonymous"}`;
     card.append(stars, message, name);
@@ -65,11 +74,37 @@ document.getElementById("review-form")?.addEventListener("submit", async (event)
     return;
   }
 
+  const imageFile = document.getElementById("review-image").files[0];
+  if (imageFile && (!imageFile.type.startsWith("image/") || imageFile.size > 5 * 1024 * 1024)) {
+    showMessage("Choose a PNG, JPEG, or WebP image smaller than 5 MB.", true);
+    return;
+  }
+
   button.disabled = true;
+  let imageUrl = null;
+
+  if (imageFile) {
+    const extension = imageFile.name.split(".").pop().toLowerCase();
+    const path = `${crypto.randomUUID()}.${extension}`;
+    const { error: uploadError } = await db.storage
+      .from("review-images")
+      .upload(path, imageFile, { contentType: imageFile.type });
+
+    if (uploadError) {
+      console.error("Could not upload review image:", uploadError);
+      button.disabled = false;
+      showMessage("Could not upload the photo. Please try again.", true);
+      return;
+    }
+
+    imageUrl = db.storage.from("review-images").getPublicUrl(path).data.publicUrl;
+  }
+
   const { error } = await db.from("reviews").insert({
     name: document.getElementById("review-name").value.trim().slice(0, 60),
     rating: reviewRating,
     message: document.getElementById("review-text").value.trim().slice(0, 500),
+    image_url: imageUrl,
   });
   button.disabled = false;
 

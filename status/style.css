@@ -40,7 +40,11 @@
    DARK MODE
    ========================= */
 
-:root:has(#dark-mode-toggle:checked) {
+/*
+   The theme class is applied by status.js rather than relying on :has().
+   This keeps the switch working in browsers that do not support :has().
+*/
+body.theme-dark {
     --bg-color: #17191a;
     --text-color: #e5e7e8;
 

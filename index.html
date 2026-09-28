@@ -41,6 +41,10 @@
           <a href="#status">Check status</a>
           <a href="#terms">Terms</a>
         </nav>
+        <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false">
+          <span aria-hidden="true">☾</span>
+          <span class="theme-toggle-label">Dark mode</span>
+        </button>
         <a href="#request" class="btn btn-signal btn-sm">Request a diagram</a>
       </div>
     </header>
@@ -153,6 +157,8 @@
                      multiple
                      accept="image/*">
               <textarea id="review-text" maxlength="500" required rows="3" placeholder="Your review…"></textarea>
+              <label class="label" for="review-image">Photo (optional)</label>
+              <input id="review-image" type="file" accept="image/png,image/jpeg,image/webp" />
               <button type="submit" class="btn btn-primary">Submit</button>
               <p id="review-msg" class="mono small hidden"></p>
             </form>
@@ -216,6 +222,19 @@
                   rows="4"
                   placeholder="Describe the diagram — signal box name, layout, references…"
                 ></textarea>
+                <div>
+                  <label class="label" for="request-images">Reference images (optional)</label>
+                  <input
+                    id="request-images"
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    multiple
+                    aria-describedby="request-images-help"
+                  />
+                  <p id="request-images-help" class="muted small">
+                    Upload up to 5 PNG, JPEG, or WebP images (5 MB each).
+                  </p>
+                </div>
                 <button type="submit" class="btn btn-signal block">Send request</button>
                 <p id="request-msg" class="mono small hidden"></p>
               </form>
@@ -224,6 +243,7 @@
                 <h3>Request sent</h3>
                 <p class="muted small">Keep your code well — you'll need it to check the status:</p>
                 <p id="request-code" class="code-badge"></p>
+                <p id="request-image-msg" class="mono small error hidden"></p>
                 <button type="button" class="btn btn-ghost block copy-btn" data-copy="request-code">
                   Copy code
                 </button>
@@ -328,5 +348,6 @@
     <script src="js/requests.js"></script>
     <script src="js/questions.js"></script>
     <script src="js/home-status.js"></script>
+    <script src="js/theme.js"></script>
   </body>
 </html>
