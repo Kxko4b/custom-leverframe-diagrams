@@ -152,15 +152,16 @@
               </div>
               <input id="review-name" maxlength="60" required placeholder="Your name" />
               <textarea id="review-text" maxlength="500" required rows="3" placeholder="Your review…"></textarea>
-              <label class="label" for="review-image">Photo or video (optional)</label>
+              <label class="label" for="review-image">Photos or videos (optional)</label>
               <input
                 id="review-image"
                 type="file"
                 accept="image/png,image/jpeg,image/webp,image/gif,video/mp4,video/webm,video/quicktime"
+                multiple
                 aria-describedby="review-image-help"
               />
               <p id="review-image-help" class="muted small">
-                PNG, JPEG, WebP, GIF, MP4, WebM or MOV, up to 25 MB.
+                Up to 10 files: PNG, JPEG, WebP, GIF, MP4, WebM or MOV, 25 MB each.
               </p>
               <button type="submit" class="btn btn-primary">Submit</button>
               <p id="review-msg" class="mono small hidden"></p>
