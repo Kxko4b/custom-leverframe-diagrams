@@ -1,3 +1,4 @@
+(() => {
 // Public review display and submission use the `message` field edited in admin.
 
 const REVIEW_MAX_FILES = 10;
@@ -251,4 +252,7 @@ document.getElementById("review-form")?.addEventListener("submit", async (event)
   }
 });
 
+window.loadReviews = loadReviews;
 loadReviews();
+})();
+
