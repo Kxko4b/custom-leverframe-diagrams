@@ -1,6 +1,8 @@
 // Public review display and submission use the `message` field edited in admin.
 
-const REVIEW_MAX_BYTES = 25 * 1024 * 1024; // must match the review-images bucket limit
+const REVIEW_MAX_FILES = 10;
+const REVIEW_MAX_BYTES = 25 * 1024 * 1024; // per file, matches the review-images bucket limit
+const REVIEW_MAX_TOTAL_BYTES = 100 * 1024 * 1024; // all files in one review
 const REVIEW_UPLOAD_TIMEOUT_MS = 120000;
 const REVIEW_FILE_TYPES = {
   "image/png": "png",
@@ -69,13 +71,28 @@ async function loadReviews() {
 
   const { data, error } = await db
     .from("reviews")
-    .select("name, rating, message, image_url, created_at")
+    .select("id, name, rating, message, image_url, created_at")
     .order("created_at", { ascending: false });
 
   if (error) {
     console.error("Could not load reviews:", error);
     box.textContent = "Reviews are unavailable right now.";
     return;
+  }
+
+  // Extra files per review live in the review-images table.
+  const mediaByReview = new Map();
+  const { data: mediaRows, error: mediaError } = await db
+    .from("review-images")
+    .select("review_id, image_url")
+    .order("id", { ascending: true });
+  if (mediaError) {
+    console.error("Could not load review files:", mediaError);
+  } else {
+    for (const row of mediaRows || []) {
+      if (!mediaByReview.has(row.review_id)) mediaByReview.set(row.review_id, []);
+      mediaByReview.get(row.review_id).push(row.image_url);
+    }
   }
 
   box.replaceChildren();
@@ -87,17 +104,25 @@ async function loadReviews() {
   for (const review of data) {
     const card = document.createElement("article");
     card.className = "card review";
+    const authorName = review.name || "Anonymous";
+
+    // Old reviews only have image_url; newer ones have rows in review-images.
+    const urls = mediaByReview.get(review.id) || (review.image_url ? [review.image_url] : []);
+    if (urls.length) {
+      const media = document.createElement("div");
+      media.className = urls.length === 1 ? "review-media single" : "review-media";
+      for (const url of urls) media.append(buildReviewMedia(url, authorName));
+      card.append(media);
+    }
+
     const stars = document.createElement("div");
     stars.className = "stars";
     const rating = Math.max(0, Math.min(5, Number(review.rating) || 0));
     stars.textContent = "★".repeat(rating) + "☆".repeat(5 - rating);
     const message = document.createElement("p");
     message.textContent = `“${review.message || ""}”`;
-    if (review.image_url) {
-      card.append(buildReviewMedia(review.image_url, review.name || "Anonymous"));
-    }
     const name = document.createElement("strong");
-    name.textContent = `— ${review.name || "Anonymous"}`;
+    name.textContent = `— ${authorName}`;
     card.append(stars, message, name);
     box.append(card);
   }
@@ -131,28 +156,41 @@ document.getElementById("review-form")?.addEventListener("submit", async (event)
     return;
   }
 
-  const file = document.getElementById("review-image").files[0];
-  if (file) {
+  const files = Array.from(document.getElementById("review-image").files);
+  if (files.length > REVIEW_MAX_FILES) {
+    showMessage(`You can attach up to ${REVIEW_MAX_FILES} files.`, true);
+    return;
+  }
+  let totalBytes = 0;
+  for (const file of files) {
     if (!REVIEW_FILE_TYPES[file.type]) {
-      showMessage("Choose a PNG, JPEG, WebP, GIF, MP4, WebM, or MOV file.", true);
+      showMessage("Choose PNG, JPEG, WebP, GIF, MP4, WebM, or MOV files only.", true);
       return;
     }
     if (file.size > REVIEW_MAX_BYTES) {
-      showMessage("That file is too large. The limit is 25 MB.", true);
+      showMessage(`"${file.name}" is too large. The limit is 25 MB per file.`, true);
       return;
     }
+    totalBytes += file.size;
+  }
+  if (totalBytes > REVIEW_MAX_TOTAL_BYTES) {
+    showMessage("Those files add up to more than 100 MB. Please attach fewer or smaller files.", true);
+    return;
   }
 
   button.disabled = true;
 
   try {
-    let mediaUrl = null;
+    const uploadedUrls = [];
 
-    if (file) {
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
       showMessage(
-        file.type.startsWith("video/")
-          ? "Uploading video… this can take a moment."
-          : "Uploading…"
+        files.length > 1
+          ? `Uploading file ${i + 1} of ${files.length}…`
+          : file.type.startsWith("video/")
+            ? "Uploading video… this can take a moment."
+            : "Uploading…"
       );
       const path = `${crypto.randomUUID()}.${REVIEW_FILE_TYPES[file.type]}`;
       const { error: uploadError } = await withTimeout(
@@ -160,18 +198,33 @@ document.getElementById("review-form")?.addEventListener("submit", async (event)
         REVIEW_UPLOAD_TIMEOUT_MS,
         "Upload timed out"
       );
-
       if (uploadError) throw uploadError;
-      mediaUrl = db.storage.from("review-images").getPublicUrl(path).data.publicUrl;
+      uploadedUrls.push(db.storage.from("review-images").getPublicUrl(path).data.publicUrl);
     }
 
-    const { error } = await db.from("reviews").insert({
-      name: document.getElementById("review-name").value.trim().slice(0, 60),
-      rating: reviewRating,
-      message: document.getElementById("review-text").value.trim().slice(0, 500),
-      image_url: mediaUrl,
-    });
+    showMessage("Sending review…");
+    const { data: review, error } = await db
+      .from("reviews")
+      .insert({
+        name: document.getElementById("review-name").value.trim().slice(0, 60),
+        rating: reviewRating,
+        message: document.getElementById("review-text").value.trim().slice(0, 500),
+        image_url: uploadedUrls[0] || null, // first file, for older code and the admin panel
+      })
+      .select("id")
+      .single();
     if (error) throw error;
+
+    let filesSaved = true;
+    if (uploadedUrls.length) {
+      const { error: mediaError } = await db
+        .from("review-images")
+        .insert(uploadedUrls.map((url) => ({ review_id: review.id, image_url: url })));
+      if (mediaError) {
+        console.error("Could not save review files:", mediaError);
+        filesSaved = false;
+      }
+    }
 
     form.reset();
     reviewRating = 0;
@@ -179,13 +232,17 @@ document.getElementById("review-form")?.addEventListener("submit", async (event)
       star.classList.remove("on");
       star.setAttribute("aria-pressed", "false");
     });
-    showMessage("Thanks! Your review has been sent.");
+    showMessage(
+      filesSaved
+        ? "Thanks! Your review has been sent."
+        : "Thanks! Your review was sent, but only the first file could be saved."
+    );
     await loadReviews();
   } catch (err) {
     console.error("Could not submit review:", err);
     showMessage(
-      file
-        ? "Could not upload your file or submit the review. Try a smaller file or try again."
+      files.length
+        ? "Could not upload your files or submit the review. Try fewer or smaller files, or try again."
         : "Could not submit your review. Please try again.",
       true
     );
