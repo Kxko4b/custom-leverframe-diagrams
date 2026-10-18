@@ -1737,6 +1737,117 @@
             }
         }
 
+
+        /* =========================
+           BRIEFING WINDOW
+        ========================= */
+
+        #briefing-run-picker {
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--surface);
+            color: var(--text);
+            font: inherit;
+            max-width: 100%;
+        }
+
+        .bf-run-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .bf-run-head h3 { margin: 0; }
+
+        .bf-sub,
+        .bf-summary {
+            margin: 4px 0 16px;
+            color: var(--muted);
+        }
+
+        .bf-h { margin: 28px 0 10px; }
+
+        .bf-text {
+            margin: 0;
+            padding: 16px;
+            background: var(--surface-soft);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            white-space: pre-wrap;
+            word-break: break-word;
+            font: 14px/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        }
+
+        .bf-events {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            gap: 10px;
+        }
+
+        .bf-event {
+            padding: 14px 16px;
+            background: var(--surface-soft);
+            border: 1px solid var(--border);
+            border-left-width: 4px;
+            border-radius: 12px;
+        }
+
+        .bf-event p { margin: 6px 0 0; }
+
+        .bf-event-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .bf-kind { color: var(--muted); font-size: 13px; }
+        .bf-time { margin-left: auto; color: var(--muted); font-size: 13px; }
+
+        .bf-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            background: var(--primary-soft);
+            color: var(--primary-dark);
+        }
+
+        .bf-badge.bf-good  { background: #e6f4ec; color: #1f6b41; }
+        .bf-badge.bf-info  { background: var(--primary-soft); color: var(--primary-dark); }
+        .bf-badge.bf-warn  { background: #fbf1d9; color: #8a6414; }
+        .bf-badge.bf-bad   { background: var(--danger-soft); color: var(--danger); }
+        .bf-badge.bf-muted { background: var(--surface-soft); color: var(--muted); }
+
+        .bf-event.bf-good  { border-left-color: #42a06b; }
+        .bf-event.bf-info  { border-left-color: var(--primary); }
+        .bf-event.bf-warn  { border-left-color: #d6a83a; }
+        .bf-event.bf-bad   { border-left-color: var(--danger); }
+
+        .bf-table-wrap { overflow-x: auto; }
+
+        .bf-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .bf-table th,
+        .bf-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .bf-table th { color: var(--muted); font-weight: 600; }
+
     </style>
 </head>
 
@@ -1880,6 +1991,16 @@
             >
                 ✎
                 <span>Website copy</span>
+            </button>
+
+
+            <button
+                class="nav-button"
+                data-view="briefing"
+                type="button"
+            >
+                ☀️
+                <span>Briefing</span>
             </button>
 
         </nav>
@@ -2260,6 +2381,51 @@
 
 
             <!-- =========================
+                 DAILY BRIEFING
+            ========================= -->
+
+            <section
+                id="briefing-view"
+                class="view"
+            >
+
+                <div class="page-header">
+
+                    <div>
+
+                        <h2>
+                            Briefing
+                        </h2>
+
+                        <p>
+                            Your daily briefing, and what the self-check AI found, fixed, or stopped on.
+                        </p>
+
+                    </div>
+
+                    <select
+                        id="briefing-run-picker"
+                        aria-label="Choose a briefing run"
+                    ></select>
+
+                </div>
+
+
+                <div
+                    id="briefing-detail"
+                    class="section-card"
+                >
+
+                    <p class="empty">
+                        Loading briefing...
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
                  WEBSITE COPY
             ========================= -->
 
@@ -2408,6 +2574,7 @@
 <script src="../js/questions-admin.js"></script>
 <script src="../js/requests-admin.js"></script>
 <script src="../js/reviews-admin.js"></script>
+<script src="../js/briefing-admin.js"></script>
 
 
 <script>
