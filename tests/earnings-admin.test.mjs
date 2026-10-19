@@ -106,3 +106,9 @@ test("admin scripts carry a version tag so a stale browser cache cannot hide new
   assert.ok(tags.length >= 8);
   for (const [, name, query] of tags) assert.match(query, /^\?v=\w+$/, name);
 });
+
+test("request details are hidden until the card is opened", () => {
+  const html = read("../admin/index.html");
+  assert.match(html, /\.request-card \.request-content\s*\{\s*display:\s*none;/);
+  assert.match(html, /\.request-card\.open \.request-content\s*\{\s*display:\s*block;/);
+});

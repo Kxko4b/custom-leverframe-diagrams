@@ -793,6 +793,19 @@
             padding: 21px;
         }
 
+        /* Request details are collapsed until the header is clicked (the request script toggles .open). */
+        .request-card .request-content {
+            display: none;
+        }
+
+        .request-card.open .request-content {
+            display: block;
+        }
+
+        .request-card:not(.open) .request-header {
+            border-bottom-color: transparent;
+        }
+
         .request-grid {
             display: grid;
 
