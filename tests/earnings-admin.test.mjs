@@ -82,3 +82,15 @@ test("the admin page has the earnings banner, KXKOS window, and loads scripts in
   assert.match(html, /href="https:\/\/kxko4b\.github\.io\/KXKOS\/"[^>]*target="_blank"[^>]*rel="noopener"/);
   assert.ok(html.indexOf("earnings-admin.js") > 0 && html.indexOf("earnings-admin.js") < html.indexOf("requests-admin.js"));
 });
+
+test("the admin windows can never sit on 'Loading' forever", () => {
+  const admin = read("../js/admin.js");
+  // loaders live in later scripts, so the session check must wait for the page to finish loading
+  assert.match(admin, /addEventListener\("load", checkSession\)/);
+  assert.doesNotMatch(admin, /^checkSession\(\);/m);
+  for (const file of ["../js/requests-admin.js", "../js/briefing-admin.js"]) {
+    const js = read(file);
+    assert.match(js, /Promise\.race/, file);
+    assert.match(js, /did not answer within 20 seconds/, file);
+  }
+});
