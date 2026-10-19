@@ -494,7 +494,7 @@ const REQUEST_STATUSES = ["Pending", "Accepted", "In Progress", "Completed", "Ca
 const UPDATE_AUTHOR = "Kxko";
 let adminRequests = [];
 
-async function loadRequests() {
+async function loadRequestsInner() {
     const container = document.getElementById("requests");
     if (!container) return;
     container.textContent = "Loading requests…";
@@ -518,6 +518,19 @@ async function loadRequests() {
 }
 
 let adminPayments = [];
+
+/* Never leave the window on "Loading": show the real error, or a timeout message, instead. */
+async function loadRequests() {
+    const container = document.getElementById("requests");
+    try {
+        await Promise.race([
+            loadRequestsInner(),
+            new Promise((_, reject) => setTimeout(() => reject(new Error("the database did not answer within 20 seconds")), 20000)),
+        ]);
+    } catch (error) {
+        showRequestError(container, `Could not load requests: ${error?.message || error}`, error);
+    }
+}
 
 function paymentFor(requestId) {
     const row = adminPayments.find(payment => String(payment.request_id) === String(requestId));

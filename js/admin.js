@@ -689,4 +689,9 @@ function escapeHTML(value) {
    START
 ========================================================= */
 
-checkSession();
+/* Start after every admin script has loaded: the loaders (requests, briefing, ...) are defined in later scripts. */
+if (document.readyState === "complete") {
+    checkSession();
+} else {
+    window.addEventListener("load", checkSession);
+}

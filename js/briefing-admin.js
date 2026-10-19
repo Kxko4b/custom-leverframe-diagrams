@@ -237,7 +237,7 @@ function showBriefingRun(runId) {
 }
 
 
-async function loadBriefing() {
+async function loadBriefingInner() {
 
     const detail = document.getElementById("briefing-detail");
     const picker = document.getElementById("briefing-run-picker");
@@ -257,7 +257,8 @@ async function loadBriefing() {
         console.error("Could not load briefing runs:", runError);
 
         detail.innerHTML =
-            '<p class="empty">Could not load the briefing. If this is the first time, the briefing tables may not be set up yet.</p>';
+            '<p class="empty">Could not load the briefing: ' +
+            briefingEscape(runError.message || runError) + '</p>';
 
         return;
     }
@@ -296,6 +297,30 @@ async function loadBriefing() {
     }
 
     showBriefingRun(briefingRuns[0]?.id);
+}
+
+
+/* Never leave the window on "Loading": show the real error, or a timeout message, instead. */
+async function loadBriefing() {
+
+    const detail = document.getElementById("briefing-detail");
+
+    try {
+
+        await Promise.race([
+            loadBriefingInner(),
+            new Promise((_, reject) => setTimeout(() => reject(new Error("the database did not answer within 20 seconds")), 20000)),
+        ]);
+
+    } catch (error) {
+
+        console.error("Could not load the briefing:", error);
+
+        if (detail) {
+            detail.innerHTML = '<p class="empty">Could not load the briefing: ' +
+                briefingEscape(error?.message || error) + '</p>';
+        }
+    }
 }
 
 
