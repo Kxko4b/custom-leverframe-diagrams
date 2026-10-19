@@ -158,7 +158,12 @@ test("the AI reviewer never receives the briefing text or secrets", async () => 
   assert.match(r.out.briefing, /PRIVATE-HOMEWORK-TEXT/); // it is in the briefing...
   assert.doesNotMatch(r.ai.body, /PRIVATE-HOMEWORK-TEXT/); // ...but never sent to the AI
   assert.doesNotMatch(r.ai.body, /me@example\.com/);
-  assert.equal("briefing" in JSON.parse(r.ai.body).logs, false);
+  const sent = JSON.parse(r.ai.body);
+  // ai-debugger puts these into a text prompt, so they must be strings (objects would print as "[object Object]")
+  assert.equal(typeof sent.problem, "string");
+  assert.equal(typeof sent.logs, "string");
+  assert.doesNotMatch(sent.problem + sent.logs, /\[object Object\]/);
+  assert.equal("briefing" in JSON.parse(sent.logs), false);
 });
 
 test("FCM 503 is retried (explicit server rejection) and succeeds without a duplicate push", async () => {

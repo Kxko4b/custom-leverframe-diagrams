@@ -425,7 +425,11 @@ async function runAIDebugger(dateText: string, failedComponents: any[], allCompo
     const response = await fetchT(AI_DEBUGGER_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(buildAiPayload({ dateKey: dateText, components: allComponents, findings: events })),
+      // ai-debugger drops `problem` and `logs` into a text prompt, so they must be strings (objects print as "[object Object]").
+      body: JSON.stringify((() => {
+        const p: any = buildAiPayload({ dateKey: dateText, components: allComponents, findings: events });
+        return { ...p, problem: JSON.stringify(p.problem), logs: JSON.stringify(p.logs) };
+      })()),
     });
     const text = await response.text();
     let data: any;
