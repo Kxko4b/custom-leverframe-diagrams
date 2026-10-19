@@ -502,6 +502,9 @@ async function loadRequests() {
         .select("*")
         .order("created_at", { ascending: false });
     if (error) return showRequestError(container, "Could not load requests.", error);
+    const { data: payments, error: paymentError } = await db.from("request_payments").select("request_id, amount");
+    if (paymentError) console.error("Could not load request prices:", paymentError);
+    adminPayments = paymentError ? [] : (payments || []);
     adminRequests = await Promise.all((data || []).map(async request => {
         const { data: images, error: imageError } = await db
             .from("request_images")
@@ -511,6 +514,25 @@ async function loadRequests() {
         return { ...request, request_images: images || [] };
     }));
     renderAdminRequests();
+    renderEarnings();
+}
+
+let adminPayments = [];
+
+function paymentFor(requestId) {
+    const row = adminPayments.find(payment => String(payment.request_id) === String(requestId));
+    return row ? Number(row.amount) : null;
+}
+
+function renderEarnings() {
+    const box = document.getElementById("earnings-summary");
+    if (!box) return;
+    const totals = summarizeEarnings(adminRequests, adminPayments);
+    box.querySelector("[data-earn='earned']").textContent = formatMoney(totals.earned);
+    box.querySelector("[data-earn='open']").textContent = formatMoney(totals.open);
+    box.querySelector("[data-earn='note']").textContent = totals.completedWithoutPrice
+        ? `${totals.completedWithoutPrice} completed request${totals.completedWithoutPrice === 1 ? " has" : "s have"} no price yet. Open one and enter it to count it.`
+        : `Counted from ${totals.paidCount} completed request${totals.paidCount === 1 ? "" : "s"}.`;
 }
 
 function renderAdminRequests() {
@@ -554,6 +576,7 @@ function makeRequestCard(request) {
     grid.append(editField("Name", "name", request.name), editField("Email", "email", request.email, "email"));
     grid.append(editField("Discord", "discord", request.discord), editField("Size", "size", request.size));
     grid.append(editField("Type", "type", request.type), statusField(request.status || "Pending"));
+    grid.append(priceField(paymentFor(request.id)));
     grid.append(editField("Description", "description", request.description, "textarea", true));
     grid.append(referenceImages(request.request_images || []));
     const controls = makeElement("div", "request-controls");
@@ -571,6 +594,15 @@ function editField(label, name, value, type = "text", full = false) {
     wrapper.append(makeElement("span", "request-field-label", label));
     const input = type === "textarea" ? document.createElement("textarea") : document.createElement("input");
     input.name = name; input.value = value || ""; if (type !== "textarea") input.type = type;
+    wrapper.append(input); return wrapper;
+}
+
+function priceField(current) {
+    const wrapper = makeElement("label", "request-field");
+    wrapper.append(makeElement("span", "request-field-label", "Price (€)"));
+    const input = document.createElement("input");
+    input.name = "price"; input.type = "text"; input.inputMode = "decimal"; input.placeholder = "e.g. 12,50";
+    input.value = current === null ? "" : String(current).replace(".", ",");
     wrapper.append(input); return wrapper;
 }
 
@@ -599,8 +631,18 @@ function createUpdatesPanel(requestId) {
 
 async function saveRequestEdits(event, id) {
     event.preventDefault(); const form = event.currentTarget; const button = form.querySelector('[type="submit"]'); button.disabled = true; button.textContent = "Saving…";
-    const values = Object.fromEntries(new FormData(form)); const { error } = await db.from("requests").update(values).eq("id", id);
-    button.disabled = false; button.textContent = "Save changes"; if (error) return showRequestError(null, "Could not save request changes.", error); await loadRequests();
+    const values = Object.fromEntries(new FormData(form));
+    const rawPrice = values.price; delete values.price; // price lives in the admin-only request_payments table
+    const price = parsePrice(rawPrice);
+    if (price === undefined) { button.disabled = false; button.textContent = "Save changes"; return showRequestError(null, "That price is not a valid amount. Use something like 12,50.", null); }
+    const { error } = await db.from("requests").update(values).eq("id", id);
+    if (error) { button.disabled = false; button.textContent = "Save changes"; return showRequestError(null, "Could not save request changes.", error); }
+    const { error: priceError } = price === null
+        ? await db.from("request_payments").delete().eq("request_id", id)
+        : await db.from("request_payments").upsert({ request_id: id, amount: price, updated_at: new Date().toISOString() });
+    button.disabled = false; button.textContent = "Save changes";
+    if (priceError) showRequestError(null, "The request was saved, but the price could not be saved.", priceError);
+    await loadRequests();
 }
 
 async function postRequestUpdate(event, requestId) {

@@ -1848,6 +1848,28 @@
 
         .bf-table th { color: var(--muted); font-weight: 600; }
 
+
+        /* earnings banner + KXKOS card */
+        .earn-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px 32px;
+            padding: 18px 22px;
+            margin-bottom: 18px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+        }
+        .earn-item { display: flex; flex-direction: column; gap: 2px; }
+        .earn-label { color: var(--muted); font-size: 13px; }
+        .earn-value { font-size: 28px; color: #1f6b41; }
+        .earn-value.earn-open { color: var(--muted); }
+        .earn-note { flex-basis: 100%; margin: 0; color: var(--muted); font-size: 13px; }
+
+        .kxkos-card h3 { margin: 0 0 6px; }
+        .kxkos-card p { margin: 0 0 18px; color: var(--muted); }
+        .kxkos-open { display: inline-block; text-decoration: none; text-align: center; }
     </style>
 </head>
 
@@ -2001,6 +2023,16 @@
             >
                 ☀️
                 <span>Briefing</span>
+            </button>
+
+
+            <button
+                class="nav-button"
+                data-view="kxkos"
+                type="button"
+            >
+                🖥️
+                <span>KXKOS</span>
             </button>
 
         </nav>
@@ -2241,6 +2273,23 @@
                 </div>
 
 
+                <div id="earnings-summary" class="earn-bar">
+
+                    <div class="earn-item">
+                        <span class="earn-label">Earned so far</span>
+                        <strong class="earn-value" data-earn="earned">—</strong>
+                    </div>
+
+                    <div class="earn-item">
+                        <span class="earn-label">Still to come</span>
+                        <strong class="earn-value earn-open" data-earn="open">—</strong>
+                    </div>
+
+                    <p class="earn-note" data-earn="note"></p>
+
+                </div>
+
+
                 <div class="request-toolbar">
 
                     <div class="controls">
@@ -2426,6 +2475,56 @@
 
 
             <!-- =========================
+                 KXKOS
+            ========================= -->
+
+            <section
+                id="kxkos-view"
+                class="view"
+            >
+
+                <div class="page-header">
+
+                    <div>
+
+                        <h2>
+                            KXKOS
+                        </h2>
+
+                        <p>
+                            Your browser-based retro operating system.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="section-card kxkos-card">
+
+                    <h3>
+                        Open KXKOS
+                    </h3>
+
+                    <p>
+                        Opens in a new tab, so this dashboard stays where it is.
+                    </p>
+
+                    <a
+                        class="primary kxkos-open"
+                        href="https://kxko4b.github.io/KXKOS/"
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        Launch KXKOS
+                    </a>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
                  WEBSITE COPY
             ========================= -->
 
@@ -2572,6 +2671,7 @@
 <script src="../js/content-admin.js"></script>
 <script src="../js/admin.js"></script>
 <script src="../js/questions-admin.js"></script>
+<script src="../js/earnings-admin.js"></script>
 <script src="../js/requests-admin.js"></script>
 <script src="../js/reviews-admin.js"></script>
 <script src="../js/briefing-admin.js"></script>
