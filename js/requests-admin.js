@@ -542,6 +542,8 @@ function renderEarnings() {
     if (!box) return;
     const totals = summarizeEarnings(adminRequests, adminPayments);
     box.querySelector("[data-earn='earned']").textContent = formatMoney(totals.earned);
+    const overviewEarned = document.getElementById("stat-earned");
+    if (overviewEarned) overviewEarned.textContent = formatMoney(totals.earned);
     box.querySelector("[data-earn='open']").textContent = formatMoney(totals.open);
     box.querySelector("[data-earn='note']").textContent = totals.completedWithoutPrice
         ? `${totals.completedWithoutPrice} completed request${totals.completedWithoutPrice === 1 ? " has" : "s have"} no price yet. Open one and enter it to count it.`

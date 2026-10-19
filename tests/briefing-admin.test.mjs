@@ -131,7 +131,7 @@ test("the admin page has the Briefing button, view, script and load call", () =>
   assert.match(html, /data-view="briefing"/);
   assert.match(html, /id="briefing-view"/);
   assert.match(html, /id="briefing-detail"/);
-  assert.match(html, /<script src="\.\.\/js\/briefing-admin\.js"><\/script>/);
+  assert.match(html, /<script src="\.\.\/js\/briefing-admin\.js(\?v=\w+)?"><\/script>/);
 
   const admin = readFileSync(new URL("../js/admin.js", import.meta.url), "utf8");
   assert.match(admin, /typeof loadBriefing === "function"/);
