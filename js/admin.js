@@ -272,6 +272,10 @@ function showDashboard() {
         loadAdminReviews();
     }
 
+    if (typeof loadBriefing === "function") {
+        loadBriefing();
+    }
+
     loadOverviewStats();
 
     checkSupabaseConnection();
