@@ -94,3 +94,15 @@ test("the admin windows can never sit on 'Loading' forever", () => {
     assert.match(js, /did not answer within 20 seconds/, file);
   }
 });
+
+test("the Overview shows the earned amount too", () => {
+  assert.match(read("../admin/index.html"), /id="stat-earned"/);
+  assert.match(read("../js/requests-admin.js"), /getElementById\("stat-earned"\)/);
+});
+
+test("admin scripts carry a version tag so a stale browser cache cannot hide new windows", () => {
+  const html = read("../admin/index.html");
+  const tags = [...html.matchAll(/<script src="\.\.\/js\/([\w.-]+\.js)([^"]*)"/g)];
+  assert.ok(tags.length >= 8);
+  for (const [, name, query] of tags) assert.match(query, /^\?v=\w+$/, name);
+});
