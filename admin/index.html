@@ -10,7 +10,7 @@
     <link rel="icon" href="../favicon.ico">
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="../js/supabase.js?v=20261019b"></script>
+    <script src="../js/supabase.js?v=20261020a"></script>
 
     <style>
 
@@ -1883,6 +1883,182 @@
         .kxkos-card h3 { margin: 0 0 6px; }
         .kxkos-card p { margin: 0 0 18px; color: var(--muted); }
         .kxkos-open { display: inline-block; text-decoration: none; text-align: center; }
+
+        /* hub: needs-attention card, nav badges, export button */
+        .hub-card { margin-bottom: 18px; }
+        .hub-row {
+            display: flex; justify-content: space-between; align-items: center; gap: 12px;
+            padding: 10px 14px; margin-top: 8px; border-radius: 10px;
+            background: var(--surface-soft); border-left: 4px solid var(--border);
+        }
+        .hub-row.hub-good { border-left-color: #42a06b; }
+        .hub-row.hub-warn { border-left-color: #d6a83a; }
+        .hub-row.hub-bad  { border-left-color: #c94b43; }
+        .hub-open {
+            border: 1px solid var(--border); background: var(--surface); color: var(--text);
+            border-radius: 8px; padding: 6px 12px; cursor: pointer; font: inherit;
+        }
+        .nav-badge {
+            margin-left: auto; min-width: 20px; padding: 1px 7px; border-radius: 999px;
+            background: #c94b43; color: #fff; font-size: 12px; font-weight: 700; text-align: center;
+        }
+        .export-button { width: auto; display: inline-flex; color: var(--text); background: #f3f5f6; }
+
+        /* layout fixes found in the audit */
+        .dashboard { width: calc(100% - 250px); min-width: 0; }
+        @media (max-width: 750px) {
+            .dashboard { width: calc(100% - 72px); }
+        }
+        .stats-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+        .page-header { flex-wrap: wrap; }
+        .view { min-width: 0; }
+        #briefing-run-picker { max-width: 100%; }
+        .bf-text, .bf-event p, .bf-sub, .bf-summary { overflow-wrap: anywhere; }
+
+        /* =========================================================
+           REFINEMENT (signal-box look)
+           Status colours borrow the lever-frame colour code: yellow = distant signal (waiting),
+           black = points (accepted), blue = lock (in progress), green = signal clear (done), red = stop (cancelled).
+           Later rules in this block deliberately override the earlier ones.
+        ========================================================= */
+
+        :root {
+            --bg: #f3f5f4;
+            --text: #16222a;
+            --muted: #62707a;
+            --border: #dde3e4;
+            --shadow: 0 6px 20px rgba(22, 34, 42, 0.06);
+
+            --lever-yellow: #d9a21b;
+            --lever-blue: #2f5f9e;
+            --lever-black: #1b1f22;
+            --lever-green: #2a8a5c;
+            --lever-red: #b8372e;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-size: 15px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* keyboard focus you can actually see */
+        :focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+        .sidebar :focus-visible { outline-color: #8cc4d4; }
+
+        /* sidebar: darker ink, active item marked like a lever tab */
+        .sidebar { background: #16222a; }
+
+        .nav-button {
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        .nav-button.active {
+            background: rgba(255, 255, 255, 0.09);
+            color: #fff;
+            font-weight: 600;
+            box-shadow: inset 3px 0 0 #6fb0c2;
+        }
+
+        /* headings */
+        .page-header { margin-bottom: 24px; }
+        .page-header h2 {
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+        .page-header p { font-size: 14px; }
+        .section-card h3, .hub-card h3 { font-size: 16px; font-weight: 650; }
+
+        /* cards: one quiet radius, no heavy shadow until hover */
+        .stat-card, .section-card, .request-card, .question-card,
+        .admin-question-card, .admin-review-card, .earn-bar {
+            border-radius: 12px;
+            box-shadow: none;
+        }
+        .request-card:hover, .question-card:hover { box-shadow: var(--shadow); }
+        .stat-card { padding: 18px 20px; position: relative; }
+        .stat-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 20px;
+            width: 32px;
+            height: 4px;
+            border-radius: 0 0 3px 3px;
+            background: var(--border);
+        }
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Overview counters carry the lever colour of what they count */
+        .stat-card:has(#stat-pending)::before { background: var(--lever-yellow); }
+        .stat-card:has(#stat-progress)::before { background: var(--lever-blue); }
+        .stat-card:has(#stat-completed)::before { background: var(--lever-green); }
+        .stat-card:has(#stat-total-requests)::before { background: var(--lever-black); }
+        .stat-card:has(#stat-earned)::before { background: var(--primary); }
+
+        /* small labels: sentence case instead of tracked-out capitals */
+        .request-code-label, .question-code-label, .request-field-label,
+        .question-label, .question-field-label, .review-label, .review-field label {
+            text-transform: none;
+            letter-spacing: 0;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--muted);
+        }
+        .request-code, .question-code {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            letter-spacing: 0;
+        }
+
+        /* status chips + card edge in lever colours */
+        .request-status, .question-status {
+            background: var(--primary-soft);
+            color: var(--primary-dark);
+            font-weight: 650;
+        }
+        [data-status="Pending"]     .request-status, .question-status[data-status="Pending"]     { background: #fbf1d3; color: #6f5106; }
+        [data-status="Accepted"]    .request-status { background: #e6e9ea; color: var(--lever-black); }
+        [data-status="In Progress"] .request-status, .question-status[data-status="In Progress"] { background: #e2ebf7; color: #234a7c; }
+        [data-status="Completed"]   .request-status, .question-status[data-status="Answered"]    { background: #e0f1e8; color: #1c6b45; }
+        [data-status="Cancelled"]   .request-status { background: #f8e3e0; color: #962c24; }
+
+        .request-card { border-left: 4px solid var(--border); }
+        .request-card[data-status="Pending"]     { border-left-color: var(--lever-yellow); }
+        .request-card[data-status="Accepted"]    { border-left-color: var(--lever-black); }
+        .request-card[data-status="In Progress"] { border-left-color: var(--lever-blue); }
+        .request-card[data-status="Completed"]   { border-left-color: var(--lever-green); }
+        .request-card[data-status="Cancelled"]   { border-left-color: var(--lever-red); }
+
+        /* earnings bar: the number is the point, the rest is quiet */
+        .earn-bar { padding: 16px 22px; }
+        .earn-value { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: #1c6b45; }
+
+        /* buttons and inputs */
+        .primary { border-radius: 8px; font-weight: 600; transition: background-color 0.15s ease; }
+        input, textarea, select { border-radius: 8px; }
+        input:focus, textarea:focus, select:focus { border-color: var(--primary); }
+
+        .hub-row { border-radius: 8px; }
+        .hub-open:hover { background: var(--primary-soft); }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
     </style>
 </head>
 
@@ -2203,6 +2379,19 @@
                 </div>
 
 
+                <div class="section-card hub-card">
+
+                    <h3>
+                        Needs your attention
+                    </h3>
+
+                    <div id="hub-attention-list">
+                        <p class="empty">Loading...</p>
+                    </div>
+
+                </div>
+
+
                 <div class="section-card">
 
                     <h3>
@@ -2328,6 +2517,15 @@
                             type="text"
                             placeholder="Search requests..."
                         >
+
+                        <button
+                            id="export-requests"
+                            class="nav-button export-button"
+                            type="button"
+                            title="Download all requests with prices as a spreadsheet file"
+                        >
+                            ⬇ Export CSV
+                        </button>
 
                         <select id="filter">
 
@@ -2697,13 +2895,14 @@
      JAVASCRIPT
 ========================= -->
 
-<script src="../js/content-admin.js?v=20261019b"></script>
-<script src="../js/admin.js?v=20261019b"></script>
-<script src="../js/questions-admin.js?v=20261019b"></script>
-<script src="../js/earnings-admin.js?v=20261019b"></script>
-<script src="../js/requests-admin.js?v=20261019b"></script>
-<script src="../js/reviews-admin.js?v=20261019b"></script>
-<script src="../js/briefing-admin.js?v=20261019b"></script>
+<script src="../js/content-admin.js?v=20261020a"></script>
+<script src="../js/admin.js?v=20261020a"></script>
+<script src="../js/questions-admin.js?v=20261020a"></script>
+<script src="../js/earnings-admin.js?v=20261020a"></script>
+<script src="../js/requests-admin.js?v=20261020a"></script>
+<script src="../js/reviews-admin.js?v=20261020a"></script>
+<script src="../js/briefing-admin.js?v=20261020a"></script>
+<script src="../js/hub-admin.js?v=20261020a"></script>
 
 
 <script>

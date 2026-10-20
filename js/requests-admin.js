@@ -566,6 +566,7 @@ function renderAdminRequests() {
 
 function makeRequestCard(request) {
     const card = makeElement("article", "request-card");
+    card.dataset.status = request.status || "Pending";
     const header = makeElement("button", "request-header");
     header.type = "button";
     const identity = makeElement("div", "request-identity");
@@ -617,7 +618,7 @@ function priceField(current) {
     wrapper.append(makeElement("span", "request-field-label", "Price (€)"));
     const input = document.createElement("input");
     input.name = "price"; input.type = "text"; input.inputMode = "decimal"; input.placeholder = "e.g. 12,50";
-    input.value = current === null ? "" : String(current).replace(".", ",");
+    input.value = current === null ? "" : Number(current).toFixed(2).replace(".", ",");
     wrapper.append(input); return wrapper;
 }
 
@@ -632,7 +633,7 @@ function referenceImages(images) {
     const wrapper = makeElement("div", "request-field full"); wrapper.append(makeElement("div", "request-field-label", "Reference images"));
     const list = makeElement("div", "request-images");
     if (!images.length) list.append(makeElement("span", "request-field-value", "No reference images uploaded."));
-    images.forEach((image, index) => { const link = document.createElement("a"); link.className = "request-image"; link.href = image.image_url; link.target = "_blank"; link.rel = "noopener"; const picture = document.createElement("img"); picture.src = image.image_url; picture.alt = `Reference image ${index + 1}`; link.append(picture); list.append(link); });
+    images.forEach((image, index) => { const link = document.createElement("a"); link.className = "request-image"; link.href = safeUrl(image.image_url) || "#"; link.target = "_blank"; link.rel = "noopener"; const picture = document.createElement("img"); picture.src = safeUrl(image.image_url); picture.alt = `Reference image ${index + 1}`; link.append(picture); list.append(link); });
     wrapper.append(list); return wrapper;
 }
 
@@ -679,7 +680,7 @@ async function uploadAdminUpdateFile(updateId, requestId, file) {
 async function loadAdminUpdates(requestId, container) {
     const { data, error } = await db.from("request_updates").select("*, request_update_files (*)").eq("request_id", requestId).order("created_at", { ascending: true });
     if (error) return showRequestError(container, "Could not load updates.", error); container.replaceChildren(); if (!data?.length) return container.append(makeElement("p", "empty", "No updates yet."));
-    data.forEach(update => { const item = makeElement("article", "update"); const heading = makeElement("div", "update-header"); heading.append(makeElement("span", "author", update.author || UPDATE_AUTHOR), makeElement("span", "date", new Date(update.created_at).toLocaleString())); item.append(heading, makeElement("div", "message", update.message || "")); if (update.request_update_files?.length) { const files = makeElement("div", "update-files"); update.request_update_files.forEach(file => { const link = document.createElement("a"); link.href = file.file_url; link.target = "_blank"; link.rel = "noopener"; link.textContent = `📎 ${file.file_name}`; files.append(link); }); item.append(files); } container.append(item); });
+    data.forEach(update => { const item = makeElement("article", "update"); const heading = makeElement("div", "update-header"); heading.append(makeElement("span", "author", update.author || UPDATE_AUTHOR), makeElement("span", "date", new Date(update.created_at).toLocaleString())); item.append(heading, makeElement("div", "message", update.message || "")); if (update.request_update_files?.length) { const files = makeElement("div", "update-files"); update.request_update_files.forEach(file => { const link = document.createElement("a"); link.href = safeUrl(file.file_url) || "#"; link.target = "_blank"; link.rel = "noopener"; link.textContent = `📎 ${file.file_name}`; files.append(link); }); item.append(files); } container.append(item); });
 }
 
 function makeElement(tag, className, text) { const node = document.createElement(tag); if (className) node.className = className; if (text !== undefined) node.textContent = text; return node; }

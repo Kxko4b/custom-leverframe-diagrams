@@ -173,7 +173,7 @@ async function loadAdminReviews() {
 
             const image = document.createElement("img");
             image.className = "admin-review-image";
-            image.src = review.image_url;
+            image.src = (typeof safeUrl === "function" ? safeUrl(review.image_url) : review.image_url);
             image.alt = `Photo for ${review.name || "this"} review`;
             imageField.append(image);
 

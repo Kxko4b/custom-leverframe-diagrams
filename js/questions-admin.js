@@ -102,7 +102,7 @@ async function loadQuestions() {
 
                 </div>
 
-                <span class="question-status">
+                <span class="question-status" data-status="${escapeHTML(status)}">
                     ${escapeHTML(status)}
                 </span>
 
@@ -117,9 +117,7 @@ async function loadQuestions() {
                         Question
                     </span>
 
-                    <p>
-                        ${escapeHTML(questionText)}
-                    </p>
+                    <p>${escapeHTML(questionText)}</p>
 
                 </div>
 
@@ -130,9 +128,7 @@ async function loadQuestions() {
                         Contact
                     </span>
 
-                    <p>
-                        ${escapeHTML(contact)}
-                    </p>
+                    <p>${escapeHTML(contact)}</p>
 
                 </div>
 
@@ -420,7 +416,7 @@ document
 
                     </div>
 
-                    <span class="question-status">
+                    <span class="question-status" data-status="${escapeHTML(question.status || "Pending")}">
                         ${escapeHTML(
                             question.status ||
                             "Pending"
@@ -437,11 +433,7 @@ document
                             Question
                         </span>
 
-                        <p>
-                            ${escapeHTML(
-                                question.question
-                            )}
-                        </p>
+                        <p>${escapeHTML(question.question)}</p>
 
                     </div>
 
@@ -451,11 +443,7 @@ document
                             Contact
                         </span>
 
-                        <p>
-                            ${escapeHTML(
-                                question.contact
-                            )}
-                        </p>
+                        <p>${escapeHTML(question.contact)}</p>
 
                     </div>
 
@@ -465,12 +453,7 @@ document
                             Answer
                         </span>
 
-                        <p>
-                            ${escapeHTML(
-                                question.answer ||
-                                "Not answered yet."
-                            )}
-                        </p>
+                        <p>${escapeHTML(question.answer || "Not answered yet.")}</p>
 
                     </div>
 

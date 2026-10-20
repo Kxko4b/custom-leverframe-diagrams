@@ -276,6 +276,10 @@ function showDashboard() {
         loadBriefing();
     }
 
+    if (typeof loadHub === "function") {
+        loadHub();
+    }
+
     loadOverviewStats();
 
     checkSupabaseConnection();
