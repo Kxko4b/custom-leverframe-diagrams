@@ -90,9 +90,14 @@ document.getElementById("status-form")?.addEventListener("submit", async (event)
   const result = document.getElementById("status-result");
   const code = document.getElementById("status-code").value.trim().toUpperCase();
   msg.classList.add("hidden");
-  result.classList.add("hidden");
+  // Skeleton while the lookup runs.
+  result.replaceChildren(...[0, 1, 2].map((i) => Object.assign(document.createElement("div"), { className: `skeleton skeleton-line${i === 2 ? " w-60" : ""}` })));
+  result.setAttribute("aria-busy", "true");
+  result.classList.remove("hidden");
 
   const showMessage = (text) => {
+    result.classList.add("hidden");
+    result.removeAttribute("aria-busy");
     msg.textContent = text;
     msg.classList.remove("hidden");
   };
@@ -146,6 +151,7 @@ document.getElementById("status-form")?.addEventListener("submit", async (event)
     parts.push(renderAnswer(row));
   }
   result.replaceChildren(...parts);
+  result.removeAttribute("aria-busy");
   result.classList.remove("hidden");
 });
 

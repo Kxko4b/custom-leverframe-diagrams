@@ -8,6 +8,7 @@ async function loadGallery() {
     .order("created_at", { ascending: false });
 
   gallery.replaceChildren();
+  gallery.removeAttribute("aria-busy");
   if (error) {
     console.error("Could not load examples:", error);
     gallery.append(makeGalleryMessage("Examples are unavailable right now."));

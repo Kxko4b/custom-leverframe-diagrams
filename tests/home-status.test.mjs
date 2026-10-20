@@ -52,3 +52,17 @@ test("after sending, the customer can check the new code in one click", () => {
   assert.match(js, /check-now-btn/);
   assert.match(js, /requestSubmit\(\)/);
 });
+
+test("the main page shows skeleton placeholders while data loads, with a text fallback if it never arrives", () => {
+  const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
+  const css = readFileSync(new URL("../style.css", import.meta.url), "utf8");
+  const content = readFileSync(new URL("../js/content.js", import.meta.url), "utf8");
+  assert.match(html, /id="gallery"[^>]*aria-busy="true"[\s\S]{0,200}skeleton/);
+  assert.match(html, /id="review-list"[^>]*aria-busy="true"[\s\S]{0,200}skeleton/);
+  assert.match(html, /id="about-text"[^>]*data-fallback=/);
+  assert.match(html, /id="terms-text"[^>]*data-fallback=/);
+  assert.match(content, /dataset\.fallback/);
+  assert.match(css, /@keyframes skeleton-shimmer/);
+  assert.match(css, /prefers-reduced-motion: reduce\) \{ \.skeleton \{ animation: none/);
+  assert.doesNotMatch(html, /Loading examples…\s+Hope|Loading reviews…\s+You look/);
+});

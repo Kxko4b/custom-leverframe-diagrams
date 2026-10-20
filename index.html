@@ -81,7 +81,7 @@
         <div class="wrap">
           <p class="eyebrow">01 — About</p>
           <div class="two-col muted">
-            <div id="about-text" class="formatted-copy">I'm a diagram maker and I like signnalling.</div>
+            <div id="about-text" class="formatted-copy" data-fallback="I'm a diagram maker and I like signnalling." aria-busy="true"><span class="sr-only">Loading…</span><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line w-80"></div></div>
             <p>
               It's a small personal studio, nothing corporate about it. Don't be
               shy, I don't bite. The more detail you give me, the better the board
@@ -125,7 +125,7 @@
         <div class="wrap">
           <p class="eyebrow">03 — Examples</p>
           <h2>From the workbench</h2>
-          <div id="gallery" class="grid-3" aria-live="polite"><p class="muted small">Loading examples…  Hope you're having a great day!</p></div>
+          <div id="gallery" class="grid-3" aria-live="polite" aria-busy="true"><span class="sr-only">Loading examples…</span><article class="card example-card skeleton-card" aria-hidden="true"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-line w-60"></div><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line w-80"></div></article><article class="card example-card skeleton-card" aria-hidden="true"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-line w-60"></div><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line w-80"></div></article><article class="card example-card skeleton-card" aria-hidden="true"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-line w-60"></div><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line w-80"></div></article></div>
         </div>
       </section>
 
@@ -135,8 +135,8 @@
           <p class="eyebrow">04 — Reviews</p>
           <h2>Customer reviews</h2>
           <div class="two-col">
-            <div id="review-list" class="stack">
-              <p class="muted small">Loading reviews…  You look great today!</p>
+            <div id="review-list" class="stack" aria-live="polite" aria-busy="true">
+              <span class="sr-only">Loading reviews…</span><article class="card skeleton-card" aria-hidden="true"><div class="skeleton skeleton-line w-40"></div><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line w-80"></div></article><article class="card skeleton-card" aria-hidden="true"><div class="skeleton skeleton-line w-40"></div><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line w-80"></div></article>
             </div>
             <form id="review-form" class="card form">
               <h3>Leave a review!</h3>
@@ -311,7 +311,7 @@
         <div class="wrap">
           <p class="eyebrow">06 — Terms</p>
           <h2>Terms of service</h2>
-          <div id="terms-text" class="muted measure terms-copy">Each diagram is drawn to your brief. We’ll agree the scope, price, and timing before work begins.</div>
+          <div id="terms-text" class="muted measure terms-copy" data-fallback="Each diagram is drawn to your brief. We’ll agree the scope, price, and timing before work begins." aria-busy="true"><span class="sr-only">Loading…</span><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line w-60"></div></div>
         </div>
       </section>
 

@@ -68,7 +68,7 @@ function buildReviewMedia(url, name) {
 async function loadReviews() {
   const box = document.getElementById("review-list");
   if (!box) return;
-  box.textContent = "Loading reviews…";
+  box.setAttribute("aria-busy", "true"); // the skeleton cards from the HTML stay visible until the data arrives
 
   const { data, error } = await db
     .from("reviews")
@@ -77,6 +77,7 @@ async function loadReviews() {
 
   if (error) {
     console.error("Could not load reviews:", error);
+    box.removeAttribute("aria-busy");
     box.textContent = "Reviews are unavailable right now.";
     return;
   }
@@ -97,6 +98,7 @@ async function loadReviews() {
   }
 
   box.replaceChildren();
+  box.removeAttribute("aria-busy");
   if (!data?.length) {
     box.textContent = "No reviews yet.";
     return;
