@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="../js/supabase.js?v=20261020a"></script>
+    <script src="../js/supabase.js?v=20261020b"></script>
 
     <style>
         /* =====================================================
@@ -1819,6 +1819,17 @@
                 transition-duration: .01ms !important;
             }
         }
+
+        /* Needs-your-attention window (Briefing view) */
+        .attn-card { margin-bottom: 18px; border-left: 4px solid #b8372e; }
+        .attn-item { padding: 12px 0; border-top: 1px solid var(--border); }
+        .attn-item:first-of-type { border-top: 0; }
+        .attn-title { margin: 0 0 4px; font-weight: 650; }
+        .attn-why, .attn-found, .attn-note, .attn-status { margin: 0 0 8px; color: var(--muted); overflow-wrap: anywhere; }
+        .attn-steps { margin: 0 0 4px; padding-left: 20px; }
+        .attn-steps li { margin: 4px 0; }
+        .attn-actions { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+        .attn-actions .primary:disabled { opacity: 0.5; cursor: not-allowed; }
     </style>
 </head>
 
@@ -2055,6 +2066,8 @@
                     <select id="briefing-run-picker" aria-label="Choose a briefing run"></select>
                 </div>
 
+                <div id="briefing-attention" class="section-card attn-card hidden"></div>
+
                 <div id="briefing-detail" class="section-card">
                     <p class="empty">Loading briefing...</p>
                 </div>
@@ -2153,14 +2166,15 @@
 
 <!-- JAVASCRIPT -->
 
-<script src="../js/content-admin.js?v=20261020a"></script>
-<script src="../js/admin.js?v=20261020a"></script>
-<script src="../js/questions-admin.js?v=20261020a"></script>
-<script src="../js/earnings-admin.js?v=20261020a"></script>
-<script src="../js/requests-admin.js?v=20261020a"></script>
-<script src="../js/reviews-admin.js?v=20261020a"></script>
-<script src="../js/briefing-admin.js?v=20261020a"></script>
-<script src="../js/hub-admin.js?v=20261020a"></script>
+<script src="../js/content-admin.js?v=20261020b"></script>
+<script src="../js/admin.js?v=20261020b"></script>
+<script src="../js/questions-admin.js?v=20261020b"></script>
+<script src="../js/earnings-admin.js?v=20261020b"></script>
+<script src="../js/requests-admin.js?v=20261020b"></script>
+<script src="../js/reviews-admin.js?v=20261020b"></script>
+<script src="../js/briefing-admin.js?v=20261020b"></script>
+<script src="../js/hub-admin.js?v=20261020b"></script>
+<script src="../js/attention-admin.js?v=20261020b"></script>
 
 <script>
     /* Navigation */

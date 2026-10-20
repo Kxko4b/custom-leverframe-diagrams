@@ -234,6 +234,10 @@ function showBriefingRun(runId) {
     const run = briefingRuns.find(r => String(r.id) === String(runId)) || null;
 
     target.innerHTML = renderBriefingRun(run, briefingEventsByRun.get(run?.id) || []);
+
+    if (typeof renderAttentionPanel === "function") {
+        renderAttentionPanel(run, briefingEventsByRun.get(run?.id) || []);
+    }
 }
 
 
