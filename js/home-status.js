@@ -9,6 +9,81 @@ const STATUS_LABELS = {
   cancelled: "Cancelled",
 };
 
+
+/* Only http(s) links are clickable (file links come from the database). */
+function safeLink(value) {
+  try {
+    const url = new URL(String(value || ""));
+    return url.protocol === "https:" || url.protocol === "http:" ? url.href : "";
+  } catch {
+    return "";
+  }
+}
+
+function formatStatusDate(value) {
+  const date = value ? new Date(value) : null;
+  return date && !isNaN(date) ? date.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" }) : "";
+}
+
+function statusBlock(title) {
+  const box = document.createElement("div");
+  box.className = "status-block";
+  const heading = document.createElement("p");
+  heading.className = "status-block-title";
+  heading.textContent = title;
+  box.append(heading);
+  return box;
+}
+
+/* Updates the owner posted on this request, oldest first. updates === null means loading failed. */
+function renderUpdates(updates) {
+  const box = statusBlock("Updates");
+  if (updates === null) {
+    box.append(Object.assign(document.createElement("p"), { className: "small muted", textContent: "Updates are unavailable right now. Please try again later." }));
+    return box;
+  }
+  if (!updates.length) {
+    box.append(Object.assign(document.createElement("p"), { className: "small muted", textContent: "No updates yet. You will see them here as soon as there is news." }));
+    return box;
+  }
+  for (const update of updates) {
+    const item = document.createElement("div");
+    item.className = "status-update";
+    const head = document.createElement("p");
+    head.className = "status-update-head";
+    head.textContent = [update.author || "Kxko", formatStatusDate(update.created_at)].filter(Boolean).join(" · ");
+    const message = document.createElement("p");
+    message.className = "status-update-text";
+    message.textContent = update.message || "";
+    item.append(head, message);
+    for (const file of update.request_update_files || []) {
+      const href = safeLink(file.file_url);
+      if (!href) continue;
+      const link = document.createElement("a");
+      link.href = href; link.target = "_blank"; link.rel = "noopener";
+      link.className = "status-update-file";
+      link.textContent = `Download ${file.file_name || "file"}`;
+      item.append(link);
+    }
+    box.append(item);
+  }
+  return box;
+}
+
+/* The question and, once answered, the answer. */
+function renderAnswer(row) {
+  const box = statusBlock("Your question");
+  box.append(Object.assign(document.createElement("p"), { className: "status-update-text", textContent: row.question || "" }));
+  const answerTitle = document.createElement("p");
+  answerTitle.className = "status-block-title";
+  answerTitle.textContent = row.answer ? `Answer${row.answered_at ? ` · ${formatStatusDate(row.answered_at)}` : ""}` : "Answer";
+  const answer = document.createElement("p");
+  answer.className = row.answer ? "status-update-text" : "small muted";
+  answer.textContent = row.answer || "Not answered yet. Check back soon with the same code.";
+  box.append(answerTitle, answer);
+  return box;
+}
+
 document.getElementById("status-form")?.addEventListener("submit", async (event) => {
   event.preventDefault();
   const msg = document.getElementById("status-msg");
@@ -27,7 +102,7 @@ document.getElementById("status-form")?.addEventListener("submit", async (event)
   try {
     if (code.startsWith("KXQ-")) {
       const response = await db.from("questions")
-        .select("question_code, status, created_at")
+        .select("question_code, status, created_at, question, answer, answered_at")
         .eq("question_code", code)
         .maybeSingle();
       if (response.error) throw response.error;
@@ -35,7 +110,7 @@ document.getElementById("status-form")?.addEventListener("submit", async (event)
       type = "question";
     } else if (code.startsWith("KXKO-")) {
       const response = await db.from("requests")
-        .select("request_code, status, type, size, created_at")
+        .select("id, request_code, status, type, size, created_at")
         .eq("request_code", code)
         .maybeSingle();
       if (response.error) throw response.error;
@@ -56,6 +131,21 @@ document.getElementById("status-form")?.addEventListener("submit", async (event)
     return;
   }
 
+  let updates = [];
+  if (type === "request") {
+    try {
+      const response = await db.from("request_updates")
+        .select("message, author, created_at, request_update_files (file_name, file_url)")
+        .eq("request_id", row.id)
+        .order("created_at", { ascending: true });
+      if (response.error) throw response.error;
+      updates = response.data || [];
+    } catch (error) {
+      console.error("Could not load request updates:", error);
+      updates = null; // shown as a small notice, the status itself still works
+    }
+  }
+
   const codeBadge = document.createElement("p");
   codeBadge.className = "code-badge";
   codeBadge.textContent = row.request_code || row.question_code;
@@ -67,7 +157,14 @@ document.getElementById("status-form")?.addEventListener("submit", async (event)
   meta.textContent = type === "request"
     ? `${row.type || "Diagram"} · ${row.size || "Custom size"}${row.created_at ? ` · submitted ${new Date(row.created_at).toLocaleDateString()}` : ""}`
     : `Question${row.created_at ? ` · sent ${new Date(row.created_at).toLocaleDateString()}` : ""}`;
-  result.replaceChildren(codeBadge, status, meta);
+  const parts = [codeBadge, status, meta];
+
+  if (type === "request") {
+    parts.push(renderUpdates(updates));
+  } else {
+    parts.push(renderAnswer(row));
+  }
+  result.replaceChildren(...parts);
   result.classList.remove("hidden");
 });
 
