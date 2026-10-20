@@ -78,7 +78,6 @@ async function run(opts = {}) {
       return json({ name: "projects/proj/messages/1" });
     }
     if (url.includes("/functions/v1/ai-debugger")) return opts.ai ? opts.ai() : json(GOOD_AI);
-    if (url.includes("/rest/v1/briefing_runs") && !init?.method) return json(opts.alreadyPushed ? [{ id: 99 }] : []); // "was this already pushed today?"
     if (url.includes("/rest/v1/briefing_runs")) return opts.saveRuns ? opts.saveRuns() : json([{ id: 1 }], 201);
     if (url.includes("/rest/v1/briefing_events")) return json([], 201);
     throw new Error("unexpected request: " + url);
@@ -86,8 +85,8 @@ async function run(opts = {}) {
 
   const res = await handler(new Request("https://fn.test/daily-briefing?date=20261019", { headers: { "x-cron-secret": "test-cron-secret" } }));
   const out = await res.json();
-  const savedRun = calls.find((c) => /briefing_runs/.test(c.url) && c.method === "POST");
-  const savedEvents = calls.find((c) => /briefing_events/.test(c.url) && c.method === "POST");
+  const savedRun = calls.find((c) => /briefing_runs/.test(c.url));
+  const savedEvents = calls.find((c) => /briefing_events/.test(c.url));
   return {
     res, out, calls, count, weatherHits: () => weatherHits, fcmHits: () => fcmHits,
     ai: calls.find((c) => /ai-debugger/.test(c.url)),
@@ -240,22 +239,4 @@ test("a malformed date is rejected cleanly (500 with a message, no push)", async
   const res = await handler(new Request("https://fn.test/daily-briefing?date=tomorrow", { headers: { "x-cron-secret": "test-cron-secret" } }));
   assert.equal(res.status, 500);
   assert.match((await res.json()).error, /YYYYMMDD/);
-});
-
-test("the same briefing is not pushed twice on one day, but the run is still recorded", async () => {
-  const r = await run({ alreadyPushed: true });
-  assert.equal(r.fcmHits(), 0);
-  assert.equal(r.out.status, "healthy");
-  assert.equal(r.savedRun.push_sent, true);
-});
-
-test("a first run of the day still pushes", async () => {
-  const r = await run({ alreadyPushed: false });
-  assert.equal(r.fcmHits(), 1);
-});
-
-test("calendar and exam times are formatted in Berlin time, not UTC", () => {
-  assert.match(source, /formatCalendarTime[\s\S]{0,400}timeZone: "Europe\/Berlin"/);
-  const examLine = source.split("\n").find((l) => l.includes("exam.start") && l.includes("DateTimeFormat"));
-  assert.match(examLine, /timeZone: "Europe\/Berlin"/);
 });

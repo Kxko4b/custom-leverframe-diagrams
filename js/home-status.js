@@ -101,12 +101,18 @@ document.getElementById("status-form")?.addEventListener("submit", async (event)
 
   try {
     if (code.startsWith("KXQ-")) {
-      const response = await db.rpc("get_question_status", { p_code: code });
+      const response = await db.from("questions")
+        .select("question_code, status, created_at, question, answer, answered_at")
+        .eq("question_code", code)
+        .maybeSingle();
       if (response.error) throw response.error;
       row = response.data;
       type = "question";
     } else if (code.startsWith("KXKO-")) {
-      const response = await db.rpc("get_request_status", { p_code: code });
+      const response = await db.from("requests")
+        .select("id, request_code, status, type, size, created_at")
+        .eq("request_code", code)
+        .maybeSingle();
       if (response.error) throw response.error;
       row = response.data;
       type = "request";
@@ -125,7 +131,20 @@ document.getElementById("status-form")?.addEventListener("submit", async (event)
     return;
   }
 
-  const updates = type === "request" ? (Array.isArray(row.updates) ? row.updates : []) : [];
+  let updates = [];
+  if (type === "request") {
+    try {
+      const response = await db.from("request_updates")
+        .select("message, author, created_at, request_update_files (file_name, file_url)")
+        .eq("request_id", row.id)
+        .order("created_at", { ascending: true });
+      if (response.error) throw response.error;
+      updates = response.data || [];
+    } catch (error) {
+      console.error("Could not load request updates:", error);
+      updates = null; // shown as a small notice, the status itself still works
+    }
+  }
 
   const codeBadge = document.createElement("p");
   codeBadge.className = "code-badge";

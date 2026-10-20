@@ -7,7 +7,6 @@ import {
   classifyError,
   componentEvents,
   findingToEvent,
-  alreadyPushed,
   inspectBriefing,
   isSafePushRetry,
   runStatus,
@@ -249,7 +248,7 @@ async function getIservExams(targetDate: Date): Promise<any[]> {
 function formatCalendarTime(start: string | null, allDay: boolean): string {
   if (!start) return "";
   if (allDay) return "All day";
-  return new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Europe/Berlin" }).format(new Date(start));
+  return new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date(start));
 }
 
 /* REQUEST COUNTS */
@@ -322,7 +321,7 @@ function buildBriefing(dateText: string, weather: any, timetable: any[], calenda
       const title = exam?.title ?? exam?.summary ?? exam?.name ?? "Exam";
       let time = "";
       if (exam?.start) {
-        time = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Europe/Berlin" }).format(new Date(exam.start));
+        time = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date(exam.start));
       }
       let line = `${time ? time + " " : ""}${title}`;
       if (exam?.location) line += ` (${exam.location})`;
@@ -491,15 +490,9 @@ Deno.serve(async (req) => {
     const dataFindings = checkComponentData({ dateKey: targetDateKey, components: baseComponents });
 
     /* SELF-CHECK 2: send the push; retry only on an explicit FCM server rejection (never risk a double push). */
-    /* The same briefing is never pushed twice on one day: several scheduled checks (and manual retries) can run, but the
-       phone is only notified when the text is new or the earlier push failed. */
-    const duplicatePush = await alreadyPushed(
-      { supabaseUrl: SUPABASE_URL, serviceKey: Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") }, targetDateKey, briefing);
-    const push = duplicatePush
-      ? { ok: true, attempts: 0, recovered: false, firstError: undefined, error: undefined }
-      : await withRetry(() => sendFCM(briefing), { attempts: 3, delayMs: 1500, isRetryable: isSafePushRetry });
+    const push = await withRetry(() => sendFCM(briefing), { attempts: 3, delayMs: 1500, isRetryable: isSafePushRetry });
     let fcmResult: any = push.ok
-      ? { name: "firebase-fcm", success: true, attempts: push.attempts, recovered: push.recovered, firstError: push.firstError, skipped: duplicatePush || undefined }
+      ? { name: "firebase-fcm", success: true, attempts: push.attempts, recovered: push.recovered, firstError: push.firstError }
       : { name: "firebase-fcm", success: false, error: push.error, attempts: push.attempts };
     if (!push.ok) console.error("FCM ERROR:", push.error);
 
