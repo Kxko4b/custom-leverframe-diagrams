@@ -259,3 +259,11 @@ test("calendar and exam times are formatted in Berlin time, not UTC", () => {
   const examLine = source.split("\n").find((l) => l.includes("exam.start") && l.includes("DateTimeFormat"));
   assert.match(examLine, /timeZone: "Europe\/Berlin"/);
 });
+
+test("untis-test and ai-debugger are called with the server key, so they can stay closed to the public", async () => {
+  const r = await run({ fcm: () => new Response("{}", { status: 400 }) });
+  const untis = r.calls.find((c) => /untis-test/.test(c.url));
+  assert.ok(untis, "untis-test was called");
+  assert.match(source, /function internalHeaders/);
+  assert.equal((source.match(/\.\.\.internalHeaders\(\)|headers: internalHeaders\(\)/g) || []).length, 2);
+});

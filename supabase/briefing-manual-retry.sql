@@ -22,7 +22,7 @@ begin
     return jsonb_build_object('started', false, 'reason', 'A retry was already started less than 3 minutes ago. Give it a moment.');
   end if;
 
-  select command into cmd from cron.job where jobname = 'daily-briefing' limit 1;
+  select command into cmd from cron.job where jobname like 'briefing-%' and command like '%x-cron-secret%' order by jobid limit 1;
   if cmd is null then
     return jsonb_build_object('started', false, 'reason', 'The scheduled briefing job was not found, so there is nothing to re-run.');
   end if;

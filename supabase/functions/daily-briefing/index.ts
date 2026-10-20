@@ -44,6 +44,12 @@ function fetchT(input: string, init: RequestInit = {}): Promise<Response> {
   return fetch(input, { ...init, signal: init.signal ?? AbortSignal.timeout(REQUEST_TIMEOUT_MS) });
 }
 
+/* untis-test and ai-debugger only answer callers that present the project's own server key. */
+function internalHeaders(): Record<string, string> {
+  const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  return key ? { Authorization: `Bearer ${key}` } : {};
+}
+
 /* DATE */
 function parseDate(dateText: string): Date {
   if (!/^\d{8}$/.test(dateText)) throw new Error("date must be YYYYMMDD");
@@ -123,7 +129,7 @@ async function getWeather(targetDate: Date) {
 
 /* UNTIS */
 async function getUntisData(dateText: string): Promise<any> {
-  const response = await fetchT(`${UNTIS_FUNCTION_URL}?date=${encodeURIComponent(dateText)}`);
+  const response = await fetchT(`${UNTIS_FUNCTION_URL}?date=${encodeURIComponent(dateText)}`, { headers: internalHeaders() });
   const text = await response.text();
   if (!response.ok) throw new Error(`untis-test returned HTTP ${response.status}: ${text.slice(0, 500)}`);
   try { return JSON.parse(text); } catch { throw new Error("untis-test returned invalid JSON: " + text.slice(0, 500)); }
@@ -425,7 +431,7 @@ async function runAIDebugger(dateText: string, failedComponents: any[], allCompo
     console.log("AI DEBUGGER: unresolved failure detected. Requesting diagnosis...");
     const response = await fetchT(AI_DEBUGGER_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...internalHeaders() },
       // ai-debugger drops `problem` and `logs` into a text prompt, so they must be strings (objects print as "[object Object]").
       body: JSON.stringify((() => {
         const p: any = buildAiPayload({ dateKey: dateText, components: allComponents, findings: events });

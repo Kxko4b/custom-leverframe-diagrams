@@ -161,7 +161,7 @@ function renderAttentionPanel(run, events) {
     const note = attentionEl("p", "attn-note",
         button.disabled
             ? "Retrying cannot fix this by itself. Follow the steps above first."
-            : "This re-runs the whole briefing now and sends another notification to your phone. The AI can retry and tidy the text. It never changes keys, passwords or settings.");
+            : "This re-runs the whole briefing now and only notifies your phone again if the text changed or the first push failed. The AI can retry and tidy the text. It never changes keys, passwords or settings.");
     const status = attentionEl("p", "attn-status");
     status.setAttribute("role", "status");
     button.addEventListener("click", () => retryBriefing(button, status));
@@ -170,7 +170,7 @@ function renderAttentionPanel(run, events) {
 }
 
 async function retryBriefing(button, status) {
-    if (!confirm("Re-run the briefing now?\n\nThis sends another notification to your phone.")) return;
+    if (!confirm("Re-run the briefing now?\n\nYour phone is only notified again if the text changed or the first push failed.")) return;
     button.disabled = true;
     status.textContent = "Starting…";
     try {
