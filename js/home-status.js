@@ -152,3 +152,16 @@ document.getElementById("status-form")?.addEventListener("submit", async (event)
 document.getElementById("status-code")?.addEventListener("input", (event) => {
   event.currentTarget.value = event.currentTarget.value.toUpperCase();
 });
+
+/* "Check now" buttons next to a freshly shown code: fill the status box, look it up and scroll to it. */
+document.addEventListener("click", (event) => {
+  const button = event.target.closest(".check-now-btn");
+  if (!button) return;
+  const code = (document.getElementById(button.dataset.codeFrom)?.textContent || "").trim();
+  const input = document.getElementById("status-code");
+  const form = document.getElementById("status-form");
+  if (!code || !input || !form) return;
+  input.value = code.toUpperCase();
+  document.getElementById("status")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  form.requestSubmit();
+});

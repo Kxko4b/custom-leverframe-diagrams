@@ -43,3 +43,12 @@ test("the lockdown migration only exposes lookup-by-code, no emails, and drops t
   assert.match(sql, /drop policy if exists "Authenticated users can manage request updates"/);
   assert.doesNotMatch(sql, /r\.email|r\.discord/);
 });
+
+test("after sending, the customer can check the new code in one click", () => {
+  const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
+  assert.match(html, /data-code-from="request-code"/);
+  assert.match(html, /data-code-from="question-code"/);
+  assert.match(html, /class="next-steps/);
+  assert.match(js, /check-now-btn/);
+  assert.match(js, /requestSubmit\(\)/);
+});
