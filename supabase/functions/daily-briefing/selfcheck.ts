@@ -557,3 +557,20 @@ export async function saveRun(
     return { saved: false, error: redact(e instanceof Error ? e.message : String(e), 200) };
   }
 }
+
+
+/* True when a run for this date already pushed exactly this text, so a repeat run must not notify the phone again.
+   Any lookup problem answers false: sending a push twice is better than missing the briefing. */
+export async function alreadyPushed(cfg: SaveConfig, dateKey: string, text: string): Promise<boolean> {
+  if (!cfg.serviceKey || !text) return false;
+  const f = cfg.fetchImpl ?? fetch;
+  try {
+    const url = `${cfg.supabaseUrl}/rest/v1/briefing_runs?select=id&push_sent=eq.true&date_key=eq.${encodeURIComponent(dateKey)}&briefing=eq.${encodeURIComponent(text)}&limit=1`;
+    const res = await f(url, { headers: { apikey: cfg.serviceKey, Authorization: `Bearer ${cfg.serviceKey}` } });
+    if (!res.ok) return false;
+    const rows = await res.json();
+    return Array.isArray(rows) && rows.length > 0;
+  } catch {
+    return false;
+  }
+}

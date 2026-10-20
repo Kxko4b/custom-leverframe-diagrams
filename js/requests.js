@@ -66,12 +66,15 @@ document.getElementById("request-form")?.addEventListener("submit", async (event
   let error = null;
   for (let attempt = 0; attempt < 3; attempt += 1) {
     requestCode = generateRequestCode();
-    ({ data: request, error } = await db
+    ({ error } = await db
       .from("requests")
-      .insert({ ...values, request_code: requestCode })
-      .select("id")
-      .single());
-    if (!error) break;
+      .insert({ ...values, request_code: requestCode }));
+    if (!error) {
+      // Customers cannot read the requests table, so the new id comes from the lookup-by-code function.
+      const lookup = await db.rpc("get_request_status", { p_code: requestCode });
+      request = lookup.data && lookup.data.id != null ? { id: lookup.data.id } : null;
+      break;
+    }
     if (error.code !== "23505") break;
   }
   if (error || !requestCode) {

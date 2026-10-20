@@ -146,6 +146,17 @@ if (statusForm) {
 }
 
 
+/* Only http(s) links are clickable. */
+function safeHref(value) {
+    try {
+        const url = new URL(String(value || ""));
+        return url.protocol === "https:" || url.protocol === "http:" ? url.href : "#";
+    } catch {
+        return "#";
+    }
+}
+
+
 /* =========================
    CHECK REQUEST
 ========================= */
@@ -155,11 +166,7 @@ async function checkRequest(code) {
     const {
         data: request,
         error
-    } = await db
-        .from("requests")
-        .select("*")
-        .eq("request_code", code)
-        .maybeSingle();
+    } = await db.rpc("get_request_status", { p_code: code });
 
 
     if (error) {
@@ -187,9 +194,9 @@ async function checkRequest(code) {
 
     displayRequest(request);
 
-    await loadRequestFiles(request.id);
+    renderRequestFiles(request.images || []);
 
-    await loadUpdates(request.id);
+    renderUpdates(request.updates || []);
 
     requestResult.hidden = false;
 
@@ -255,39 +262,12 @@ function displayRequest(request) {
    REQUEST FILES
 ========================= */
 
-async function loadRequestFiles(requestId) {
+function renderRequestFiles(data) {
 
     const container =
         document.getElementById(
             "request-files"
         );
-
-
-    container.innerHTML =
-        "<p>Loading files...</p>";
-
-
-    const {
-        data,
-        error
-    } = await db
-        .from("request_images")
-        .select("*")
-        .eq("request_id", requestId);
-
-
-    if (error) {
-
-        console.error(
-            "Could not load request files:",
-            error
-        );
-
-        container.innerHTML =
-            "<p>Could not load files.</p>";
-
-        return;
-    }
 
 
     container.innerHTML = "";
@@ -307,7 +287,7 @@ async function loadRequestFiles(requestId) {
         const link =
             document.createElement("a");
 
-        link.href = file.image_url;
+        link.href = safeHref(file.image_url);
 
         link.target = "_blank";
 
@@ -328,42 +308,12 @@ async function loadRequestFiles(requestId) {
    REQUEST UPDATES
 ========================= */
 
-async function loadUpdates(requestId) {
+function renderUpdates(updates) {
 
     const container =
         document.getElementById(
             "request-updates"
         );
-
-
-    container.innerHTML =
-        "<p>Loading updates...</p>";
-
-
-    const {
-        data: updates,
-        error
-    } = await db
-        .from("request_updates")
-        .select("*, request_update_files (*)")
-        .eq("request_id", requestId)
-        .order("created_at", {
-            ascending: true
-        });
-
-
-    if (error) {
-
-        console.error(
-            "Could not load updates:",
-            error
-        );
-
-        container.innerHTML =
-            "<p>Could not load updates.</p>";
-
-        return;
-    }
 
 
     container.innerHTML = "";
@@ -434,7 +384,7 @@ async function loadUpdates(requestId) {
             files.className = "update-files";
             update.request_update_files.forEach((file) => {
                 const link = document.createElement("a");
-                link.href = file.file_url;
+                link.href = safeHref(file.file_url);
                 link.target = "_blank";
                 link.rel = "noopener noreferrer";
                 link.textContent = `📎 ${file.file_name || "Attached file"}`;
@@ -460,11 +410,7 @@ async function checkQuestion(code) {
     const {
         data: question,
         error
-    } = await db
-        .from("questions")
-        .select("*")
-        .eq("question_code", code)
-        .maybeSingle();
+    } = await db.rpc("get_question_status", { p_code: code });
 
 
     if (error) {
