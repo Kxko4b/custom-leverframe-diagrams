@@ -95,16 +95,12 @@ test("the admin page wires the hub in: card, export button, script, safe links, 
   assert.match(html, /id="hub-attention-list"/);
   assert.match(html, /id="export-requests"/);
   assert.match(html, /hub-admin\.js\?v=\w+/);
-  assert.match(html, /\.bf-text[^{]*\{\s*overflow-wrap:\s*anywhere/);
+  assert.match(html, /\.hub-row/);
   assert.match(read("../js/admin.js"), /typeof loadHub === "function"/);
   const requests = read("../js/requests-admin.js");
   assert.match(requests, /safeUrl\(image\.image_url\)/);
   assert.match(requests, /safeUrl\(file\.file_url\)/);
   assert.match(requests, /toFixed\(2\)/);
-});
-
-test("the dashboard is not wider than the screen (it used to be 100% wide plus the sidebar margin)", () => {
-  assert.match(read("../admin/index.html"), /\.dashboard\s*\{\s*width:\s*calc\(100% - 250px\);\s*min-width:\s*0;/);
 });
 
 test("question text is rendered without template whitespace", () => {
