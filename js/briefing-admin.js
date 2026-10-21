@@ -367,6 +367,8 @@ function renderLiveBriefing(data) {
         const details = [l.teacher, l.room ? "Room " + l.room : ""].filter(Boolean).join(" · ");
         return '<div class="briefing-lesson ' + (l.cancelled ? "cancelled" : "") + '"><span class="briefing-lesson-time">' + esc(l.time || "—") + '</span><div><div class="briefing-lesson-subject">' + esc(l.subject || "Lesson") + '</div><span class="briefing-lesson-meta">' + esc(details || "No teacher or room details") + '</span></div>' + status + '</div>';
     }).join("") + '</div>' : '<div class="briefing-live-empty">No lessons returned. Check the source status below.</div>';
+    const timetableTarget = document.getElementById("briefing-timetable-content");
+    if (timetableTarget) timetableTarget.innerHTML = lessonRows;
     const changeRows = changes.length ? '<div class="briefing-change-list">' + changes.map(c => '<div class="briefing-change"><strong>' + esc(c.title || (c.cancelled ? "Cancelled" : "Timetable change")) + ' · ' + esc(c.subject || "Lesson") + '</strong><p>' + esc([c.time,c.details,c.teacher ? "Teacher: " + c.teacher : "",c.room ? "Room: " + c.room : ""].filter(Boolean).join(" · ")) + '</p></div>').join("") + '</div>' : '<div class="briefing-live-empty">No cancellations or substitutions reported by this check.</div>';
     const errors = Object.entries(data.errors || {});
     const sourceNote = errors.length
@@ -378,7 +380,7 @@ function renderLiveBriefing(data) {
         '<div class="briefing-live-stat"><span>Timetable changes</span><strong class="' + (changes.length ? "alert" : "") + '">' + changes.length + '</strong></div>' +
         '<div class="briefing-live-stat"><span>Pending requests</span><strong>' + esc(requests.pending ?? "—") + '</strong></div>' +
         '<div class="briefing-live-stat"><span>In progress</span><strong>' + esc(requests.inProgress ?? "—") + '</strong></div></div>' +
-        '<div class="briefing-live-block"><h4>Today’s timetable</h4>' + lessonRows + '</div>' +
+
         '<div class="briefing-live-block"><h4>Changes and cancellations</h4>' + changeRows + '</div>' +
         '<div class="briefing-live-two-col"><div class="briefing-live-block"><h4>Homework</h4>' + infoList(homework,"No homework returned for today.",x=>x.subject,x=>x.text) + '</div>' +
         '<div class="briefing-live-block"><h4>Exams</h4>' + infoList(exams,"No exam entries returned for today.",x=>x.title||x.name||x.subject,x=>[x.time,x.description,x.room,x.date].filter(Boolean).join(" · ")) + '</div></div>' +
