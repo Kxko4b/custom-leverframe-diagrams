@@ -1878,7 +1878,52 @@
             .weather-temp-row strong { font-size: 37px; }
         }
 
-    </style>
+    
+        .nav-icon{width:21px;height:21px;flex:0 0 21px;display:inline-grid!important;place-items:center;color:var(--brass)}
+        .nav-icon svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+        .sidebar-nav{gap:6px}
+        .overview-weather{width:100%;display:flex;align-items:center;gap:17px;padding:19px 21px;margin:0 0 20px;border:1px solid var(--border);border-radius:12px;background:linear-gradient(110deg,#202825,#171d20);color:var(--text);text-align:left;cursor:pointer}
+        .overview-weather:hover{border-color:var(--brass)}
+        .overview-weather-icon{width:43px;height:43px;flex:0 0 43px;color:var(--brass)}
+        .overview-weather-icon svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+        .overview-weather-copy{display:flex;min-width:0;flex-direction:column;gap:4px}
+        .overview-weather-copy small{color:var(--muted);font:10px var(--mono);letter-spacing:.07em}
+        .overview-weather-copy strong{font:500 27px var(--display)}
+        .overview-weather-copy span{color:var(--muted);font-size:12px}
+        .overview-weather-link{margin-left:auto;color:var(--brass);font-size:12px;white-space:nowrap}
+        .weather-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin-top:16px}
+        .weather-advice{color:var(--muted);line-height:1.7}
+        .business-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:18px}
+        .business-tile{display:flex;flex-direction:column;align-items:flex-start;min-height:178px;gap:10px;padding:19px;text-align:left;border:1px solid var(--border);border-radius:12px;background:linear-gradient(145deg,#1c2425,#171d20);color:var(--text);cursor:pointer;transition:border-color .15s ease,transform .15s ease}
+        .business-tile:hover{border-color:var(--brass);transform:translateY(-2px)}
+        .business-tile-icon{display:grid;place-items:center;width:39px;height:39px;padding:9px;border-radius:9px;background:var(--brass-soft);color:var(--brass);font-size:19px}
+        .business-tile strong{font-size:15px}
+        .business-tile span:not(.business-tile-icon){color:var(--muted);font-size:12px;line-height:1.55}
+        .business-tile b{margin-top:auto;color:var(--brass);font-size:11px;font-weight:600}
+        .business-note{margin-top:5px}
+        .business-snapshot{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}
+        .business-snapshot div{display:flex;flex-direction:column;gap:8px;padding:14px;background:var(--surface-raised);border:1px solid var(--border);border-radius:9px}
+        .business-snapshot span{color:var(--muted);font-size:11px}
+        .business-snapshot strong{font-size:24px}
+        .back-to-hub{display:inline-flex;margin:0 0 17px;padding:8px 0;border:0;background:transparent;color:var(--brass);font-size:12px;cursor:pointer}
+        .app-info-card{display:flex;align-items:center;gap:17px;margin-top:18px}
+        .app-info-mark{display:grid;place-items:center;width:55px;height:55px;flex:0 0 55px;border-radius:13px;background:var(--brass);color:#201c15;font:700 27px var(--display)}
+        .app-info-card h3{margin:0 0 5px}.app-info-card p{margin:0 0 7px;color:var(--muted);font-size:13px}
+        .app-info-version{color:var(--muted);font:10px var(--mono);letter-spacing:.06em}
+        @media(max-width:1000px){.business-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+        @media(max-width:760px){
+        #app{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
+        .sidebar{position:fixed!important;top:auto!important;bottom:0!important;left:0!important;right:0!important;width:100%!important;height:calc(66px + env(safe-area-inset-bottom))!important;padding:5px 7px env(safe-area-inset-bottom)!important;border-right:0!important;border-top:1px solid var(--border)!important;z-index:1000;display:block!important;background:#111719!important}
+        .brand,.sidebar-bottom{display:none!important}.sidebar-nav{height:100%;display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr));align-items:stretch;gap:2px!important}
+        .sidebar-nav .nav-button{display:flex!important;flex-direction:column;justify-content:center;align-items:center;min-width:0;min-height:0;gap:4px;padding:5px 1px!important;border:0;border-radius:8px;box-shadow:none!important}
+        .sidebar-nav .nav-icon{width:20px;height:20px;flex:0 0 20px}.sidebar-nav .nav-label{display:block!important;font-size:10px;line-height:1.1;white-space:nowrap}
+        .dashboard{margin-left:0!important;width:100%!important}.dashboard-header{position:sticky;top:0;z-index:50}main{padding:18px 14px 30px!important}
+        .business-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.business-tile{min-height:165px;padding:13px}
+        .weather-detail-grid{grid-template-columns:1fr}.overview-weather{gap:11px;padding:15px}.overview-weather-link{font-size:10px}
+        .overview-weather-copy strong{font-size:24px}.business-snapshot{gap:7px}.business-snapshot div{padding:10px}.business-snapshot strong{font-size:21px}}
+        @media(max-width:380px){.business-grid{grid-template-columns:1fr}.overview-weather-link{display:none}}
+
+</style>
 
     <style id="kxko-app-redesign">
         /* KXKO app presentation: signal-box charcoal, warm brass, no decorative emoji. */
@@ -2022,17 +2067,13 @@
             </div>
         </div>
 
-        <nav class="sidebar-nav" aria-label="Admin navigation">
-            <button class="nav-button active" data-view="overview" type="button"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg></span><span class="nav-label">Overview</span></button>
-            <button class="nav-button" data-view="requests" type="button"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4h12v16H8zM4 8v12h12M11 8h6M11 12h6M11 16h4"/></svg></span><span class="nav-label">Requests</span></button>
-            <button class="nav-button" data-view="questions" type="button"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 18h.01M9.1 9a3 3 0 1 1 5.1 2.1c-1.3 1.2-2.2 1.6-2.2 3.4M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z"/></svg></span><span class="nav-label">Questions</span></button>
-            <button class="nav-button" data-view="reviews" type="button"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9z"/></svg></span><span class="nav-label">Reviews</span></button>
-            <button class="nav-button" data-view="examples" type="button"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 3v18M8 8h13M8 15h13"/></svg></span><span class="nav-label">Examples</span></button>
-            <button class="nav-button" data-view="content" type="button"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span><span class="nav-label">Website copy</span></button>
-            <button class="nav-button" data-view="briefing" type="button"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span class="nav-label">Briefing</span></button>
-            <button class="nav-button" data-view="kxkos" type="button"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 3v18M19 3 8 12l11 9"/></svg></span><span class="nav-label">KXKOS</span></button>
+        <nav class="sidebar-nav" aria-label="Main navigation">
+            <button class="nav-button active" data-view="overview" type="button"><span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="11" width="7" height="10" rx="1"/><rect x="3" y="14" width="8" height="7" rx="1"/></svg></span><span class="nav-label">Overview</span></button>
+            <button class="nav-button" data-view="weather" type="button"><span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M1 8h2m10-5-1.5 1.5M3 3l1.5 1.5M7 17h11a4 4 0 0 0 0-8 6 6 0 0 0-11-1"/></svg></span><span class="nav-label">Weather</span></button>
+            <button class="nav-button" data-view="briefing" type="button"><span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4m8-4v4M3 9h18M7 13h4m-4 4h7"/></svg></span><span class="nav-label">Briefing</span></button>
+            <button class="nav-button" data-view="business" type="button"><span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V4h8v3M3 12h18m-11 0v2h4v-2"/></svg></span><span class="nav-label">Business</span></button>
+            <button class="nav-button" data-view="more" type="button"><span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></span><span class="nav-label">More</span></button>
         </nav>
-
         <div class="sidebar-bottom">
             <button id="logout-button" class="logout" type="button">
                 <span class="nav-icon" aria-hidden="true">↗</span><span>Log out</span>
@@ -2084,19 +2125,7 @@
                     </div>
                 </div>
 
-                <section class="weather-card" aria-labelledby="weather-title">
-                    <div class="weather-main">
-                        <div class="weather-copy">
-                            <span class="weather-eyebrow">LOCAL FORECAST · BUSECK</span>
-                            <h3 id="weather-title">Weather</h3>
-                            <p id="weather-summary" class="weather-summary">Getting the latest forecast…</p>
-                            <div class="weather-temp-row"><strong id="weather-temp">—°</strong><span id="weather-range">High —° · Low —°</span></div>
-                        </div>
-                        <div id="weather-symbol" class="weather-symbol" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M18 39a13 13 0 0 1 1-26 18 18 0 0 1 34 7 10 10 0 0 1-1 19H18Z"/><path d="m23 47-4 8m19-8-4 8m19-8-4 8"/></svg></div>
-                    </div>
-                    <div class="weather-hourly" id="weather-hourly"><span class="muted">Hourly forecast will appear here.</span></div>
-                    <p class="weather-updated" id="weather-updated">Forecast by Open-Meteo</p>
-                </section>
+                <button class="overview-weather" type="button" onclick="showAdminView('weather')"><span class="overview-weather-icon" id="overview-weather-icon" aria-hidden="true"></span><span class="overview-weather-copy"><small>WEATHER RIGHT NOW · BUSECK</small><strong id="overview-weather-temp">—°C</strong><span id="overview-weather-summary">Loading local conditions…</span></span><span class="overview-weather-link">Full forecast →</span></button>
 
                 <div class="section-card hub-card">
                     <h3>Needs your attention</h3>
@@ -2122,7 +2151,7 @@
 
             <!-- REQUESTS -->
 
-            <section id="requests-view" class="view">
+            <section id="requests-view" class="view"><button class="back-to-hub" type="button" onclick="showAdminView('business')">← Back to Business</button>
                 <div class="page-header">
                     <div>
                         <h2>Requests</h2>
@@ -2168,7 +2197,7 @@
 
             <!-- QUESTIONS -->
 
-            <section id="questions-view" class="view">
+            <section id="questions-view" class="view"><button class="back-to-hub" type="button" onclick="showAdminView('business')">← Back to Business</button>
                 <div class="page-header">
                     <div>
                         <h2>Questions</h2>
@@ -2187,7 +2216,7 @@
 
             <!-- REVIEWS -->
 
-            <section id="reviews-view" class="view">
+            <section id="reviews-view" class="view"><button class="back-to-hub" type="button" onclick="showAdminView('business')">← Back to Business</button>
                 <div class="page-header">
                     <div>
                         <h2>Reviews</h2>
@@ -2200,6 +2229,27 @@
                 </div>
             </section>
 
+            <section id="weather-view" class="view"><div class="page-header"><div><h2>Weather</h2><p>Local conditions and the hours ahead in Buseck.</p></div></div><section class="weather-card" aria-labelledby="weather-title">
+                    <div class="weather-main">
+                        <div class="weather-copy">
+                            <span class="weather-eyebrow">LOCAL FORECAST · BUSECK</span>
+                            <h3 id="weather-page-title">Weather</h3>
+                            <p id="weather-page-summary" class="weather-summary">Getting the latest forecast…</p>
+                            <div class="weather-temp-row"><strong id="weather-page-temp">—°</strong><span id="weather-page-range">High —° · Low —°</span></div>
+                        </div>
+                        <div id="weather-page-symbol" class="weather-symbol" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M18 39a13 13 0 0 1 1-26 18 18 0 0 1 34 7 10 10 0 0 1-1 19H18Z"/><path d="m23 47-4 8m19-8-4 8m19-8-4 8"/></svg></div>
+                    </div>
+                    <div class="weather-hourly" id="weather-page-hourly"><span class="muted">Hourly forecast will appear here.</span></div>
+                    <p class="weather-updated" id="weather-page-updated">Forecast by Open-Meteo</p>
+                </section><div class="weather-detail-grid"><div class="section-card"><h3>What to expect</h3><p id="weather-advice" class="weather-advice">Loading forecast details…</p></div><div class="section-card"><h3>Forecast source</h3><p class="muted">Live forecast data from Open-Meteo for Buseck, refreshed when this dashboard loads.</p><button class="primary" type="button" onclick="window.location.reload()">Refresh forecast</button></div></div></section>
+            <section id="business-view" class="view"><div class="page-header"><div><h2>Business</h2><p>Everything you need to run your custom diagram service.</p></div></div><div class="business-grid">
+            <button class="business-tile" onclick="showAdminView('requests')" type="button"><span class="business-tile-icon">▤</span><strong>Requests</strong><span>Orders, progress, files and customer updates</span><b>Open requests →</b></button>
+            <button class="business-tile" onclick="showAdminView('questions')" type="button"><span class="business-tile-icon">?</span><strong>Questions</strong><span>Read and answer visitor messages</span><b>Open questions →</b></button>
+            <button class="business-tile" onclick="showAdminView('reviews')" type="button"><span class="business-tile-icon">☆</span><strong>Reviews</strong><span>Manage feedback and customer ratings</span><b>Open reviews →</b></button>
+            <button class="business-tile" onclick="showAdminView('examples')" type="button"><span class="business-tile-icon">▧</span><strong>Diagram examples</strong><span>Manage portfolio diagrams</span><b>Manage examples →</b></button>
+            <button class="business-tile" onclick="showAdminView('content')" type="button"><span class="business-tile-icon">≡</span><strong>Website content</strong><span>Edit public-facing website copy</span><b>Edit content →</b></button>
+            </div><div class="section-card business-note"><h3>Business snapshot</h3><div class="business-snapshot"><div><span>Total requests</span><strong id="business-total">—</strong></div><div><span>Pending</span><strong id="business-pending">—</strong></div><div><span>In progress</span><strong id="business-progress">—</strong></div></div></div></section>
+            <section id="more-view" class="view"><div class="page-header"><div><h2>More</h2><p>App information and additional tools.</p></div></div><div class="business-grid"><button class="business-tile" type="button" onclick="showAdminView('kxkos')"><span class="business-tile-icon">K</span><strong>KXKOS</strong><span>Open your browser-based operating system</span><b>Launch KXKOS →</b></button><button class="business-tile" type="button" onclick="showAdminView('content')"><span class="business-tile-icon">≡</span><strong>Website content</strong><span>Manage public website information</span><b>Open content →</b></button></div><div class="section-card app-info-card"><div class="app-info-mark">K</div><div><h3>Kxko Admin</h3><p>Management dashboard for Kxko Custom Leverframe Diagrams.</p><span class="app-info-version">WEB DASHBOARD · KXKO</span></div></div></section>
             <!-- DAILY BRIEFING -->
 
             <section id="briefing-view" class="view">
@@ -2221,7 +2271,7 @@
 
             <!-- KXKOS -->
 
-            <section id="kxkos-view" class="view">
+            <section id="kxkos-view" class="view"><button class="back-to-hub" type="button" onclick="showAdminView('more')">← Back to More</button>
                 <div class="page-header">
                     <div>
                         <h2>KXKOS</h2>
@@ -2240,7 +2290,7 @@
 
             <!-- WEBSITE COPY -->
 
-            <section id="content-view" class="view">
+            <section id="content-view" class="view"><button class="back-to-hub" type="button" onclick="showAdminView('business')">← Back to Business</button>
                 <div class="page-header">
                     <div>
                         <h2>Website copy</h2>
@@ -2268,7 +2318,7 @@
 
             <!-- EXAMPLES -->
 
-            <section id="examples-view" class="view">
+            <section id="examples-view" class="view"><button class="back-to-hub" type="button" onclick="showAdminView('business')">← Back to Business</button>
                 <div class="page-header">
                     <div>
                         <h2>Examples</h2>
@@ -2353,18 +2403,18 @@
             const data = await response.json();
             const current = data.current;
             const daily = data.daily;
-            document.getElementById("weather-temp").textContent = Math.round(current.temperature_2m) + "°C";
-            document.getElementById("weather-range").textContent = "High " + Math.round(daily.temperature_2m_max[0]) + "° · Low " + Math.round(daily.temperature_2m_min[0]) + "°";
-            summary.textContent = codeText(current.weather_code) + " · Feels like " + Math.round(current.apparent_temperature) + "°C · Rain chance " + Math.max(...data.hourly.precipitation_probability.slice(0, 12)) + "%";
-            document.getElementById("weather-symbol").innerHTML = weatherSvg(current.weather_code);
+            const temperatureText = Math.round(current.temperature_2m) + "°C";
+            const rangeText = "High " + Math.round(daily.temperature_2m_max[0]) + "° · Low " + Math.round(daily.temperature_2m_min[0]) + "°";
+            const summaryText = codeText(current.weather_code) + " · Feels like " + Math.round(current.apparent_temperature) + "°C · Rain chance " + Math.max(...data.hourly.precipitation_probability.slice(0, 12)) + "%";
+            [["weather-temp",temperatureText],["weather-page-temp",temperatureText],["weather-range",rangeText],["weather-page-range",rangeText],["weather-summary",summaryText],["weather-page-summary",summaryText],["overview-weather-temp",temperatureText],["overview-weather-summary",codeText(current.weather_code)+" · Feels like "+Math.round(current.apparent_temperature)+"°C"]].forEach(([id,value])=>{const el=document.getElementById(id);if(el)el.textContent=value;});
+            ["weather-symbol","weather-page-symbol","overview-weather-icon"].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=weatherSvg(current.weather_code);});
+            const advice=document.getElementById("weather-advice"); if(advice) advice.textContent=current.precipitation>0?"There is precipitation at the moment. Bring a jacket and allow extra time outdoors.":current.apparent_temperature<=8?"It feels chilly outside. A warm layer is a good idea.":current.wind_speed_10m>=30?"It is breezy today. Keep the wind in mind when planning time outdoors.":"No immediate weather warning from the current conditions. Check the hourly forecast before heading out.";
             const now = new Date(current.time);
             const nextHours = data.hourly.time.map((time, index) => ({ time, index })).filter(item => new Date(item.time) >= new Date(now.getTime() - 30 * 60 * 1000)).slice(0, 6);
-            document.getElementById("weather-hourly").innerHTML = nextHours.map(item => {
-                const hour = new Date(item.time).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Berlin" });
-                const code = data.hourly.weather_code[item.index];
-                return '<div class="weather-hour"><span>' + hour + '</span>' + weatherSvg(code) + '<strong>' + Math.round(data.hourly.temperature_2m[item.index]) + '°</strong><span>' + (data.hourly.precipitation_probability[item.index] ?? 0) + '% rain</span></div>';
-            }).join("");
-            document.getElementById("weather-updated").textContent = "Updated " + new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) + " · Source: Open-Meteo";
+            const hourlyHtml=nextHours.map(item=>{const hour=new Date(item.time).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit",timeZone:"Europe/Berlin"});const code=data.hourly.weather_code[item.index];return '<div class="weather-hour"><span>'+hour+'</span>'+weatherSvg(code)+'<strong>'+Math.round(data.hourly.temperature_2m[item.index])+'°</strong><span>'+(data.hourly.precipitation_probability[item.index]??0)+'% rain</span></div>';}).join("");
+            ["weather-hourly","weather-page-hourly"].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=hourlyHtml;});
+            const updated="Updated "+new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})+" · Source: Open-Meteo";
+            ["weather-updated","weather-page-updated"].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=updated;});
         } catch (error) {
             summary.textContent = "Forecast is temporarily unavailable.";
             document.getElementById("weather-hourly").innerHTML = '<span class="muted">Check your connection and reload to try again.</span>';
@@ -2378,18 +2428,20 @@
     /* Navigation */
 
     function showAdminView(view) {
-        document.querySelectorAll(".view").forEach(element => {
-            element.classList.remove("active");
-        });
-
-        document.getElementById(view + "-view")?.classList.add("active");
-
-        document.querySelectorAll(".nav-button[data-view]").forEach(button => {
-            button.classList.remove("active");
-        });
-
-        document.querySelector(`.nav-button[data-view="${view}"]`)?.classList.add("active");
+        const actualView = document.getElementById(view + "-view") ? view : "overview";
+        document.querySelectorAll(".view").forEach(element => element.classList.remove("active"));
+        document.getElementById(actualView + "-view")?.classList.add("active");
+        const mainTab = ["overview","weather","briefing","business","more"].includes(actualView) ? actualView : (actualView === "kxkos" ? "more" : "business");
+        document.querySelectorAll(".nav-button[data-view]").forEach(button => button.classList.toggle("active", button.dataset.view === mainTab));
+        const title = document.querySelector(".header-title");
+        if (title) title.textContent = ({overview:"Overview",weather:"Weather",briefing:"Briefing",business:"Business",more:"More",requests:"Business / Requests",questions:"Business / Questions",reviews:"Business / Reviews",examples:"Business / Examples",content:"Business / Website content",kxkos:"More / KXKOS"})[actualView] || "Kxko Admin";
+        window.scrollTo({top:0,behavior:"smooth"});
     }
+
+    function syncBusinessSnapshot(){[["stat-total-requests","business-total"],["stat-pending","business-pending"],["stat-progress","business-progress"]].forEach(([from,to])=>{const s=document.getElementById(from),t=document.getElementById(to);if(s&&t)t.textContent=s.textContent;});}
+    const businessObserver=new MutationObserver(syncBusinessSnapshot);
+    ["stat-total-requests","stat-pending","stat-progress"].forEach(id=>{const el=document.getElementById(id);if(el)businessObserver.observe(el,{childList:true,subtree:true,characterData:true});});
+    setTimeout(syncBusinessSnapshot,1200);
 
     /* Navigation buttons */
 
