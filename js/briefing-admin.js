@@ -354,7 +354,14 @@ function renderLiveBriefing(data) {
     if (meta) meta.textContent = (data.dateLabel || "Today") + " · Checked " + formatBriefingTime(data.generatedAt);
     const lessons = Array.isArray(data.lessons) ? data.lessons : [];
     const changes = Array.isArray(data.changes) ? data.changes : [];
-    const homework = Array.isArray(data.homework) ? data.homework : [];
+    const homeworkRaw = Array.isArray(data.homework) ? data.homework : Array.isArray(data.homeworks) ? data.homeworks : Array.isArray(data.untis?.homework) ? data.untis.homework : Array.isArray(data.webuntis?.homework) ? data.webuntis.homework : [];
+    const homework = homeworkRaw.map(item => {
+        if (typeof item === "string") return { subject: "", text: item };
+        const sub = item?.subject ?? item?.subjectName ?? item?.lesson?.subject ?? item?.course ?? "";
+        const raw = item?.text ?? item?.description ?? item?.title ?? item?.name ?? item?.task ?? item?.homework ?? "";
+        const teacher = item?.teacher ?? item?.teacherName ?? "";
+        return { ...item, subject: typeof sub === "object" ? (sub.longName ?? sub.name ?? "") : sub, text: typeof raw === "object" ? (raw.text ?? raw.description ?? "") : raw, teacher: typeof teacher === "object" ? (teacher.longName ?? teacher.name ?? "") : teacher };
+    }).filter(item => String(item.text ?? "").trim());
     const exams = Array.isArray(data.exams) ? data.exams : [];
     const calendar = Array.isArray(data.calendar) ? data.calendar : [];
     const requests = data.requests || {};
@@ -362,10 +369,25 @@ function renderLiveBriefing(data) {
     const infoList = (items, empty, titleFn, detailFn) => !items.length
         ? '<div class="briefing-live-empty">' + esc(empty) + '</div>'
         : '<div class="briefing-info-list">' + items.map(x => '<div class="briefing-info-row"><strong>' + esc(titleFn(x) || "Entry") + '</strong><p>' + esc(detailFn(x) || "No extra details") + '</p></div>').join("") + '</div>';
+    const subjectClass = value => {
+        const s = String(value || "").toLowerCase();
+        if (/englisch|english/.test(s)) return "subject-english";
+        if (/deutsch|german/.test(s)) return "subject-german";
+        if (/mathe|mathematik|math/.test(s)) return "subject-maths";
+        if (/spanisch|spanish/.test(s)) return "subject-spanish";
+        if (/physik|physics/.test(s)) return "subject-physics";
+        if (/biologie|biology/.test(s)) return "subject-biology";
+        if (/chemie|chemistry/.test(s)) return "subject-chemistry";
+        if (/religion/.test(s)) return "subject-religion";
+        if (/sport/.test(s)) return "subject-sport";
+        if (/gesellschaftslehre|\\bgl\\b/.test(s)) return "subject-social";
+        if (/bläserband|blaserband|music/.test(s)) return "subject-music";
+        return "subject-default";
+    };
     const lessonRows = lessons.length ? '<div class="briefing-lesson-list">' + lessons.map(l => {
         const status = l.cancelled ? '<span class="briefing-tag alert">Cancelled</span>' : l.changed ? '<span class="briefing-tag change">Changed</span>' : '<span class="briefing-tag">Scheduled</span>';
         const details = [l.teacher, l.room ? "Room " + l.room : ""].filter(Boolean).join(" · ");
-        return '<div class="briefing-lesson ' + (l.cancelled ? "cancelled" : "") + '"><span class="briefing-lesson-time">' + esc(l.time || "—") + '</span><div><div class="briefing-lesson-subject">' + esc(l.subject || "Lesson") + '</div><span class="briefing-lesson-meta">' + esc(details || "No teacher or room details") + '</span></div>' + status + '</div>';
+        return '<div class="briefing-lesson ' + (l.cancelled ? "cancelled" : "") + '"><span class="briefing-subject-dot ' + subjectClass(l.subject) + '"></span><span class="briefing-lesson-time">' + esc(l.time || "—") + '</span><div><div class="briefing-lesson-subject ' + subjectClass(l.subject) + '">' + esc(l.subject || "Lesson") + '</div><span class="briefing-lesson-meta">' + esc(details || "No teacher or room details") + '</span></div>' + status + '</div>';
     }).join("") + '</div>' : '<div class="briefing-live-empty">No lessons returned. Check the source status below.</div>';
     const timetableTarget = document.getElementById("briefing-timetable-content");
     if (timetableTarget) timetableTarget.innerHTML = lessonRows;
@@ -382,7 +404,7 @@ function renderLiveBriefing(data) {
         '<div class="briefing-live-stat"><span>In progress</span><strong>' + esc(requests.inProgress ?? "—") + '</strong></div></div>' +
 
         '<div class="briefing-live-block"><h4>Changes and cancellations</h4>' + changeRows + '</div>' +
-        '<div class="briefing-live-two-col"><div class="briefing-live-block"><h4>Homework</h4>' + infoList(homework,"No homework returned for today.",x=>x.subject,x=>x.text) + '</div>' +
+        '<div class="briefing-live-two-col"><div class="briefing-live-block"><h4>Homework</h4>' + infoList(homework,"No homework returned for today. If WebUntis shows homework, its source must expose it before it can appear here.",x=>[x.subject,x.teacher].filter(Boolean).join(" · ") || "Homework",x=>x.text) + '</div>' +
         '<div class="briefing-live-block"><h4>Exams</h4>' + infoList(exams,"No exam entries returned for today.",x=>x.title||x.name||x.subject,x=>[x.time,x.description,x.room,x.date].filter(Boolean).join(" · ")) + '</div></div>' +
         '<div class="briefing-live-block"><h4>Calendar</h4>' + infoList(calendar,"No calendar entries returned for today.",x=>x.title||x.summary||x.name,x=>[x.time,x.start,x.location,x.description,x.date].filter(Boolean).join(" · ")) + '</div>' +
         '<div class="briefing-live-block">' + sourceNote + '</div>';
