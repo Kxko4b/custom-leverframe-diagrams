@@ -1923,6 +1923,26 @@
         .overview-weather-copy strong{font-size:24px}.business-snapshot{gap:7px}.business-snapshot div{padding:10px}.business-snapshot strong{font-size:21px}}
         @media(max-width:380px){.business-grid{grid-template-columns:1fr}.overview-weather-link{display:none}}
 
+
+        .briefing-overview-grid{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.5fr);gap:15px;margin:0 0 18px}
+        .briefing-weather-shortcut{display:flex;align-items:center;gap:14px;min-width:0;padding:20px;text-align:left;border:1px solid var(--border);border-radius:12px;background:linear-gradient(145deg,#202825,#171d20);color:var(--text);cursor:pointer}
+        .briefing-shortcut-icon{width:35px;height:35px;flex:0 0 35px;color:var(--brass)}
+        .briefing-shortcut-icon svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+        .briefing-weather-shortcut>span:nth-child(2){display:flex;flex-direction:column;gap:4px;min-width:0}
+        .briefing-weather-shortcut small{font:10px var(--mono);letter-spacing:.05em;color:var(--muted)}
+        .briefing-weather-shortcut strong{font:500 26px var(--display)}
+        .briefing-weather-shortcut span span{font-size:11px;color:var(--muted)}
+        .briefing-weather-shortcut b{margin-left:auto;color:var(--brass);font-size:11px;white-space:nowrap}
+        .timetable-card{min-width:0}
+        .timetable-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+        .timetable-head h3{margin:0}.timetable-head p{margin:5px 0 0;color:var(--muted);font-size:12px}
+        .timetable-status{padding:5px 8px;border:1px solid var(--border);border-radius:99px;color:var(--muted);font:10px var(--mono)}
+        .timetable-content{margin-top:15px}
+        .timetable-empty{padding:14px;border:1px dashed var(--border);border-radius:9px;background:var(--surface-raised)}
+        .timetable-empty strong{font-size:13px}.timetable-empty p{margin:7px 0 0;color:var(--muted);font-size:12px;line-height:1.6}
+        @media(max-width:900px){.briefing-overview-grid{grid-template-columns:1fr}}
+        @media(max-width:760px){.briefing-weather-shortcut{padding:15px;gap:10px}.briefing-weather-shortcut b{font-size:10px}}
+
 </style>
 
     <style id="kxko-app-redesign">
@@ -2258,6 +2278,10 @@
                         <h2>Briefing</h2>
                         <p>Your daily briefing, and what the self-check AI found, fixed, or stopped on.</p>
                     </div>
+                <div class="briefing-overview-grid">
+                    <button class="briefing-weather-shortcut" type="button" onclick="showAdminView('weather')"><span class="briefing-shortcut-icon"><svg viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M1 8h2m10-5-1.5 1.5M3 3l1.5 1.5M7 17h11a4 4 0 0 0 0-8 6 6 0 0 0-11-1"/></svg></span><span><small>WEATHER · BUSECK</small><strong id="briefing-weather-temp">—°C</strong><span id="briefing-weather-summary">Loading current conditions…</span></span><b>Forecast →</b></button>
+                    <div class="section-card timetable-card"><div class="timetable-head"><div><h3>School timetable</h3><p>WebUntis · Today's plan</p></div><span class="timetable-status">Schedule</span></div><div id="briefing-timetable-content" class="timetable-content"><div class="timetable-empty"><strong>Timetable connection</strong><p>This dashboard does not currently receive your WebUntis lesson data. The timetable needs to be connected to the same source used by Kxko Daily Briefing before lessons or substitutions can be shown here.</p></div></div></div>
+                </div>
 
                     <select id="briefing-run-picker" aria-label="Choose a briefing run"></select>
                 </div>
@@ -2394,7 +2418,7 @@
         return '<svg viewBox="0 0 32 32"><path d="M7 19h18a5 5 0 0 0 0-10 9 9 0 0 0-17-1 5.5 5.5 0 0 0-1 11ZM11 23l-2 5m10-5-2 5m9-5-2 5"/></svg>';
     };
     async function loadWeather() {
-        const summary = document.getElementById("weather-summary");
+        const summary = document.getElementById("weather-page-summary");
         if (!summary) return;
         try {
             const url = "https://api.open-meteo.com/v1/forecast?latitude=50.60&longitude=8.80&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&hourly=temperature_2m,weather_code,precipitation_probability&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&forecast_days=1&timezone=Europe%2FBerlin";
@@ -2406,7 +2430,7 @@
             const temperatureText = Math.round(current.temperature_2m) + "°C";
             const rangeText = "High " + Math.round(daily.temperature_2m_max[0]) + "° · Low " + Math.round(daily.temperature_2m_min[0]) + "°";
             const summaryText = codeText(current.weather_code) + " · Feels like " + Math.round(current.apparent_temperature) + "°C · Rain chance " + Math.max(...data.hourly.precipitation_probability.slice(0, 12)) + "%";
-            [["weather-temp",temperatureText],["weather-page-temp",temperatureText],["weather-range",rangeText],["weather-page-range",rangeText],["weather-summary",summaryText],["weather-page-summary",summaryText],["overview-weather-temp",temperatureText],["overview-weather-summary",codeText(current.weather_code)+" · Feels like "+Math.round(current.apparent_temperature)+"°C"]].forEach(([id,value])=>{const el=document.getElementById(id);if(el)el.textContent=value;});
+            [["weather-temp",temperatureText],["weather-page-temp",temperatureText],["weather-range",rangeText],["weather-page-range",rangeText],["weather-summary",summaryText],["weather-page-summary",summaryText],["overview-weather-temp",temperatureText],["overview-weather-summary",codeText(current.weather_code)+" · Feels like "+Math.round(current.apparent_temperature)+"°C"],["briefing-weather-temp",temperatureText],["briefing-weather-summary",codeText(current.weather_code)+" · Feels like "+Math.round(current.apparent_temperature)+"°C"]].forEach(([id,value])=>{const el=document.getElementById(id);if(el)el.textContent=value;});
             ["weather-symbol","weather-page-symbol","overview-weather-icon"].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=weatherSvg(current.weather_code);});
             const advice=document.getElementById("weather-advice"); if(advice) advice.textContent=current.precipitation>0?"There is precipitation at the moment. Bring a jacket and allow extra time outdoors.":current.apparent_temperature<=8?"It feels chilly outside. A warm layer is a good idea.":current.wind_speed_10m>=30?"It is breezy today. Keep the wind in mind when planning time outdoors.":"No immediate weather warning from the current conditions. Check the hourly forecast before heading out.";
             const now = new Date(current.time);
