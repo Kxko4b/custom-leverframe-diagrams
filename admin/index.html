@@ -2082,6 +2082,12 @@
 @media(max-width:900px){.briefing-live-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.briefing-live-head{align-items:flex-start;padding:16px}.briefing-live-head h3{font-size:22px}.briefing-live-content{padding:15px}.briefing-lesson{grid-template-columns:76px minmax(0,1fr);gap:8px;padding:11px}.briefing-lesson>.briefing-tag{grid-column:2;justify-self:start}.briefing-live-two-col{grid-template-columns:1fr;gap:0}}
 
+
+/* Timetable subject colour coding */
+.briefing-subject-dot{display:inline-block;align-self:center;width:9px;height:9px;min-width:9px;border-radius:50%;background:#a3a3a3}
+.briefing-lesson:has(.briefing-subject-dot){grid-template-columns:9px minmax(78px,auto) minmax(0,1fr) auto}
+.briefing-lesson-subject.subject-english{color:#f0c541}.briefing-lesson-subject.subject-german{color:#e05252}.briefing-lesson-subject.subject-maths{color:#4b91f1}.briefing-lesson-subject.subject-spanish{color:#e58b3b}.briefing-lesson-subject.subject-physics{color:#a78bfa}.briefing-lesson-subject.subject-biology{color:#55ad78}.briefing-lesson-subject.subject-chemistry{color:#39b9b1}.briefing-lesson-subject.subject-religion{color:#c084fc}.briefing-lesson-subject.subject-sport{color:#fb7185}.briefing-lesson-subject.subject-social{color:#d4a373}.briefing-lesson-subject.subject-music{color:#ec78b5}
+.briefing-subject-dot.subject-english{background:#f0c541}.briefing-subject-dot.subject-german{background:#e05252}.briefing-subject-dot.subject-maths{background:#4b91f1}.briefing-subject-dot.subject-spanish{background:#e58b3b}.briefing-subject-dot.subject-physics{background:#a78bfa}.briefing-subject-dot.subject-biology{background:#55ad78}.briefing-subject-dot.subject-chemistry{background:#39b9b1}.briefing-subject-dot.subject-religion{background:#c084fc}.briefing-subject-dot.subject-sport{background:#fb7185}.briefing-subject-dot.subject-social{background:#d4a373}.briefing-subject-dot.subject-music{background:#ec78b5}
 </style>
 
 </head>
@@ -2432,10 +2438,10 @@
 <script src="../js/content-admin.js?v=20261020b"></script>
 <script src="../js/admin.js?v=20261020b"></script>
 <script src="../js/questions-admin.js?v=20261020b"></script>
-<script src="../js/earnings-admin.js?v=20261020b"></script>
-<script src="../js/requests-admin.js?v=20261020b"></script>
+<script src="../js/earnings-admin.js?v=20261021c"></script>
+<script src="../js/requests-admin.js?v=20261021c"></script>
 <script src="../js/reviews-admin.js?v=20261020b"></script>
-<script src="../js/briefing-admin.js?v=20261021a"></script>
+<script src="../js/briefing-admin.js?v=20261021c"></script>
 <script src="../js/hub-admin.js?v=20261020b"></script>
 <script src="../js/attention-admin.js?v=20261020b"></script>
 
