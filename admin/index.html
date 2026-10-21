@@ -1832,29 +1832,149 @@
         .attn-actions .primary:disabled { opacity: 0.5; cursor: not-allowed; }
     </style>
 
-    <style id="kxko-polish">
-        /* Subtle polish: keep the original signal-box palette and visual identity. */
-        .sidebar { box-shadow: 5px 0 18px rgb(32 35 33 / 7%); }
-        .brand-icon { transition: background .15s ease, transform .15s ease; }
-        .nav-button { transition: background .15s ease, color .15s ease, border-color .15s ease; }
-        .nav-button:hover { transform: translateX(1px); }
-        .dashboard-header { backdrop-filter: blur(8px); }
-        .stat-card, .section-card, .example-editor, .earn-bar {
-            transition: border-color .16s ease, box-shadow .16s ease;
+    <style id="kxko-app-redesign">
+        /* KXKO app presentation: signal-box charcoal, warm brass, no decorative emoji. */
+        :root {
+            color-scheme: dark;
+            --bg: #101416;
+            --surface: #171d20;
+            --surface-soft: #20272a;
+            --surface-raised: #1b2326;
+            --text: #eee9df;
+            --muted: #a2a6a2;
+            --border: rgb(224 218 202 / 10%);
+            --input-border: rgb(224 218 202 / 18%);
+            --primary: #b99a68;
+            --primary-dark: #a18150;
+            --primary-soft: #342d22;
+            --brass: #c5a16b;
+            --brass-soft: #3a3022;
+            --signal: #bd9a61;
+            --signal-soft: #3a3022;
+            --moss: #6f9a7b;
+            --moss-soft: #203329;
+            --danger: #d28b81;
+            --danger-soft: #3a2524;
+            --sidebar: #111719;
+            --sidebar-raised: #222a2c;
+            --sidebar-text: #eee9df;
+            --sidebar-muted: #9ba29e;
+            --shadow: 0 10px 26px rgb(0 0 0 / 15%);
+            --radius: 14px;
+            --radius-small: 10px;
         }
-        .stat-card:hover, .section-card:hover {
-            border-color: rgb(154 112 39 / 28%);
-            box-shadow: 0 5px 18px rgb(32 35 33 / 6%);
+        body { background: var(--bg); color: var(--text); }
+        h1,h2,h3,h4 { letter-spacing: -.02em; }
+        .sidebar { padding: 20px 13px 14px; background: var(--sidebar); border-right: 1px solid var(--border); }
+        .brand { gap: 12px; padding: 7px 9px 21px; }
+        .brand-icon { background: var(--brass); color: #201c15; border: 0; border-radius: 11px; box-shadow: none; }
+        .brand-text { font-family: var(--display); font-size: 19px; letter-spacing: .05em; }
+        .brand-text span { color: var(--sidebar-muted); letter-spacing: .1em; }
+        .nav-button { min-height: 45px; border-radius: 10px; padding: 10px 12px; gap: 12px; color: var(--sidebar-muted); }
+        .nav-icon { width: 23px; flex: 0 0 23px; display: inline-grid !important; place-items: center; color: var(--brass); font-family: var(--body); font-size: 18px; line-height: 1; }
+        .nav-label { display: inline !important; }
+        .nav-button:hover { background: rgb(255 255 255 / 4%); color: var(--text); transform: none; }
+        .nav-button.active { background: linear-gradient(100deg,rgb(197 161 107 / 15%),rgb(197 161 107 / 4%)); border-color: rgb(197 161 107 / 16%); box-shadow: inset 3px 0 0 var(--brass); color: #fffaf0; }
+        .dashboard-header { min-height: 66px; padding: 13px clamp(18px,3vw,34px); background: rgb(16 20 22 / 94%); border-bottom-color: var(--border); backdrop-filter: blur(14px); }
+        .header-title { font-family: var(--body); font-size: 14px; font-weight: 650; letter-spacing: .015em; text-transform: none; }
+        .admin-status { padding: 6px 10px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); font-size: 10px; }
+        .status-dot { background: #82a98a; box-shadow: 0 0 0 3px rgb(130 169 138 / 12%); }
+        main { padding: clamp(20px,3vw,36px); padding-bottom: 42px; }
+        .page-header { margin-bottom: 25px; }
+        .page-header h2 { font-family: var(--body); font-size: clamp(26px,3vw,33px); font-weight: 700; letter-spacing: -.04em; text-transform: none; }
+        .page-header p { color: var(--muted); font-size: 14px; }
+        .stats-grid { gap: 13px; margin-bottom: 25px; }
+        .stat-card,.section-card,.example-editor,.earn-bar,.hub-card,.kxkos-card {
+            background: linear-gradient(145deg,#1a2124,#171d20);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
         }
-        .primary { transition: background .15s ease, border-color .15s ease, transform .15s ease; }
-        .primary:hover { transform: translateY(-1px); }
-        .login-box { box-shadow: 0 12px 34px rgb(32 35 33 / 9%); }
-        .login-box input, input, textarea, select { transition: border-color .15s ease, box-shadow .15s ease; }
-        .login-box input:focus, input:focus, textarea:focus, select:focus {
-            box-shadow: 0 0 0 3px rgb(154 112 39 / 12%);
+        .stat-card { padding: 19px; overflow: hidden; }
+        .stat-card::before { left: 19px; width: 27px; height: 3px; border-radius: 99px; background: var(--brass); }
+        .stat-label { color: var(--muted); font-size: 12px; font-weight: 550; }
+        .stat-value { margin-top: 12px; font-size: clamp(25px,2.5vw,33px); letter-spacing: -.04em; color: var(--text); }
+        .section-card { padding: clamp(17px,2vw,23px); }
+        .section-card h3,.hub-card h3,.kxkos-card h3 { font-family: var(--body); font-size: 17px; font-weight: 650; letter-spacing: -.02em; }
+        input,textarea,select {
+            border-radius: 10px !important; background-color: #12181a !important;
+            color: var(--text) !important; border-color: var(--input-border) !important;
+        }
+        input:focus,textarea:focus,select:focus { border-color: var(--brass) !important; box-shadow: 0 0 0 3px rgb(197 161 107 / 12%) !important; }
+        .primary { border: 1px solid var(--brass); border-radius: 10px; background: var(--brass); color: #201c15; font-family: var(--body); font-size: 13px; letter-spacing: 0; font-weight: 700; padding: 11px 16px; box-shadow: none; transition: transform .15s ease, background .15s ease; }
+        .primary:hover { background: #d1b17e; border-color: #d1b17e; transform: translateY(-1px); }
+        .request-card,.question-card,.admin-question-card,.admin-review-card { background: var(--surface); border-color: var(--border); border-radius: 13px; box-shadow: none; }
+        .request-header,.question-header { background: var(--surface); color: var(--text); }
+        .request-header:hover,.question-header:hover { background: var(--surface-raised); }
+        .request-code,.question-code,.request-field,.question-field { background: var(--surface-raised); border-color: var(--border); }
+        .request-status,.question-status { border-radius: 999px; }
+        [data-status="Pending"] .request-status,[data-status="Pending"] .question-status { background: #3c3220; color: #e7c783; }
+        [data-status="Accepted"] .request-status { background: #293034; color: #d4d8d4; }
+        [data-status="In Progress"] .request-status,[data-status="In Progress"] .question-status { background: #26333a; color: #b7d0da; }
+        [data-status="Completed"] .request-status,[data-status="Answered"] .question-status { background: #20352a; color: #a6d1b2; }
+        [data-status="Cancelled"] .request-status { background: #3a2524; color: #e3a39b; }
+        .export-button,.hub-open { background: var(--surface); color: var(--text); border-color: var(--border); border-radius: 10px; }
+        .export-button:hover,.hub-open:hover { background: var(--surface-soft); border-color: var(--brass); }
+        .delete-example,.delete-request,.delete-question,.delete-review { border-radius: 9px; background: var(--danger-soft); color: #e6aaa3; border-color: rgb(230 170 163 / 20%); }
+        .empty { color: var(--muted); }
+        #toast { border-radius: 12px; border-left-color: var(--brass); box-shadow: var(--shadow); }
+        .login-box { background: var(--surface); border-color: var(--border); border-top-color: var(--brass); border-radius: 16px; }
+        .login-logo { background: var(--brass); color: #201c15; border-radius: 11px; }
+        .login-box input { background: #12181a; color: var(--text); border-color: var(--input-border); }
+        :focus-visible { outline-color: var(--brass); }
+        @media (max-width: 800px) {
+            :root { --sidebar-width: 0px; }
+            .sidebar {
+                position: fixed; inset: auto 10px 10px; width: auto; height: 68px;
+                padding: 5px 7px; border: 1px solid rgb(230 224 211 / 12%);
+                border-radius: 18px; background: rgb(17 23 25 / 96%);
+                box-shadow: 0 10px 35px rgb(0 0 0 / 35%); backdrop-filter: blur(18px);
+                z-index: 50; overflow: hidden;
+            }
+            .brand,.sidebar-bottom { display: none; }
+            .sidebar-nav {
+                width: 100%; height: 100%; display: flex; flex-direction: row;
+                align-items: stretch; justify-content: space-around; gap: 2px; overflow-x: auto;
+                scrollbar-width: none;
+            }
+            .sidebar-nav::-webkit-scrollbar { display: none; }
+            .nav-button {
+                min-width: 53px; min-height: 56px; flex: 1 0 53px; display: flex;
+                flex-direction: column; align-items: center; justify-content: center;
+                gap: 4px; padding: 5px 3px; border-radius: 11px; font-size: 9px;
+                text-align: center; box-shadow: none !important; white-space: nowrap;
+            }
+            .nav-button .nav-icon { width: auto; flex: 0 0 auto; font-size: 18px; }
+            .nav-button .nav-label { display: inline !important; font-size: 9px; line-height: 1.1; }
+            .nav-button.active { background: rgb(197 161 107 / 12%); box-shadow: inset 0 -2px 0 var(--brass) !important; }
+            .dashboard { width: 100%; margin-left: 0; padding-bottom: 84px; }
+            .dashboard-header { min-height: 60px; padding: 10px 16px; }
+            main { padding: 20px 15px 32px; }
+            .stats-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+            .stat-card { padding: 16px 13px; }
+            .stat-card::before { left: 13px; }
+            .stat-value { font-size: 25px; }
+            .page-header { gap: 10px; margin-bottom: 21px; }
+            .page-header h2 { font-size: 27px; }
+            .section-card { padding: 16px; }
+            .request-toolbar,.controls { flex-direction: column; align-items: stretch; }
+            .controls select,.export-button { width: 100%; }
+        }
+        @media (max-width: 420px) {
+            .admin-status { padding: 5px 7px; font-size: 9px; }
+            .header-title { font-size: 13px; }
+            main { padding-inline: 12px; }
+            .stats-grid { gap: 8px; }
+            .stat-card { padding: 15px 11px; }
+            .stat-value { font-size: 23px; }
+            .nav-button { min-width: 49px; flex-basis: 49px; }
+            .nav-button .nav-label { font-size: 8px; }
+            .request-header,.question-header,.admin-question-header,.admin-review-header { align-items: flex-start; flex-direction: column; }
+            .request-meta,.question-meta { width: 100%; }
+            .request-grid,.grid,.admin-question-content,.admin-review-fields { grid-template-columns: minmax(0,1fr); }
         }
         @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+            *,*::before,*::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
         }
     </style>
 
@@ -1896,35 +2016,19 @@
         </div>
 
         <nav class="sidebar-nav" aria-label="Admin navigation">
-            <button class="nav-button active" data-view="overview" type="button">
-                📊 <span>Overview</span>
-            </button>
-            <button class="nav-button" data-view="requests" type="button">
-                📬 <span>Requests</span>
-            </button>
-            <button class="nav-button" data-view="questions" type="button">
-                ❓ <span>Questions</span>
-            </button>
-            <button class="nav-button" data-view="reviews" type="button">
-                ★ <span>Reviews</span>
-            </button>
-            <button class="nav-button" data-view="examples" type="button">
-                🖼️ <span>Examples</span>
-            </button>
-            <button class="nav-button" data-view="content" type="button">
-                ✎ <span>Website copy</span>
-            </button>
-            <button class="nav-button" data-view="briefing" type="button">
-                ☀️ <span>Briefing</span>
-            </button>
-            <button class="nav-button" data-view="kxkos" type="button">
-                🖥️ <span>KXKOS</span>
-            </button>
+            <button class="nav-button active" data-view="overview" type="button"><span class="nav-icon" aria-hidden="true">⌂</span><span class="nav-label">Overview</span></button>
+            <button class="nav-button" data-view="requests" type="button"><span class="nav-icon" aria-hidden="true">▤</span><span class="nav-label">Requests</span></button>
+            <button class="nav-button" data-view="questions" type="button"><span class="nav-icon" aria-hidden="true">?</span><span class="nav-label">Questions</span></button>
+            <button class="nav-button" data-view="reviews" type="button"><span class="nav-icon" aria-hidden="true">☆</span><span class="nav-label">Reviews</span></button>
+            <button class="nav-button" data-view="examples" type="button"><span class="nav-icon" aria-hidden="true">▧</span><span class="nav-label">Examples</span></button>
+            <button class="nav-button" data-view="content" type="button"><span class="nav-icon" aria-hidden="true">≡</span><span class="nav-label">Website copy</span></button>
+            <button class="nav-button" data-view="briefing" type="button"><span class="nav-icon" aria-hidden="true">◷</span><span class="nav-label">Briefing</span></button>
+            <button class="nav-button" data-view="kxkos" type="button"><span class="nav-icon" aria-hidden="true">K</span><span class="nav-label">KXKOS</span></button>
         </nav>
 
         <div class="sidebar-bottom">
             <button id="logout-button" class="logout" type="button">
-                ↪ <span>Log out</span>
+                <span class="nav-icon" aria-hidden="true">↗</span><span>Log out</span>
             </button>
         </div>
     </aside>
