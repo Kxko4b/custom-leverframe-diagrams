@@ -342,3 +342,81 @@ if (typeof module !== "undefined" && module.exports) {
         groupBriefingEvents
     };
 }
+
+
+/* Live WebUntis briefing — only called when the Briefing tab is opened. */
+let liveBriefingRequest = null;
+
+function renderLiveBriefing(data) {
+    const target = document.getElementById("briefing-live-content");
+    const meta = document.getElementById("briefing-live-meta");
+    if (!target) return;
+    if (meta) meta.textContent = (data.dateLabel || "Today") + " · Checked " + formatBriefingTime(data.generatedAt);
+    const lessons = Array.isArray(data.lessons) ? data.lessons : [];
+    const changes = Array.isArray(data.changes) ? data.changes : [];
+    const homework = Array.isArray(data.homework) ? data.homework : [];
+    const exams = Array.isArray(data.exams) ? data.exams : [];
+    const calendar = Array.isArray(data.calendar) ? data.calendar : [];
+    const requests = data.requests || {};
+    const esc = briefingEscape;
+    const infoList = (items, empty, titleFn, detailFn) => !items.length
+        ? '<div class="briefing-live-empty">' + esc(empty) + '</div>'
+        : '<div class="briefing-info-list">' + items.map(x => '<div class="briefing-info-row"><strong>' + esc(titleFn(x) || "Entry") + '</strong><p>' + esc(detailFn(x) || "No extra details") + '</p></div>').join("") + '</div>';
+    const lessonRows = lessons.length ? '<div class="briefing-lesson-list">' + lessons.map(l => {
+        const status = l.cancelled ? '<span class="briefing-tag alert">Cancelled</span>' : l.changed ? '<span class="briefing-tag change">Changed</span>' : '<span class="briefing-tag">Scheduled</span>';
+        const details = [l.teacher, l.room ? "Room " + l.room : ""].filter(Boolean).join(" · ");
+        return '<div class="briefing-lesson ' + (l.cancelled ? "cancelled" : "") + '"><span class="briefing-lesson-time">' + esc(l.time || "—") + '</span><div><div class="briefing-lesson-subject">' + esc(l.subject || "Lesson") + '</div><span class="briefing-lesson-meta">' + esc(details || "No teacher or room details") + '</span></div>' + status + '</div>';
+    }).join("") + '</div>' : '<div class="briefing-live-empty">No lessons returned. Check the source status below.</div>';
+    const changeRows = changes.length ? '<div class="briefing-change-list">' + changes.map(c => '<div class="briefing-change"><strong>' + esc(c.title || (c.cancelled ? "Cancelled" : "Timetable change")) + ' · ' + esc(c.subject || "Lesson") + '</strong><p>' + esc([c.time,c.details,c.teacher ? "Teacher: " + c.teacher : "",c.room ? "Room: " + c.room : ""].filter(Boolean).join(" · ")) + '</p></div>').join("") + '</div>' : '<div class="briefing-live-empty">No cancellations or substitutions reported by this check.</div>';
+    const errors = Object.entries(data.errors || {});
+    const sourceNote = errors.length
+        ? '<div class="briefing-live-error"><strong>Some sources need attention</strong><p>' + errors.map(([name,msg]) => esc(name.replace(/-/g," ") + ": " + msg)).join("<br>") + '</p></div>'
+        : '<div class="briefing-live-note"><strong>All sources responded.</strong> Connected services completed this check.</div>';
+    target.innerHTML =
+        '<div class="briefing-live-stats">' +
+        '<div class="briefing-live-stat"><span>Lessons today</span><strong>' + lessons.length + '</strong></div>' +
+        '<div class="briefing-live-stat"><span>Timetable changes</span><strong class="' + (changes.length ? "alert" : "") + '">' + changes.length + '</strong></div>' +
+        '<div class="briefing-live-stat"><span>Pending requests</span><strong>' + esc(requests.pending ?? "—") + '</strong></div>' +
+        '<div class="briefing-live-stat"><span>In progress</span><strong>' + esc(requests.inProgress ?? "—") + '</strong></div></div>' +
+        '<div class="briefing-live-block"><h4>Today’s timetable</h4>' + lessonRows + '</div>' +
+        '<div class="briefing-live-block"><h4>Changes and cancellations</h4>' + changeRows + '</div>' +
+        '<div class="briefing-live-two-col"><div class="briefing-live-block"><h4>Homework</h4>' + infoList(homework,"No homework returned for today.",x=>x.subject,x=>x.text) + '</div>' +
+        '<div class="briefing-live-block"><h4>Exams</h4>' + infoList(exams,"No exam entries returned for today.",x=>x.title||x.name||x.subject,x=>[x.time,x.description,x.room,x.date].filter(Boolean).join(" · ")) + '</div></div>' +
+        '<div class="briefing-live-block"><h4>Calendar</h4>' + infoList(calendar,"No calendar entries returned for today.",x=>x.title||x.summary||x.name,x=>[x.time,x.start,x.location,x.description,x.date].filter(Boolean).join(" · ")) + '</div>' +
+        '<div class="briefing-live-block">' + sourceNote + '</div>';
+}
+
+async function loadLiveBriefing() {
+    const target = document.getElementById("briefing-live-content");
+    const meta = document.getElementById("briefing-live-meta");
+    const button = document.getElementById("briefing-live-refresh");
+    if (!target || typeof db === "undefined") return;
+    if (liveBriefingRequest) return liveBriefingRequest;
+    if (button) { button.disabled = true; button.textContent = "Checking…"; }
+    target.innerHTML = '<div class="briefing-live-loading">Fetching live timetable and connected data…</div>';
+    if (meta) meta.textContent = "Connecting to WebUntis and briefing sources…";
+    liveBriefingRequest = (async () => {
+        try {
+            const { data: sessionData, error: sessionError } = await db.auth.getSession();
+            if (sessionError) throw sessionError;
+            const token = sessionData && sessionData.session && sessionData.session.access_token;
+            if (!token) throw new Error("Your admin session has expired. Sign in again to load live data.");
+            const response = await fetch("https://ggewdpazpeoielbqrcgm.supabase.co/functions/v1/briefing-view", {
+                method: "GET", cache: "no-store",
+                headers: { apikey: "sb_publishable_RZYBKLqjC9UYLNdqlOKZCA_IFX-5Gvm", Authorization: "Bearer " + token }
+            });
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(data.error || "Briefing request failed (HTTP " + response.status + ").");
+            if (data.error) throw new Error(data.error);
+            renderLiveBriefing(data);
+        } catch (error) {
+            console.error("Live briefing failed:", error);
+            target.innerHTML = '<div class="briefing-live-error"><strong>Could not load live briefing</strong><p>' + briefingEscape(error && error.message ? error.message : error) + '</p><p>Try Refresh after checking that you are signed in.</p></div>';
+            if (meta) meta.textContent = "Live data was not updated.";
+        } finally {
+            liveBriefingRequest = null;
+            if (button) { button.disabled = false; button.textContent = "Refresh"; }
+        }
+    })();
+    return liveBriefingRequest;
+}
