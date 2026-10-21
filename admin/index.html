@@ -1943,6 +1943,13 @@
         @media(max-width:900px){.briefing-overview-grid{grid-template-columns:1fr}}
         @media(max-width:760px){.briefing-weather-shortcut{padding:15px;gap:10px}.briefing-weather-shortcut b{font-size:10px}}
 
+
+/* Manual homework tracker */
+.homework-tracker{margin:22px 0}.homework-tracker-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px}.homework-tracker-head h3{margin:4px 0 6px;font-size:25px}.homework-tracker-head p{margin:0;color:var(--muted);max-width:620px}.homework-eyebrow{color:var(--brass);font:600 10px var(--mono);letter-spacing:.1em}
+.homework-form{display:grid;grid-template-columns:minmax(130px,1fr) minmax(150px,.7fr);gap:12px;padding:16px;margin-bottom:12px;background:var(--surface-soft);border:1px solid var(--border)}.homework-form label{display:flex;flex-direction:column;gap:6px;color:var(--muted);font:600 11px var(--mono);text-transform:uppercase;letter-spacing:.03em}.homework-form input,.homework-form textarea{width:100%;min-width:0;padding:10px 11px;border:1px solid var(--input-border);border-radius:var(--radius-small);background:var(--surface-raised);color:var(--text);font:400 14px var(--body);text-transform:none;letter-spacing:normal}.homework-form textarea{resize:vertical}.homework-description{grid-column:1/-1}.homework-form .primary{justify-self:start}.homework-message{margin:0 0 10px;color:var(--moss);font-size:13px}.homework-message:empty{display:none}
+.homework-list{display:grid;gap:9px}.homework-item{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:14px;border:1px solid var(--border);border-left:3px solid var(--brass);background:var(--surface-raised)}.homework-item.is-completed{opacity:.68;border-left-color:var(--moss)}.homework-item-main{min-width:0}.homework-item-title{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:5px;font-weight:700}.homework-item-description{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--muted)}.homework-due{display:inline-flex;padding:3px 7px;border:1px solid var(--border);font:600 10px var(--mono)}.homework-due.overdue{color:var(--danger);background:var(--danger-soft);border-color:transparent}.homework-due.today{color:var(--signal);background:var(--signal-soft);border-color:transparent}.homework-due.done{color:var(--moss);background:var(--moss-soft);border-color:transparent}.homework-item-actions{display:flex;flex-shrink:0;flex-wrap:wrap;gap:6px}.homework-small-btn{padding:7px 9px;border:1px solid var(--border);border-radius:var(--radius-small);background:var(--surface);color:var(--text);font:600 10px var(--mono)}.homework-small-btn.danger{color:var(--danger)}
+@media(max-width:600px){.homework-tracker-head{flex-direction:column}.homework-form{grid-template-columns:1fr}.homework-description{grid-column:auto}.homework-item{flex-direction:column}.homework-item-actions{width:100%}}
+
 </style>
 
     <style id="kxko-app-redesign">
@@ -2185,7 +2192,20 @@
                     </div>
                 </div>
 
-                <button class="overview-weather" type="button" onclick="showAdminView('weather')"><span class="overview-weather-icon" id="overview-weather-icon" aria-hidden="true"></span><span class="overview-weather-copy"><small>WEATHER RIGHT NOW · BUSECK</small><strong id="overview-weather-temp">—°C</strong><span id="overview-weather-summary">Loading local conditions…</span></span><span class="overview-weather-link">Full forecast →</span></button>
+                
+<section class="section-card homework-tracker" aria-labelledby="manual-homework-title">
+  <div class="homework-tracker-head"><div><span class="homework-eyebrow">PERSONAL PLANNER</span><h3 id="manual-homework-title">Homework tracker</h3><p>Add homework yourself and keep its due date visible. Unfinished tasks can appear in your daily briefing.</p></div><button class="briefing-refresh" type="button" onclick="loadManualHomework()">Refresh</button></div>
+  <form id="manual-homework-form" class="homework-form">
+    <label>Subject<input id="manual-homework-subject" name="subject" maxlength="80" placeholder="e.g. Spanish A" required></label>
+    <label>Due date<input id="manual-homework-due" name="due_date" type="date" required></label>
+    <label class="homework-description">Homework / task<textarea id="manual-homework-description" name="description" rows="2" maxlength="2000" placeholder="What do you need to do?" required></textarea></label>
+    <button id="manual-homework-save" class="primary" type="submit">＋ Add homework</button>
+  </form>
+  <p id="manual-homework-message" class="homework-message" role="status"></p>
+  <div id="manual-homework-list"><p class="empty">Loading homework…</p></div>
+</section>
+
+<button class="overview-weather" type="button" onclick="showAdminView('weather')"><span class="overview-weather-icon" id="overview-weather-icon" aria-hidden="true"></span><span class="overview-weather-copy"><small>WEATHER RIGHT NOW · BUSECK</small><strong id="overview-weather-temp">—°C</strong><span id="overview-weather-summary">Loading local conditions…</span></span><span class="overview-weather-link">Full forecast →</span></button>
 
                 <div class="section-card hub-card">
                     <h3>Needs your attention</h3>
@@ -2441,7 +2461,7 @@
 <script src="../js/earnings-admin.js?v=20261021d"></script>
 <script src="../js/requests-admin.js?v=20261021d"></script>
 <script src="../js/reviews-admin.js?v=20261020b"></script>
-<script src="../js/briefing-admin.js?v=20261021d"></script>
+<script src="../js/briefing-admin.js?v=20261021e"></script>
 <script src="../js/hub-admin.js?v=20261020b"></script>
 <script src="../js/attention-admin.js?v=20261020b"></script>
 
