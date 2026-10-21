@@ -1830,6 +1830,54 @@
         .attn-steps li { margin: 4px 0; }
         .attn-actions { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
         .attn-actions .primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    
+        /* Refined app-style controls and live weather */
+        .nav-icon { width: 21px; height: 21px; flex: 0 0 21px; display: inline-grid; place-items: center; }
+        .nav-icon svg, .quick-action-icon svg, .weather-symbol svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+        .nav-button { min-height: 44px; border-radius: 8px; gap: 13px; }
+        .nav-button.active { background: rgb(217 162 27 / 12%); border-color: rgb(217 162 27 / 22%); color: var(--sidebar-text); box-shadow: inset 3px 0 0 var(--brass); }
+        .nav-button.active .nav-icon { color: var(--brass-soft); }
+        .dashboard-header { backdrop-filter: blur(14px); background: color-mix(in srgb, var(--surface) 92%, transparent); }
+        .stats-grid { gap: 15px; }
+        .stat-card, .section-card, .example-editor, .earn-bar, .request-card, .question-card, .admin-question-card, .admin-review-card { border-radius: 10px; }
+        .stat-card { padding: 20px; }
+        .stat-card::before { border-radius: 2px; }
+        .section-card { padding: 23px; }
+        .primary, .export-button, .controls input, .controls select, #question-search, .field input, .field textarea, .field select { border-radius: 8px; }
+        .request-header, .question-header { padding: 18px 20px; }
+        .request-card, .admin-question-card, .admin-review-card { box-shadow: 0 2px 7px rgb(32 35 33 / 3%); }
+        .quick-actions { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+        .quick-action { min-width: 0; min-height: 132px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 17px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface-raised); color: var(--text); text-align: left; transition: transform .16s ease, border-color .16s ease, background .16s ease; }
+        .quick-action:hover { transform: translateY(-2px); border-color: var(--brass); background: var(--surface); }
+        .quick-action-icon { width: 34px; height: 34px; display: grid; place-items: center; padding: 7px; border: 1px solid rgb(154 112 39 / 22%); border-radius: 8px; background: var(--brass-soft); color: #5b4314; }
+        .quick-action > span:nth-child(2) { font-weight: 600; font-size: 13px; }
+        .quick-action small { color: var(--muted); font-size: 11px; }
+        .weather-card { overflow: hidden; margin-bottom: 19px; padding: 22px 24px 14px; border: 1px solid var(--border); border-radius: 11px; background: linear-gradient(115deg, var(--surface-raised), var(--surface)); box-shadow: 0 3px 12px rgb(32 35 33 / 4%); }
+        .weather-main { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+        .weather-eyebrow { color: var(--muted); font: 10px var(--mono); letter-spacing: .09em; }
+        .weather-copy h3 { margin: 5px 0 3px; font-size: 23px; }
+        .weather-summary { margin: 0; color: var(--muted); font-size: 13px; }
+        .weather-temp-row { display: flex; align-items: baseline; flex-wrap: wrap; gap: 12px; margin-top: 10px; }
+        .weather-temp-row strong { font-family: var(--display); font-size: 42px; font-weight: 500; line-height: 1; letter-spacing: -.02em; }
+        .weather-temp-row span { color: var(--muted); font-size: 12px; }
+        .weather-symbol { width: 66px; height: 66px; padding: 8px; color: var(--brass); }
+        .weather-hourly { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); }
+        .weather-hour { display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 8px 3px; border-radius: 7px; color: var(--muted); font-size: 11px; }
+        .weather-hour strong { color: var(--text); font: 500 14px var(--mono); }
+        .weather-hour svg { width: 23px; height: 23px; color: var(--brass); fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+        .weather-updated { margin: 10px 0 0; color: var(--muted); font-size: 10px; text-align: right; }
+        @media (max-width: 900px) { .quick-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        @media (max-width: 600px) {
+            .weather-card { padding: 18px 16px 12px; }
+            .weather-hourly { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+            .weather-hour:nth-child(n+5) { display: none; }
+            .quick-actions { gap: 9px; }
+            .quick-action { min-height: 118px; padding: 13px; }
+            .quick-action > span:nth-child(2) { font-size: 12px; }
+            .section-card { padding: 17px; }
+            .weather-temp-row strong { font-size: 37px; }
+        }
+
     </style>
 
     <style id="kxko-app-redesign">
@@ -1975,14 +2023,14 @@
         </div>
 
         <nav class="sidebar-nav" aria-label="Admin navigation">
-            <button class="nav-button active" data-view="overview" type="button"><span class="nav-icon" aria-hidden="true">⌂</span><span class="nav-label">Overview</span></button>
-            <button class="nav-button" data-view="requests" type="button"><span class="nav-icon" aria-hidden="true">▤</span><span class="nav-label">Requests</span></button>
-            <button class="nav-button" data-view="questions" type="button"><span class="nav-icon" aria-hidden="true">?</span><span class="nav-label">Questions</span></button>
-            <button class="nav-button" data-view="reviews" type="button"><span class="nav-icon" aria-hidden="true">☆</span><span class="nav-label">Reviews</span></button>
-            <button class="nav-button" data-view="examples" type="button"><span class="nav-icon" aria-hidden="true">▧</span><span class="nav-label">Examples</span></button>
-            <button class="nav-button" data-view="content" type="button"><span class="nav-icon" aria-hidden="true">≡</span><span class="nav-label">Website copy</span></button>
-            <button class="nav-button" data-view="briefing" type="button"><span class="nav-icon" aria-hidden="true">◷</span><span class="nav-label">Briefing</span></button>
-            <button class="nav-button" data-view="kxkos" type="button"><span class="nav-icon" aria-hidden="true">K</span><span class="nav-label">KXKOS</span></button>
+            <button class="nav-button active" data-view="overview" type="button"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg></span><span class="nav-label">Overview</span></button>
+            <button class="nav-button" data-view="requests" type="button"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4h12v16H8zM4 8v12h12M11 8h6M11 12h6M11 16h4"/></svg></span><span class="nav-label">Requests</span></button>
+            <button class="nav-button" data-view="questions" type="button"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 18h.01M9.1 9a3 3 0 1 1 5.1 2.1c-1.3 1.2-2.2 1.6-2.2 3.4M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z"/></svg></span><span class="nav-label">Questions</span></button>
+            <button class="nav-button" data-view="reviews" type="button"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9z"/></svg></span><span class="nav-label">Reviews</span></button>
+            <button class="nav-button" data-view="examples" type="button"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 3v18M8 8h13M8 15h13"/></svg></span><span class="nav-label">Examples</span></button>
+            <button class="nav-button" data-view="content" type="button"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span><span class="nav-label">Website copy</span></button>
+            <button class="nav-button" data-view="briefing" type="button"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span class="nav-label">Briefing</span></button>
+            <button class="nav-button" data-view="kxkos" type="button"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 3v18M19 3 8 12l11 9"/></svg></span><span class="nav-label">KXKOS</span></button>
         </nav>
 
         <div class="sidebar-bottom">
@@ -2036,6 +2084,20 @@
                     </div>
                 </div>
 
+                <section class="weather-card" aria-labelledby="weather-title">
+                    <div class="weather-main">
+                        <div class="weather-copy">
+                            <span class="weather-eyebrow">LOCAL FORECAST · BUSECK</span>
+                            <h3 id="weather-title">Weather</h3>
+                            <p id="weather-summary" class="weather-summary">Getting the latest forecast…</p>
+                            <div class="weather-temp-row"><strong id="weather-temp">—°</strong><span id="weather-range">High —° · Low —°</span></div>
+                        </div>
+                        <div id="weather-symbol" class="weather-symbol" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M18 39a13 13 0 0 1 1-26 18 18 0 0 1 34 7 10 10 0 0 1-1 19H18Z"/><path d="m23 47-4 8m19-8-4 8m19-8-4 8"/></svg></div>
+                    </div>
+                    <div class="weather-hourly" id="weather-hourly"><span class="muted">Hourly forecast will appear here.</span></div>
+                    <p class="weather-updated" id="weather-updated">Forecast by Open-Meteo</p>
+                </section>
+
                 <div class="section-card hub-card">
                     <h3>Needs your attention</h3>
                     <div id="hub-attention-list">
@@ -2049,18 +2111,12 @@
                         Jump straight to the things you need to manage.
                     </p>
 
-                    <button class="primary" type="button" onclick="showAdminView('requests')">
-                        Manage Requests
-                    </button>
-                    <button class="nav-button" style="display:inline-flex;color:var(--text);margin:8px 0 0 5px;background:var(--surface-soft);width:auto;" type="button" onclick="showAdminView('questions')">
-                        Manage Questions
-                    </button>
-                    <button class="nav-button" style="display:inline-flex;color:var(--text);margin:8px 0 0 5px;background:var(--surface-soft);width:auto;" type="button" onclick="showAdminView('reviews')">
-                        Manage Reviews
-                    </button>
-                    <button class="nav-button" style="display:inline-flex;color:var(--text);margin:8px 0 0 5px;background:var(--surface-soft);width:auto;" type="button" onclick="showAdminView('examples')">
-                        Manage Examples
-                    </button>
+                    <div class="quick-actions">
+                        <button class="quick-action" type="button" onclick="showAdminView('requests')"><span class="quick-action-icon"><svg viewBox="0 0 24 24"><path d="M8 4h12v16H8zM4 8v12h12M11 8h6M11 12h6M11 16h4"/></svg></span><span>View requests</span><small>Orders and status</small></button>
+                        <button class="quick-action" type="button" onclick="showAdminView('questions')"><span class="quick-action-icon"><svg viewBox="0 0 24 24"><path d="M12 18h.01M9.1 9a3 3 0 1 1 5.1 2.1c-1.3 1.2-2.2 1.6-2.2 3.4M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z"/></svg></span><span>Answer questions</span><small>Visitor messages</small></button>
+                        <button class="quick-action" type="button" onclick="showAdminView('reviews')"><span class="quick-action-icon"><svg viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9z"/></svg></span><span>Moderate reviews</span><small>Feedback and ratings</small></button>
+                        <button class="quick-action" type="button" onclick="showAdminView('examples')"><span class="quick-action-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 3v18M8 8h13M8 15h13"/></svg></span><span>Manage examples</span><small>Portfolio diagrams</small></button>
+                    </div>
                 </div>
             </section>
 
@@ -2267,6 +2323,58 @@
 <script src="../js/attention-admin.js?v=20261020b"></script>
 
 <script>
+
+/* Live local weather — Open-Meteo, Buseck */
+(() => {
+    const codeText = code => {
+        if (code === 0) return "Clear sky";
+        if ([1, 2].includes(code)) return "Mostly clear";
+        if (code === 3) return "Overcast";
+        if ([45, 48].includes(code)) return "Foggy";
+        if ([51, 53, 55, 56, 57].includes(code)) return "Drizzle";
+        if ([61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return "Rain showers";
+        if ([71, 73, 75, 77, 85, 86].includes(code)) return "Snow";
+        if ([95, 96, 99].includes(code)) return "Thunderstorms";
+        return "Current conditions";
+    };
+    const weatherSvg = code => {
+        if ([0, 1].includes(code)) return '<svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="5"/><path d="M16 2v4M16 26v4M2 16h4M26 16h4M6 6l3 3M23 23l3 3M26 6l-3 3M9 23l-3 3"/></svg>';
+        if ([2, 3, 45, 48].includes(code)) return '<svg viewBox="0 0 32 32"><path d="M7 22h18a5 5 0 0 0 0-10 9 9 0 0 0-17-1 5.5 5.5 0 0 0-1 11Z"/></svg>';
+        if ([71, 73, 75, 77, 85, 86].includes(code)) return '<svg viewBox="0 0 32 32"><path d="M7 20h18a5 5 0 0 0 0-10 9 9 0 0 0-17-1 5.5 5.5 0 0 0-1 11ZM12 24v5m-2-2 2 2 2-2m7-3v5m-2-2 2 2 2-2"/></svg>';
+        return '<svg viewBox="0 0 32 32"><path d="M7 19h18a5 5 0 0 0 0-10 9 9 0 0 0-17-1 5.5 5.5 0 0 0-1 11ZM11 23l-2 5m10-5-2 5m9-5-2 5"/></svg>';
+    };
+    async function loadWeather() {
+        const summary = document.getElementById("weather-summary");
+        if (!summary) return;
+        try {
+            const url = "https://api.open-meteo.com/v1/forecast?latitude=50.60&longitude=8.80&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&hourly=temperature_2m,weather_code,precipitation_probability&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&forecast_days=1&timezone=Europe%2FBerlin";
+            const response = await fetch(url, { cache: "no-store" });
+            if (!response.ok) throw new Error("Weather service unavailable");
+            const data = await response.json();
+            const current = data.current;
+            const daily = data.daily;
+            document.getElementById("weather-temp").textContent = Math.round(current.temperature_2m) + "°C";
+            document.getElementById("weather-range").textContent = "High " + Math.round(daily.temperature_2m_max[0]) + "° · Low " + Math.round(daily.temperature_2m_min[0]) + "°";
+            summary.textContent = codeText(current.weather_code) + " · Feels like " + Math.round(current.apparent_temperature) + "°C · Rain chance " + Math.max(...data.hourly.precipitation_probability.slice(0, 12)) + "%";
+            document.getElementById("weather-symbol").innerHTML = weatherSvg(current.weather_code);
+            const now = new Date(current.time);
+            const nextHours = data.hourly.time.map((time, index) => ({ time, index })).filter(item => new Date(item.time) >= new Date(now.getTime() - 30 * 60 * 1000)).slice(0, 6);
+            document.getElementById("weather-hourly").innerHTML = nextHours.map(item => {
+                const hour = new Date(item.time).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Berlin" });
+                const code = data.hourly.weather_code[item.index];
+                return '<div class="weather-hour"><span>' + hour + '</span>' + weatherSvg(code) + '<strong>' + Math.round(data.hourly.temperature_2m[item.index]) + '°</strong><span>' + (data.hourly.precipitation_probability[item.index] ?? 0) + '% rain</span></div>';
+            }).join("");
+            document.getElementById("weather-updated").textContent = "Updated " + new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) + " · Source: Open-Meteo";
+        } catch (error) {
+            summary.textContent = "Forecast is temporarily unavailable.";
+            document.getElementById("weather-hourly").innerHTML = '<span class="muted">Check your connection and reload to try again.</span>';
+            document.getElementById("weather-updated").textContent = "Weather data unavailable";
+        }
+    }
+    loadWeather();
+    window.addEventListener("online", loadWeather);
+})();
+
     /* Navigation */
 
     function showAdminView(view) {
