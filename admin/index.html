@@ -2442,8 +2442,8 @@
             ["weather-updated","weather-page-updated"].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=updated;});
         } catch (error) {
             summary.textContent = "Forecast is temporarily unavailable.";
-            document.getElementById("weather-hourly").innerHTML = '<span class="muted">Check your connection and reload to try again.</span>';
-            document.getElementById("weather-updated").textContent = "Weather data unavailable";
+            ["weather-hourly","weather-page-hourly"].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='<span class="muted">Check your connection and reload to try again.</span>';});
+            ["weather-updated","weather-page-updated"].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent="Weather data unavailable";});
         }
     }
     loadWeather();
