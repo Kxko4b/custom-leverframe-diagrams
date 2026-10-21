@@ -751,6 +751,24 @@ function escapeHTML(value) {
     }
 })();
 
+/* Back button inside the Android app: sub-page -> its menu -> Overview. Returns true when it handled the press. */
+window.kxkoBack = function kxkoBack() {
+    if (dashboardIsHidden()) return false;
+    const view = (document.querySelector(".view.active")?.id || "").replace(/-view$/, "");
+    const parents = { requests: "business", questions: "business", reviews: "business", content: "business", examples: "business", kxkos: "more" };
+    const target = parents[view] || (view && view !== "overview" ? "overview" : "");
+    if (!target || typeof window.showAdminView !== "function") return false;
+    window.showAdminView(target);
+    return true;
+};
+
+function dashboardIsHidden() { return dashboard.classList.contains("hidden"); }
+
+/* Small tick on the phone when switching tabs (only inside the app, which provides KxkoNative). */
+document.addEventListener("click", (event) => {
+    if (event.target.closest(".nav-button[data-view]")) { try { window.KxkoNative?.tick(); } catch { /* not in the app */ } }
+});
+
 /* =========================================================
    LIVE REFRESH (used by the Android app, also callable from the console)
    Reloads what is on screen without a page reload. It never interrupts typing, an expanded request,

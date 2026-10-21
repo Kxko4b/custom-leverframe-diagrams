@@ -119,3 +119,9 @@ test("the admin exposes window.kxkoRefresh for the Android app and never interru
   assert.match(admin, /INPUT\|TEXTAREA\|SELECT/);
   assert.match(read("../admin/index.html"), /KxkoApp\\\//);
 });
+
+test("the app's back button and haptic bridge exist and the tab bar docks to the bottom inside the app", () => {
+  assert.match(read("../js/admin.js"), /window\.kxkoBack = function/);
+  assert.match(read("../js/admin.js"), /KxkoNative\?\.tick\(\)/);
+  assert.match(read("../admin/index.html"), /html\.kxko-app \.sidebar \{ position: fixed; inset: auto 0 0 0/);
+});
