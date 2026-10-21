@@ -5,7 +5,7 @@ const EARNING_STATUSES_OPEN = ["Pending", "Accepted", "In Progress"];
 
 /** "12,50" / "12.5" / " 12 " -> 12.5. Empty -> null. Invalid or negative -> undefined. */
 function parsePrice(input) {
-    const text = String(input ?? "").trim().replace(/\s|€/g, "");
+    const text = String(input ?? "").trim().replace(/\s/g, "").replace(/(?:EUR|USD|GBP|CHF|EUROS?|DOLLARS?|POUNDS?)/gi, "").replace(/[€$£¥₹₽₩]/g, "");
     if (text === "") return null;
     let normalised = text;
     if (text.includes(",") && text.includes(".")) {
