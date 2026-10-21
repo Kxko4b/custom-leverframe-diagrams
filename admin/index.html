@@ -1956,19 +1956,19 @@
         html.kxko-app button, html.kxko-app .nav-button { -webkit-user-select: none; user-select: none; }
 
         /* ---- Extra polish ---- */
-        .nav-button.active .nav-icon { color: #f1d9a8 !important; filter: drop-shadow(0 0 6px rgb(217 162 27 / 45%)); }
+        .nav-button.active .nav-icon { color: #f1d9a8 !important; filter: none; }
         .nav-button .nav-icon { transition: transform .18s ease; }
         .nav-button:hover .nav-icon { transform: translateY(-1px) scale(1.06); }
-        .status-dot { animation: pulse-dot 2.4s ease-out infinite; }
+        .status-dot { animation: none; }
         @keyframes pulse-dot { 0% { box-shadow: 0 0 0 0 rgb(130 169 138 / 50%); } 70%,100% { box-shadow: 0 0 0 7px rgb(130 169 138 / 0%); } }
-        .stat-card, .business-tile, .quick-action { transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease; }
-        .stat-card:hover, .business-tile:hover, .quick-action:hover { transform: translateY(-2px); border-color: rgb(197 161 107 / 35%); box-shadow: 0 10px 28px rgb(0 0 0 / 28%); }
+        .stat-card, .business-tile, .quick-action { transition: border-color .15s ease; }
+        .stat-card:hover, .business-tile:hover, .quick-action:hover { border-color: rgb(197 161 107 / 35%); }
         .greeting { margin: 0 0 6px; color: var(--brass); font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
         #app.is-refreshing .status-dot { background: #d9a21b; }
         .quick-action-icon { color: #e8c887 !important; background: rgb(197 161 107 / 14%) !important; border-color: rgb(197 161 107 / 28%) !important; }
 
         /* In the app: tab bar docked to the bottom edge of the phone at every width, hidden while the keyboard is open. */
-        html.kxko-app .sidebar { position: fixed; inset: auto 0 0 0; width: auto; height: calc(64px + 6px); padding: 5px 8px; border: 0; border-top: 1px solid rgb(230 224 211 / 12%); border-radius: 0; background: rgb(17 23 25 / 98%); box-shadow: 0 -8px 24px rgb(0 0 0 / 30%); }
+        html.kxko-app .sidebar { position: fixed; inset: auto 0 0 0; width: auto; height: 66px; padding: 5px 8px; border: 0; border-top: 1px solid rgb(255 255 255 / 8%); border-radius: 0; background: #292c2f; box-shadow: none; }
         html.kxko-app .brand, html.kxko-app .sidebar-bottom { display: none; }
         html.kxko-app .sidebar-nav { width: 100%; height: 100%; flex-direction: row; justify-content: space-around; gap: 2px; }
         html.kxko-app .nav-button { flex: 1 1 0; min-width: 0; min-height: 0; flex-direction: column; justify-content: center; align-items: center; gap: 4px; padding: 4px 2px; font-size: 10px; text-align: center; }
@@ -1983,14 +1983,14 @@
         /* KXKO app presentation: signal-box charcoal, warm brass, no decorative emoji. */
         :root {
             color-scheme: dark;
-            --bg: #101416; --surface: #171d20; --surface-soft: #20272a; --surface-raised: #1b2326;
-            --text: #eee9df; --muted: #a2a6a2; --border: rgb(224 218 202 / 10%);
+            --bg: #111315; --surface: #1a1d20; --surface-soft: #24272a; --surface-raised: #202326;
+            --text: #f0eee9; --muted: #a8aaa8; --border: rgb(224 218 202 / 10%);
             --input-border: rgb(224 218 202 / 18%); --primary: #b99a68; --primary-dark: #a18150;
             --primary-soft: #342d22; --brass: #c5a16b; --brass-soft: #3a3022;
             --signal: #bd9a61; --signal-soft: #3a3022; --moss: #6f9a7b; --moss-soft: #203329;
-            --danger: #d28b81; --danger-soft: #3a2524; --sidebar: #111719;
+            --danger: #d28b81; --danger-soft: #3a2524; --sidebar: #151719;
             --sidebar-raised: #222a2c; --sidebar-text: #eee9df; --sidebar-muted: #9ba29e;
-            --shadow: 0 10px 26px rgb(0 0 0 / 15%); --radius: 14px; --radius-small: 10px;
+            --shadow: 0 5px 16px rgb(0 0 0 / 12%); --radius: 12px; --radius-small: 8px;
         }
         body { background: var(--bg); color: var(--text); }
         h1,h2,h3,h4 { letter-spacing: -.02em; }
@@ -2003,7 +2003,7 @@
         .nav-icon { width: 23px; flex: 0 0 23px; display: inline-grid !important; place-items: center; color: var(--brass); font-family: var(--body); font-size: 18px; line-height: 1; }
         .nav-label { display: inline !important; }
         .nav-button:hover { background: rgb(255 255 255 / 4%); color: var(--text); transform: none; }
-        .nav-button.active { background: linear-gradient(100deg,rgb(197 161 107 / 15%),rgb(197 161 107 / 4%)); border-color: rgb(197 161 107 / 16%); box-shadow: inset 3px 0 0 var(--brass); color: #fffaf0; }
+        .nav-button.active { background: rgb(197 161 107 / 9%); border-color: rgb(197 161 107 / 16%); box-shadow: inset 3px 0 0 var(--brass); color: #fffaf0; }
         .dashboard-header { min-height: 66px; padding: 13px clamp(18px,3vw,34px); background: rgb(16 20 22 / 94%); border-bottom-color: var(--border); backdrop-filter: blur(14px); }
         .header-title { font-family: var(--body); font-size: 14px; font-weight: 650; letter-spacing: .015em; text-transform: none; }
         .admin-status { padding: 6px 10px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); font-size: 10px; }
@@ -2013,7 +2013,7 @@
         .page-header h2 { font-family: var(--body); font-size: clamp(26px,3vw,33px); font-weight: 700; letter-spacing: -.04em; text-transform: none; }
         .page-header p { color: var(--muted); font-size: 14px; }
         .stats-grid { gap: 13px; margin-bottom: 25px; }
-        .stat-card,.section-card,.example-editor,.earn-bar,.hub-card,.kxkos-card { background: linear-gradient(145deg,#1a2124,#171d20); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+        .stat-card,.section-card,.example-editor,.earn-bar,.hub-card,.kxkos-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
         .stat-card { padding: 19px; overflow: hidden; }
         .stat-card::before { left: 19px; width: 27px; height: 3px; border-radius: 99px; background: var(--brass); }
         .stat-label { color: var(--muted); font-size: 12px; font-weight: 550; }
