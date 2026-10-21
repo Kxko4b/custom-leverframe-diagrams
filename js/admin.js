@@ -698,34 +698,6 @@ function escapeHTML(value) {
 (function polish() {
     const greeting = document.getElementById("greeting");
     if (greeting) {
-        const hour = Number(new Intl.DateTimeFormat("en-GB", { hour: "numeric", hour12: false, timeZone: "Europe/Berlin" }).format(new Date()));
-        greeting.textContent = hour < 5 ? "Night owl mode" : hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
-    }
-    const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    for (const id of ["stat-total-requests", "stat-pending", "stat-progress", "stat-completed"]) {
-        const el = document.getElementById(id);
-        if (!el || reduce) continue;
-        let busy = false;
-        new MutationObserver(() => {
-            if (busy) return;
-            const target = Number(el.textContent.trim());
-            if (!Number.isInteger(target) || target < 1) return;
-            busy = true;
-            const start = performance.now();
-            const step = (now) => {
-                const t = Math.min(1, (now - start) / 600);
-                el.textContent = String(Math.round(target * (1 - Math.pow(1 - t, 3))));
-                if (t < 1) requestAnimationFrame(step); else { el.textContent = String(target); setTimeout(() => { busy = false; }, 50); }
-            };
-            requestAnimationFrame(step);
-        }).observe(el, { childList: true, characterData: true, subtree: true });
-    }
-})();
-
-/* Greeting + count-up numbers on the overview (cosmetic only). */
-(function polish() {
-    const greeting = document.getElementById("greeting");
-    if (greeting) {
         const hour = Number(new Intl.DateTimeFormat("en-GB", { hour: "numeric", hour12: false, timeZone: "Europe/Berlin" }).format(new Date())) % 24;
         greeting.textContent = hour < 5 ? "Night owl mode" : hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
     }

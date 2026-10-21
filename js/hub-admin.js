@@ -79,17 +79,96 @@ function navBadgeCounts(requests, questions) {
     };
 }
 
+/** "06:12" for today, "Yesterday", otherwise "14 Oct" (Berlin time). */
+function activityWhen(at, now) {
+    const time = Date.parse(at);
+    if (!Number.isFinite(time)) return "";
+    const day = (ms) => new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Berlin" }).format(new Date(ms));
+    if (day(time) === day(now)) {
+        return new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone: "Europe/Berlin" }).format(new Date(time));
+    }
+    if (day(time) === day(now - 86400000)) return "Yesterday";
+    return new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", timeZone: "Europe/Berlin" }).format(new Date(time));
+}
+
+/** Newest-first feed for the Home screen. Only plain text goes in: customers wrote these fields. */
+function recentActivity({ requests, questions, reviews, now, limit }) {
+    const rows = [];
+    for (const r of requests || []) {
+        const status = r.status || "Pending";
+        rows.push({
+            kind: "request", view: "requests", at: r.created_at,
+            title: `Request ${r.request_code || `KXD-${String(r.id).padStart(4, "0")}`}`,
+            detail: status === "Pending" ? "New request" : status,
+        });
+    }
+    for (const q of questions || []) {
+        rows.push({
+            kind: "question", view: "questions", at: q.created_at,
+            title: `Question ${q.question_code || ""}`.trim(),
+            detail: (q.status || "Pending") === "Pending" ? "Waiting for an answer" : "Answered",
+        });
+    }
+    for (const rev of reviews || []) {
+        const stars = Number(rev.rating);
+        rows.push({
+            kind: "review", view: "reviews", at: rev.created_at,
+            title: `Review${rev.name ? ` from ${rev.name}` : ""}`,
+            detail: Number.isFinite(stars) && stars > 0 ? `${"★".repeat(Math.min(5, Math.round(stars)))} rating` : "New review",
+        });
+    }
+    const stamp = (row) => { const t = Date.parse(row.at); return Number.isFinite(t) ? t : -Infinity; };
+    return rows
+        .sort((a, b) => stamp(b) - stamp(a))
+        .slice(0, limit || 6)
+        .map((row) => ({ ...row, when: activityWhen(row.at, now ?? Date.now()) }));
+}
+
 if (typeof module !== "undefined" && module.exports) {
-    module.exports = { safeUrl, csvCell, requestsToCsv, needsAttention, navBadgeCounts };
+    module.exports = { safeUrl, csvCell, requestsToCsv, needsAttention, navBadgeCounts, recentActivity, activityWhen };
 }
 
 /* ---------------- browser only ---------------- */
 
+const ACTIVITY_ICONS = {
+    request: '<path d="M7 3h8l4 4v14H7z"/><path d="M15 3v5h4M10 12h6M10 16h6"/>',
+    question: '<path d="M4 5h16v12H9l-5 4z"/><path d="M9 9a3 3 0 0 1 6 0c0 2-3 2-3 4m0 2h.01"/>',
+    review: '<path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>',
+};
+
+function renderRecentActivity(items) {
+    const list = document.getElementById("hub-recent-list");
+    if (!list) return;
+    if (!items.length) {
+        const empty = document.createElement("p");
+        empty.className = "empty"; empty.textContent = "Nothing yet. New requests, questions and reviews show up here.";
+        return list.replaceChildren(empty);
+    }
+    list.replaceChildren(...items.map((item) => {
+        const row = document.createElement("button");
+        row.type = "button"; row.className = `activity-row activity-${item.kind}`;
+        row.addEventListener("click", () => showAdminView(item.view));
+        const icon = document.createElement("span");
+        icon.className = "activity-icon"; icon.setAttribute("aria-hidden", "true");
+        icon.innerHTML = `<svg viewBox="0 0 24 24">${ACTIVITY_ICONS[item.kind] || ""}</svg>`; // fixed markup, no customer text
+        const copy = document.createElement("span");
+        copy.className = "activity-copy";
+        const title = document.createElement("strong"); title.textContent = item.title;
+        const detail = document.createElement("small"); detail.textContent = item.detail;
+        copy.append(title, detail);
+        const when = document.createElement("span");
+        when.className = "activity-when"; when.textContent = item.when;
+        row.append(icon, copy, when);
+        return row;
+    }));
+}
+
 async function loadHubInner() {
-    const [requests, questions, runs] = await Promise.all([
-        db.from("requests").select("id, status, created_at"),
-        db.from("questions").select("id, status, created_at"),
+    const [requests, questions, runs, reviews] = await Promise.all([
+        db.from("requests").select("id, status, created_at, request_code"),
+        db.from("questions").select("id, status, created_at, question_code"),
         db.from("briefing_runs").select("run_at, status").order("run_at", { ascending: false }).limit(1),
+        db.from("reviews").select("id, name, rating, created_at").order("created_at", { ascending: false }).limit(5),
     ]);
     // a failing query must not hide the others: use what we got
     const items = needsAttention({
@@ -112,6 +191,12 @@ async function loadHubInner() {
             return row;
         }));
     }
+    renderRecentActivity(recentActivity({
+        requests: requests.error ? [] : requests.data,
+        questions: questions.error ? [] : questions.data,
+        reviews: reviews.error ? [] : reviews.data,
+        now: Date.now(),
+    }));
     const counts = navBadgeCounts(requests.error ? [] : requests.data, questions.error ? [] : questions.data);
     for (const [view, count] of Object.entries(counts)) {
         const button = document.querySelector(`.nav-button[data-view="${view}"]`);

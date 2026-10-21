@@ -5,7 +5,7 @@ import { createRequire } from "node:module";
 import { readFileSync } from "node:fs";
 
 const require = createRequire(import.meta.url);
-const { safeUrl, csvCell, requestsToCsv, needsAttention, navBadgeCounts } = require("../js/hub-admin.js");
+const { safeUrl, csvCell, requestsToCsv, needsAttention, navBadgeCounts, recentActivity, activityWhen } = require("../js/hub-admin.js");
 const read = (p) => readFileSync(new URL(p, import.meta.url), "utf8");
 
 const NOW = Date.parse("2026-10-19T12:00:00Z");
@@ -105,4 +105,59 @@ test("the admin page wires the hub in: card, export button, script, safe links, 
 
 test("question text is rendered without template whitespace", () => {
   assert.doesNotMatch(read("../js/questions-admin.js"), /<p>\s*\n\s*\$\{escapeHTML/);
+});
+
+test("recent activity mixes requests, questions and reviews, newest first, capped", () => {
+  const items = recentActivity({
+    now: NOW,
+    requests: [{ id: 7, status: "Pending", created_at: hoursAgo(1), request_code: "KXD-0007" }, { id: 3, status: "Completed", created_at: hoursAgo(50) }],
+    questions: [{ id: 1, status: "Answered", created_at: hoursAgo(30), question_code: "KXQ-0001" }],
+    reviews: [{ id: 2, name: "Sam", rating: 4, created_at: hoursAgo(5) }],
+    limit: 3,
+  });
+  assert.deepEqual(items.map((i) => i.kind), ["request", "review", "question"]);
+  assert.equal(items[0].title, "Request KXD-0007");
+  assert.equal(items[0].detail, "New request");
+  assert.equal(items[1].title, "Review from Sam");
+  assert.equal(items[1].detail, "★★★★ rating");
+  assert.equal(items[2].detail, "Answered");
+  assert.deepEqual(items.map((i) => i.view), ["requests", "reviews", "questions"]);
+});
+
+test("recent activity falls back gracefully and sorts undated rows last", () => {
+  const items = recentActivity({
+    now: NOW,
+    requests: [{ id: 12, created_at: null }, { id: 5, status: "In Progress", created_at: hoursAgo(2) }],
+    questions: [], reviews: [{ id: 1, created_at: hoursAgo(3) }],
+  });
+  assert.equal(items[0].title, "Request KXD-0005");
+  assert.equal(items[0].detail, "In Progress");
+  assert.equal(items[1].title, "Review");
+  assert.equal(items[1].detail, "New review");
+  assert.equal(items.at(-1).title, "Request KXD-0012");
+  assert.equal(items.at(-1).when, "");
+  assert.deepEqual(recentActivity({ now: NOW }), []);
+});
+
+test("activity times read as clock time today, Yesterday, or a short date (Berlin time)", () => {
+  assert.equal(activityWhen("2026-10-19T04:12:00Z", NOW), "06:12");
+  assert.equal(activityWhen("2026-10-18T09:00:00Z", NOW), "Yesterday");
+  assert.equal(activityWhen("2026-10-14T09:00:00Z", NOW), "14 Oct");
+  assert.equal(activityWhen("not a date", NOW), "");
+});
+
+test("the Home screen shows the activity list and the Requests chips match the real statuses", () => {
+  const html = read("../admin/index.html");
+  assert.match(html, /id="hub-recent-list"/);
+  assert.match(read("../js/hub-admin.js"), /renderRecentActivity\(recentActivity\(/);
+  const selectValues = [...html.match(/<select id="filter"[\s\S]*?<\/select>/)[0].matchAll(/<option value="([^"]+)"/g)].map((m) => m[1]);
+  const chipValues = [...html.matchAll(/class="chip[^"]*" data-filter="([^"]+)"/g)].map((m) => m[1]);
+  assert.deepEqual(chipValues, selectValues);
+  assert.match(html, /app-polish-admin\.js\?v=\w+/);
+});
+
+test("activity rows are built from text nodes only (customer text never reaches innerHTML)", () => {
+  const js = read("../js/hub-admin.js");
+  const body = js.slice(js.indexOf("function renderRecentActivity"), js.indexOf("async function loadHubInner"));
+  assert.doesNotMatch(body.replace(/icon\.innerHTML = `<svg viewBox="0 0 24 24">\$\{ACTIVITY_ICONS\[item\.kind\] \|\| ""\}<\/svg>`;[^\n]*/, ""), /innerHTML/);
 });
