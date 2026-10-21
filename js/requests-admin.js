@@ -534,7 +534,10 @@ async function loadRequests() {
 
 function paymentFor(requestId) {
     const row = adminPayments.find(payment => String(payment.request_id) === String(requestId));
-    return row ? Number(row.amount) : null;
+    if (row) return Number(row.amount);
+    const request = adminRequests.find(item => String(item.id) === String(requestId));
+    const offer = request ? parsePrice(request.price_offer) : null;
+    return typeof offer === "number" ? offer : null;
 }
 
 function renderEarnings() {
@@ -556,7 +559,7 @@ function renderAdminRequests() {
     const query = (document.getElementById("search")?.value || "").trim().toLowerCase();
     const filter = document.getElementById("filter")?.value || "all";
     const visible = adminRequests.filter(request => {
-        const searchable = [request.request_code, request.name, request.email, request.discord, request.type].join(" ").toLowerCase();
+        const searchable = [request.request_code, request.name, request.email, request.discord, request.type, request.price_offer].join(" ").toLowerCase();
         return (!query || searchable.includes(query)) && (filter === "all" || request.status === filter);
     });
     container.replaceChildren();
@@ -592,6 +595,7 @@ function makeRequestCard(request) {
     grid.append(editField("Name", "name", request.name), editField("Email", "email", request.email, "email"));
     grid.append(editField("Discord", "discord", request.discord), editField("Size", "size", request.size));
     grid.append(editField("Type", "type", request.type), statusField(request.status || "Pending"));
+    grid.append(customerOfferField(request.price_offer));
     grid.append(priceField(paymentFor(request.id)));
     grid.append(editField("Description", "description", request.description, "textarea", true));
     grid.append(referenceImages(request.request_images || []));
@@ -610,6 +614,14 @@ function editField(label, name, value, type = "text", full = false) {
     wrapper.append(makeElement("span", "request-field-label", label));
     const input = type === "textarea" ? document.createElement("textarea") : document.createElement("input");
     input.name = name; input.value = value || ""; if (type !== "textarea") input.type = type;
+    wrapper.append(input); return wrapper;
+}
+
+function customerOfferField(value) {
+    const wrapper = makeElement("label", "request-field");
+    wrapper.append(makeElement("span", "request-field-label", "Customer offer (original input)"));
+    const input = document.createElement("input"); input.type = "text"; input.readOnly = true;
+    input.value = value || "No offer supplied"; input.title = "Original customer input — preserved exactly";
     wrapper.append(input); return wrapper;
 }
 
