@@ -1950,6 +1950,22 @@
 .homework-list{display:grid;gap:9px}.homework-item{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:14px;border:1px solid var(--border);border-left:3px solid var(--brass);background:var(--surface-raised)}.homework-item.is-completed{opacity:.68;border-left-color:var(--moss)}.homework-item-main{min-width:0}.homework-item-title{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:5px;font-weight:700}.homework-item-description{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--muted)}.homework-due{display:inline-flex;padding:3px 7px;border:1px solid var(--border);font:600 10px var(--mono)}.homework-due.overdue{color:var(--danger);background:var(--danger-soft);border-color:transparent}.homework-due.today{color:var(--signal);background:var(--signal-soft);border-color:transparent}.homework-due.done{color:var(--moss);background:var(--moss-soft);border-color:transparent}.homework-item-actions{display:flex;flex-shrink:0;flex-wrap:wrap;gap:6px}.homework-small-btn{padding:7px 9px;border:1px solid var(--border);border-radius:var(--radius-small);background:var(--surface);color:var(--text);font:600 10px var(--mono)}.homework-small-btn.danger{color:var(--danger)}
 @media(max-width:600px){.homework-tracker-head{flex-direction:column}.homework-form{grid-template-columns:1fr}.homework-description{grid-column:auto}.homework-item{flex-direction:column}.homework-item-actions{width:100%}}
 
+
+        /* Inside the Android app (user agent contains KxkoApp/): no tap flash, no bounce. */
+        html.kxko-app { -webkit-tap-highlight-color: transparent; overscroll-behavior-y: contain; }
+        html.kxko-app button, html.kxko-app .nav-button { -webkit-user-select: none; user-select: none; }
+
+        /* ---- Extra polish ---- */
+        .nav-button.active .nav-icon { color: #f1d9a8 !important; filter: drop-shadow(0 0 6px rgb(217 162 27 / 45%)); }
+        .nav-button .nav-icon { transition: transform .18s ease; }
+        .nav-button:hover .nav-icon { transform: translateY(-1px) scale(1.06); }
+        .status-dot { animation: pulse-dot 2.4s ease-out infinite; }
+        @keyframes pulse-dot { 0% { box-shadow: 0 0 0 0 rgb(130 169 138 / 50%); } 70%,100% { box-shadow: 0 0 0 7px rgb(130 169 138 / 0%); } }
+        .stat-card, .business-tile, .quick-action { transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease; }
+        .stat-card:hover, .business-tile:hover, .quick-action:hover { transform: translateY(-2px); border-color: rgb(197 161 107 / 35%); box-shadow: 0 10px 28px rgb(0 0 0 / 28%); }
+        .greeting { margin: 0 0 6px; color: var(--brass); font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
+        #app.is-refreshing .status-dot { background: #d9a21b; }
+        .quick-action-icon { color: #e8c887 !important; background: rgb(197 161 107 / 14%) !important; border-color: rgb(197 161 107 / 28%) !important; }
 </style>
 
     <style id="kxko-app-redesign">
@@ -2097,6 +2113,7 @@
 .briefing-subject-dot.subject-english{background:#f0c541}.briefing-subject-dot.subject-german{background:#e05252}.briefing-subject-dot.subject-maths{background:#4b91f1}.briefing-subject-dot.subject-spanish{background:#e58b3b}.briefing-subject-dot.subject-physics{background:#a78bfa}.briefing-subject-dot.subject-biology{background:#55ad78}.briefing-subject-dot.subject-chemistry{background:#39b9b1}.briefing-subject-dot.subject-religion{background:#c084fc}.briefing-subject-dot.subject-sport{background:#fb7185}.briefing-subject-dot.subject-social{background:#d4a373}.briefing-subject-dot.subject-music{background:#ec78b5}
 </style>
 
+    <script>if (/KxkoApp\//.test(navigator.userAgent)) document.documentElement.classList.add("kxko-app");</script>
 </head>
 
 <body>
@@ -2164,6 +2181,7 @@
             <section id="overview-view" class="view active">
                 <div class="page-header">
                     <div>
+                        <p class="greeting" id="greeting"></p>
                         <h2>Overview</h2>
                         <p>A quick look at your website activity.</p>
                     </div>
@@ -2514,6 +2532,7 @@
             ["weather-updated","weather-page-updated"].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent="Weather data unavailable";});
         }
     }
+    window.loadWeather = loadWeather;
     loadWeather();
     window.addEventListener("online", loadWeather);
 })();

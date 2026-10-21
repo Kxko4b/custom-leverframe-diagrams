@@ -241,14 +241,14 @@ function showBriefingRun(runId) {
 }
 
 
-async function loadBriefingInner() {
+async function loadBriefingInner(silent = false) {
 
     const detail = document.getElementById("briefing-detail");
     const picker = document.getElementById("briefing-run-picker");
 
     if (!detail || typeof db === "undefined") return;
 
-    detail.innerHTML = '<p class="empty">Loading briefing...</p>';
+    if (!silent) detail.innerHTML = '<p class="empty">Loading briefing...</p>';
 
     const { data: runs, error: runError } = await db
         .from("briefing_runs")
@@ -305,14 +305,14 @@ async function loadBriefingInner() {
 
 
 /* Never leave the window on "Loading": show the real error, or a timeout message, instead. */
-async function loadBriefing() {
+async function loadBriefing(silent = false) {
 
     const detail = document.getElementById("briefing-detail");
 
     try {
 
         await Promise.race([
-            loadBriefingInner(),
+            loadBriefingInner(silent),
             new Promise((_, reject) => setTimeout(() => reject(new Error("the database did not answer within 20 seconds")), 20000)),
         ]);
 
@@ -512,7 +512,7 @@ function setManualHomeworkMessage(message, isError = false) {
     }
 }
 
-document.addEventListener("submit", async event => {
+if (typeof document !== "undefined") document.addEventListener("submit", async event => {
     if (event.target?.id !== "manual-homework-form") return;
     event.preventDefault();
     if (manualHomeworkBusy) return;
@@ -546,7 +546,7 @@ document.addEventListener("submit", async event => {
     }
 });
 
-document.addEventListener("click", async event => {
+if (typeof document !== "undefined") document.addEventListener("click", async event => {
     const button = event.target.closest("[data-homework-action]");
     if (!button || manualHomeworkBusy) return;
     const id = button.dataset.homeworkId;
@@ -574,4 +574,4 @@ document.addEventListener("click", async event => {
     }
 });
 
-document.addEventListener("DOMContentLoaded", loadManualHomework);
+if (typeof document !== "undefined") document.addEventListener("DOMContentLoaded", loadManualHomework);

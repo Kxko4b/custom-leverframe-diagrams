@@ -77,7 +77,7 @@ test("the payments migration is additive and admin-only", () => {
 test("the admin page has the earnings banner, KXKOS window, and loads scripts in order", () => {
   const html = read("../admin/index.html");
   assert.match(html, /id="earnings-summary"/);
-  assert.match(html, /data-view="kxkos"/);
+  assert.match(html, /showAdminView\('kxkos'\)/);
   assert.match(html, /id="kxkos-view"/);
   assert.match(html, /href="https:\/\/kxko4b\.github\.io\/KXKOS\/"[^>]*target="_blank"[^>]*rel="noopener"/);
   assert.ok(html.indexOf("earnings-admin.js") > 0 && html.indexOf("earnings-admin.js") < html.indexOf("requests-admin.js"));
@@ -111,4 +111,11 @@ test("request details are hidden until the card is opened", () => {
   const html = read("../admin/index.html");
   assert.match(html, /\.request-card \.request-content\s*\{\s*display:\s*none;/);
   assert.match(html, /\.request-card\.open \.request-content\s*\{\s*display:\s*block;/);
+});
+
+test("the admin exposes window.kxkoRefresh for the Android app and never interrupts typing", () => {
+  const admin = read("../js/admin.js");
+  assert.match(admin, /window\.kxkoRefresh = async function/);
+  assert.match(admin, /INPUT\|TEXTAREA\|SELECT/);
+  assert.match(read("../admin/index.html"), /KxkoApp\\\//);
 });

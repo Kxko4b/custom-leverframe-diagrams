@@ -694,6 +694,97 @@ function escapeHTML(value) {
 ========================================================= */
 
 /* Start after every admin script has loaded: the loaders (requests, briefing, ...) are defined in later scripts. */
+/* Greeting + count-up numbers on the overview (cosmetic only). */
+(function polish() {
+    const greeting = document.getElementById("greeting");
+    if (greeting) {
+        const hour = Number(new Intl.DateTimeFormat("en-GB", { hour: "numeric", hour12: false, timeZone: "Europe/Berlin" }).format(new Date()));
+        greeting.textContent = hour < 5 ? "Night owl mode" : hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+    }
+    const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    for (const id of ["stat-total-requests", "stat-pending", "stat-progress", "stat-completed"]) {
+        const el = document.getElementById(id);
+        if (!el || reduce) continue;
+        let busy = false;
+        new MutationObserver(() => {
+            if (busy) return;
+            const target = Number(el.textContent.trim());
+            if (!Number.isInteger(target) || target < 1) return;
+            busy = true;
+            const start = performance.now();
+            const step = (now) => {
+                const t = Math.min(1, (now - start) / 600);
+                el.textContent = String(Math.round(target * (1 - Math.pow(1 - t, 3))));
+                if (t < 1) requestAnimationFrame(step); else { el.textContent = String(target); setTimeout(() => { busy = false; }, 50); }
+            };
+            requestAnimationFrame(step);
+        }).observe(el, { childList: true, characterData: true, subtree: true });
+    }
+})();
+
+/* Greeting + count-up numbers on the overview (cosmetic only). */
+(function polish() {
+    const greeting = document.getElementById("greeting");
+    if (greeting) {
+        const hour = Number(new Intl.DateTimeFormat("en-GB", { hour: "numeric", hour12: false, timeZone: "Europe/Berlin" }).format(new Date())) % 24;
+        greeting.textContent = hour < 5 ? "Night owl mode" : hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+    }
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    for (const id of ["stat-total-requests", "stat-pending", "stat-progress", "stat-completed"]) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        let busy = false;
+        new MutationObserver(() => {
+            if (busy) return;
+            const target = Number(el.textContent.trim());
+            if (!Number.isInteger(target) || target < 1) return;
+            busy = true;
+            const start = performance.now();
+            const step = (now) => {
+                const t = Math.min(1, (now - start) / 600);
+                el.textContent = String(Math.round(target * (1 - Math.pow(1 - t, 3))));
+                if (t < 1) requestAnimationFrame(step);
+                else { el.textContent = String(target); setTimeout(() => { busy = false; }, 80); }
+            };
+            requestAnimationFrame(step);
+        }).observe(el, { childList: true, characterData: true, subtree: true });
+    }
+})();
+
+/* =========================================================
+   LIVE REFRESH (used by the Android app, also callable from the console)
+   Reloads what is on screen without a page reload. It never interrupts typing, an expanded request,
+   or an older briefing run the owner is reading, unless `force` is true (pull-to-refresh).
+========================================================= */
+
+window.kxkoRefresh = async function kxkoRefresh(force = false) {
+    if (dashboard.classList.contains("hidden")) return false;
+
+    const active = document.activeElement;
+    const typing = Boolean(active && /^(INPUT|TEXTAREA|SELECT)$/.test(active.tagName));
+    const view = (document.querySelector(".view.active")?.id || "").replace(/-view$/, "");
+    const tasks = [];
+
+    if (typeof loadHub === "function") tasks.push(loadHub());
+    if (typeof loadOverviewStats === "function") tasks.push(loadOverviewStats());
+
+    if (view === "weather" && typeof window.loadWeather === "function") tasks.push(window.loadWeather());
+    if (view === "briefing" || view === "overview") {
+        const picker = document.getElementById("briefing-run-picker");
+        const readingOlderRun = Boolean(picker && picker.selectedIndex > 0);
+        if (typeof loadBriefing === "function" && (force || !readingOlderRun)) tasks.push(loadBriefing(!force));
+    }
+    if (force || !typing) {
+        if (view === "requests" && typeof loadRequests === "function"
+            && (force || !document.querySelector('#requests-view .request-header[aria-expanded="true"]'))) tasks.push(loadRequests());
+        if (view === "questions" && typeof loadQuestions === "function") tasks.push(loadQuestions());
+        if (view === "reviews" && typeof loadAdminReviews === "function") tasks.push(loadAdminReviews());
+    }
+
+    await Promise.allSettled(tasks);
+    return true;
+};
+
 if (document.readyState === "complete") {
     checkSession();
 } else {
