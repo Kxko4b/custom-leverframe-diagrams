@@ -56,7 +56,10 @@ async function run(opts = {}) {
     const body = typeof init.body === "string" ? init.body : "";
     calls.push({ url, body, method: init.method ?? "GET" });
 
-    if (url.includes("/functions/v1/untis-test")) return json({ success: true, date: 20261019, lessonsChecked: 6, timetable: [], homework });
+    if (url.includes("/functions/v1/untis-test")) {
+      if (opts.untis) { const r = opts.untis(); if (r) return r; }
+      return json({ success: true, date: 20261019, lessonsChecked: 6, timetable: [], homework, changes: opts.changes ?? [] });
+    }
     if (url.includes("api.open-meteo.com")) {
       weatherHits++;
       if (opts.weather) { const r = opts.weather(weatherHits); if (r) return r; }
@@ -84,7 +87,7 @@ async function run(opts = {}) {
     throw new Error("unexpected request: " + url);
   };
 
-  const res = await handler(new Request("https://fn.test/daily-briefing?date=20261019", { headers: { "x-cron-secret": "test-cron-secret" } }));
+  const res = await handler(new Request("https://fn.test/daily-briefing?date=20261019" + (opts.mode ? `&mode=${opts.mode}` : ""), { headers: { "x-cron-secret": "test-cron-secret" } }));
   const out = await res.json();
   const savedRun = calls.find((c) => /briefing_runs/.test(c.url) && c.method === "POST");
   const savedEvents = calls.find((c) => /briefing_events/.test(c.url) && c.method === "POST");
@@ -266,4 +269,41 @@ test("untis-test and ai-debugger are called with the server key, so they can sta
   assert.ok(untis, "untis-test was called");
   assert.match(source, /function internalHeaders/);
   assert.equal((source.match(/\.\.\.internalHeaders\(\)|headers: internalHeaders\(\)/g) || []).length, 2);
+});
+
+test("untis-watch: nothing changed means no push, no AI, nothing stored", async () => {
+  const r = await run({ mode: "untis-watch" });
+  assert.equal(r.out.changed, false);
+  assert.equal(r.fcmHits(), 0);
+  assert.equal(r.savedRun, null);
+  assert.equal(r.count(/open-meteo|googleapis.com\/calendar|iserv/), 0, "the watch only looks at WebUntis");
+});
+
+test("untis-watch: a cancelled lesson sends one short push and is recorded", async () => {
+  const changes = [{ type: "ENTFALL", time: "09:55–10:40", subject: "GL", expected: "GL", teacher: "Rau" },
+                   { type: "VERTRETUNG", time: "10:45–11:30", subject: "PR", expected: "PR", teacher: "Müller" }];
+  const r = await run({ mode: "untis-watch", changes });
+  assert.equal(r.out.changed, true);
+  assert.equal(r.fcmHits(), 1);
+  const fcm = r.calls.find((c) => /fcm\.googleapis/.test(c.url));
+  assert.match(fcm.body, /TIMETABLE CHANGE/);
+  assert.match(fcm.body, /GL - ENTFALL/);
+  assert.match(fcm.body, /PR - VERTRETUNG M/);
+  assert.equal(r.savedRun.push_sent, true);
+  assert.equal(r.savedRun.status, "healthy");
+});
+
+test("untis-watch: the same change is not pushed twice", async () => {
+  const changes = [{ type: "ENTFALL", time: "09:55–10:40", subject: "GL", expected: "GL", teacher: "Rau" }];
+  const r = await run({ mode: "untis-watch", changes, alreadyPushed: true });
+  assert.equal(r.fcmHits(), 0);
+});
+
+test("untis-watch: a broken WebUntis is recorded once, without a push", async () => {
+  const r = await run({ mode: "untis-watch", untis: () => new Response("boom", { status: 500 }) });
+  assert.equal(r.fcmHits(), 0);
+  assert.equal(r.savedRun.briefing, "Timetable check failed.");
+  assert.equal(r.savedRun.status, "degraded");
+  const again = await run({ mode: "untis-watch", untis: () => new Response("boom", { status: 500 }), alreadyPushed: true });
+  assert.equal(again.savedRun, null, "a failure already recorded within the hour is not recorded again");
 });

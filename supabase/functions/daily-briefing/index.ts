@@ -460,6 +460,69 @@ function componentForFinding(check: string): string {
   return "briefing";
 }
 
+/* UNTIS WATCH (runs every 10 minutes, ?mode=untis-watch)
+   Only looks at the WebUntis timetable. untis-test compares it with the last stored snapshot and returns the lessons that
+   changed. Nothing changed = nothing is sent and nothing is stored. A change = one short push and one dashboard entry. */
+const WATCH_FAILED_TEXT = "Timetable check failed.";
+
+function describeChange(c: any): string {
+  const time = c?.time ?? "?";
+  const subject = c?.expected ?? c?.subject ?? "Lesson";
+  if (c?.type === "ENTFALL") return `${time} ${subject} - ENTFALL`;
+  if (c?.type === "VERTRETUNG") return `${time} ${subject} - VERTRETUNG ${c?.teacher || "Unknown"}`;
+  return `${time} ${subject} - back to normal`;
+}
+
+/* A broken WebUntis sync is recorded at most once an hour, so the dashboard is not flooded every 10 minutes. */
+async function watchFailedRecently(cfg: { supabaseUrl: string; serviceKey?: string | null }): Promise<boolean> {
+  if (!cfg.serviceKey) return false;
+  try {
+    const since = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+    const res = await fetchT(`${cfg.supabaseUrl}/rest/v1/briefing_runs?select=id&briefing=eq.${encodeURIComponent(WATCH_FAILED_TEXT)}&run_at=gte.${encodeURIComponent(since)}&limit=1`,
+      { headers: { apikey: cfg.serviceKey, Authorization: `Bearer ${cfg.serviceKey}` } });
+    if (!res.ok) return false;
+    const rows = await res.json();
+    return Array.isArray(rows) && rows.length > 0;
+  } catch { return false; }
+}
+
+async function untisWatch(dateKeyText: string): Promise<Response> {
+  const cfg = { supabaseUrl: SUPABASE_URL, serviceKey: Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") };
+  const untis = await runComponent("webuntis", () => getUntisData(dateKeyText));
+
+  if (!untis.success) {
+    if (await watchFailedRecently(cfg)) {
+      return new Response(JSON.stringify({ success: false, mode: "untis-watch", changed: false, error: "WebUntis check failed (already recorded)." }), { status: 200, headers: JSON_HEADERS });
+    }
+    const events = componentEvents([untis]);
+    const status = runStatus({ hasBriefing: true, pushSent: true, events });
+    const saved = await saveRun(cfg, { date_key: dateKeyText, status, briefing: WATCH_FAILED_TEXT, components: [untis], push_sent: false, summary: runSummary(status, events) }, events);
+    return new Response(JSON.stringify({ success: false, mode: "untis-watch", changed: false, saved }), { status: 200, headers: JSON_HEADERS });
+  }
+
+  const changes = Array.isArray(untis.data?.changes) ? untis.data.changes : [];
+  if (changes.length === 0) {
+    return new Response(JSON.stringify({ success: true, mode: "untis-watch", changed: false }), { status: 200, headers: JSON_HEADERS });
+  }
+
+  const text = "TIMETABLE CHANGE\n" + changes.map(describeChange).join("\n");
+  const duplicate = await alreadyPushed(cfg, dateKeyText, text);
+  const push = duplicate
+    ? { ok: true, attempts: 0, recovered: false, firstError: undefined, error: undefined }
+    : await withRetry(() => sendFCM(text), { attempts: 3, delayMs: 1500, isRetryable: isSafePushRetry });
+  const fcm: any = push.ok
+    ? { name: "firebase-fcm", success: true, attempts: push.attempts, recovered: push.recovered, firstError: push.firstError, skipped: duplicate || undefined }
+    : { name: "firebase-fcm", success: false, error: push.error, attempts: push.attempts };
+  const events: any[] = [
+    { kind: "check", component: "webuntis", severity: "info", outcome: "ok",
+      found: `${changes.length} timetable change(s) detected.`, action: duplicate ? "Already pushed earlier, nothing sent." : "Pushed a short timetable notice.", details: { changes: changes.length } },
+    ...componentEvents([fcm]),
+  ];
+  const status = runStatus({ hasBriefing: true, pushSent: fcm.success, events });
+  const saved = await saveRun(cfg, { date_key: dateKeyText, status, briefing: text, components: [untis, fcm], push_sent: Boolean(fcm.success), summary: runSummary(status, events) }, events);
+  return new Response(JSON.stringify({ success: true, mode: "untis-watch", changed: true, pushed: Boolean(fcm.success), text, saved }), { status: 200, headers: JSON_HEADERS });
+}
+
 Deno.serve(async (req) => {
   if (!(await authorized(req))) {
     return new Response(JSON.stringify({ success: false, error: "Not allowed." }), { status: 403, headers: JSON_HEADERS });
@@ -469,6 +532,7 @@ Deno.serve(async (req) => {
     const requestedDate = url.searchParams.get("date");
     const targetDate = requestedDate ? parseDate(requestedDate) : new Date();
     const targetDateKey = requestedDate ?? dateKey(targetDate);
+    if (url.searchParams.get("mode") === "untis-watch") return await untisWatch(targetDateKey);
 
     const [untisResult, calendarResult, weatherResult, examsResult, requestResult] = await Promise.all([
       runComponent("webuntis", () => getUntisData(targetDateKey)),
