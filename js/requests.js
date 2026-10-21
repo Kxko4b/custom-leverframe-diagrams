@@ -58,6 +58,7 @@ document.getElementById("request-form")?.addEventListener("submit", async (event
     size: tier,
     type: document.getElementById("req-type").value,
     description: document.getElementById("req-description").value.trim().slice(0, 2000),
+    price_offer: document.getElementById("req-price").value.trim().slice(0, 2000),
     status: "Pending",
   };
 
