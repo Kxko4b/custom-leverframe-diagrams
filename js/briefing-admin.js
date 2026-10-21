@@ -362,6 +362,8 @@ function renderLiveBriefing(data) {
         const teacher = item?.teacher ?? item?.teacherName ?? "";
         return { ...item, subject: typeof sub === "object" ? (sub.longName ?? sub.name ?? "") : sub, text: typeof raw === "object" ? (raw.text ?? raw.description ?? "") : raw, teacher: typeof teacher === "object" ? (teacher.longName ?? teacher.name ?? "") : teacher };
     }).filter(item => String(item.text ?? "").trim());
+    const manualHomework = Array.isArray(data.manualHomework) ? data.manualHomework : [];
+    const combinedHomework = [...homework, ...manualHomework.map(x => ({ subject: x.subject, text: x.description, due_date: x.due_date, manual: true, completed: x.completed }))];
     const exams = Array.isArray(data.exams) ? data.exams : [];
     const calendar = Array.isArray(data.calendar) ? data.calendar : [];
     const requests = data.requests || {};
@@ -404,7 +406,7 @@ function renderLiveBriefing(data) {
         '<div class="briefing-live-stat"><span>In progress</span><strong>' + esc(requests.inProgress ?? "—") + '</strong></div></div>' +
 
         '<div class="briefing-live-block"><h4>Changes and cancellations</h4>' + changeRows + '</div>' +
-        '<div class="briefing-live-two-col"><div class="briefing-live-block"><h4>Homework</h4>' + infoList(homework,"No homework returned for today. If WebUntis shows homework, its source must expose it before it can appear here.",x=>[x.subject,x.teacher].filter(Boolean).join(" · ") || "Homework",x=>x.text) + '</div>' +
+        '<div class="briefing-live-two-col"><div class="briefing-live-block"><h4>Homework</h4>' + infoList(combinedHomework,"No homework returned from WebUntis or your personal tracker.",x=>[x.subject,x.manual ? "Personal" : x.teacher].filter(Boolean).join(" · ") || "Homework",x=>[x.text, x.due_date ? "Due " + manualHomeworkDateLabel(x.due_date) : "", x.completed ? "Completed" : ""].filter(Boolean).join(" · ")) + '</div>' +
         '<div class="briefing-live-block"><h4>Exams</h4>' + infoList(exams,"No exam entries returned for today.",x=>x.title||x.name||x.subject,x=>[x.time,x.description,x.room,x.date].filter(Boolean).join(" · ")) + '</div></div>' +
         '<div class="briefing-live-block"><h4>Calendar</h4>' + infoList(calendar,"No calendar entries returned for today.",x=>x.title||x.summary||x.name,x=>[x.time,x.start,x.location,x.description,x.date].filter(Boolean).join(" · ")) + '</div>' +
         '<div class="briefing-live-block">' + sourceNote + '</div>';
@@ -444,3 +446,132 @@ async function loadLiveBriefing() {
     })();
     return liveBriefingRequest;
 }
+
+
+
+/* ---------- Manual homework tracker ---------- */
+let manualHomeworkBusy = false;
+
+function manualHomeworkDateLabel(value) {
+    if (!value) return "No due date";
+    const date = new Date(String(value).slice(0,10) + "T12:00:00");
+    if (Number.isNaN(date.getTime())) return String(value);
+    return new Intl.DateTimeFormat("en-GB", { day:"numeric", month:"short", year:"numeric", timeZone:BRIEFING_TZ }).format(date);
+}
+
+function manualHomeworkDueBadge(item) {
+    if (item.completed) return '<span class="homework-due done">Completed</span>';
+    const due = String(item.due_date || "").slice(0,10);
+    const today = new Intl.DateTimeFormat("en-CA", { timeZone:BRIEFING_TZ, year:"numeric", month:"2-digit", day:"2-digit" }).format(new Date());
+    if (due && due < today) return '<span class="homework-due overdue">Overdue · ' + briefingEscape(manualHomeworkDateLabel(due)) + '</span>';
+    if (due === today) return '<span class="homework-due today">Due today</span>';
+    return '<span class="homework-due">Due · ' + briefingEscape(manualHomeworkDateLabel(due)) + '</span>';
+}
+
+function renderManualHomework(items) {
+    const target = document.getElementById("manual-homework-list");
+    if (!target) return;
+    const rows = Array.isArray(items) ? items : [];
+    if (!rows.length) {
+        target.innerHTML = '<p class="empty">No homework yet. Add your first task above.</p>';
+        return;
+    }
+    target.innerHTML = '<div class="homework-list">' + rows.map(item => {
+        const id = briefingEscape(item.id);
+        return '<article class="homework-item ' + (item.completed ? 'is-completed' : '') + '">' +
+          '<div class="homework-item-main"><div class="homework-item-title"><span>' + briefingEscape(item.subject) + '</span>' + manualHomeworkDueBadge(item) + '</div>' +
+          '<p class="homework-item-description">' + briefingEscape(item.description) + '</p></div>' +
+          '<div class="homework-item-actions">' +
+          (item.completed ? '<button class="homework-small-btn" type="button" data-homework-action="reopen" data-homework-id="' + id + '">Reopen</button>' : '<button class="homework-small-btn" type="button" data-homework-action="complete" data-homework-id="' + id + '">Mark done</button>') +
+          '<button class="homework-small-btn danger" type="button" data-homework-action="delete" data-homework-id="' + id + '">Delete</button>' +
+          '</div></article>';
+    }).join("") + '</div>';
+}
+
+async function loadManualHomework() {
+    const target = document.getElementById("manual-homework-list");
+    if (!target || typeof db === "undefined") return;
+    target.innerHTML = '<p class="empty">Loading homework…</p>';
+    const { data, error } = await db.from("manual_homework")
+        .select("id,subject,description,due_date,completed,created_at")
+        .order("due_date", { ascending: true })
+        .order("created_at", { ascending: false });
+    if (error) {
+        console.error("Could not load manual homework:", error);
+        target.innerHTML = '<p class="empty">Could not load homework: ' + briefingEscape(error.message || error) + '</p>';
+        return;
+    }
+    renderManualHomework(data || []);
+}
+
+function setManualHomeworkMessage(message, isError = false) {
+    const el = document.getElementById("manual-homework-message");
+    if (el) {
+        el.textContent = message || "";
+        el.style.color = isError ? "var(--danger)" : "var(--moss)";
+    }
+}
+
+document.addEventListener("submit", async event => {
+    if (event.target?.id !== "manual-homework-form") return;
+    event.preventDefault();
+    if (manualHomeworkBusy) return;
+    const subject = document.getElementById("manual-homework-subject")?.value.trim();
+    const description = document.getElementById("manual-homework-description")?.value.trim();
+    const due_date = document.getElementById("manual-homework-due")?.value;
+    if (!subject || !description || !due_date) {
+        setManualHomeworkMessage("Please fill in the subject, task and due date.", true);
+        return;
+    }
+    manualHomeworkBusy = true;
+    const save = document.getElementById("manual-homework-save");
+    if (save) { save.disabled = true; save.textContent = "Saving…"; }
+    setManualHomeworkMessage("");
+    try {
+        const { error } = await db.from("manual_homework").insert({ subject, description, due_date });
+        if (error) throw error;
+        event.target.reset();
+        setManualHomeworkMessage("Homework saved. It will appear in the next daily briefing while unfinished and due within the next 7 days.");
+        await loadManualHomework();
+        if (typeof loadLiveBriefing === "function") {
+            liveBriefingRequest = null;
+            loadLiveBriefing();
+        }
+    } catch (error) {
+        console.error("Could not save homework:", error);
+        setManualHomeworkMessage(error?.message || "Could not save homework.", true);
+    } finally {
+        manualHomeworkBusy = false;
+        if (save) { save.disabled = false; save.textContent = "＋ Add homework"; }
+    }
+});
+
+document.addEventListener("click", async event => {
+    const button = event.target.closest("[data-homework-action]");
+    if (!button || manualHomeworkBusy) return;
+    const id = button.dataset.homeworkId;
+    const action = button.dataset.homeworkAction;
+    if (action === "delete" && !window.confirm("Delete this homework permanently?")) return;
+    manualHomeworkBusy = true;
+    button.disabled = true;
+    try {
+        let result;
+        if (action === "delete") result = await db.from("manual_homework").delete().eq("id", id);
+        else result = await db.from("manual_homework").update({ completed: action === "complete" }).eq("id", id);
+        if (result.error) throw result.error;
+        setManualHomeworkMessage(action === "delete" ? "Homework deleted." : action === "complete" ? "Marked as completed." : "Homework reopened.");
+        await loadManualHomework();
+        if (typeof loadLiveBriefing === "function") {
+            liveBriefingRequest = null;
+            loadLiveBriefing();
+        }
+    } catch (error) {
+        console.error("Could not update homework:", error);
+        setManualHomeworkMessage(error?.message || "Could not update homework.", true);
+        button.disabled = false;
+    } finally {
+        manualHomeworkBusy = false;
+    }
+});
+
+document.addEventListener("DOMContentLoaded", loadManualHomework);
