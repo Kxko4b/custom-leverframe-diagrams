@@ -363,7 +363,7 @@ function renderLiveBriefing(data) {
         return { ...item, subject: typeof sub === "object" ? (sub.longName ?? sub.name ?? "") : sub, text: typeof raw === "object" ? (raw.text ?? raw.description ?? "") : raw, teacher: typeof teacher === "object" ? (teacher.longName ?? teacher.name ?? "") : teacher };
     }).filter(item => String(item.text ?? "").trim());
     const manualHomework = Array.isArray(data.manualHomework) ? data.manualHomework : [];
-    const combinedHomework = [...homework, ...manualHomework.map(x => ({ subject: x.subject, text: x.description, due_date: x.due_date, manual: true, completed: x.completed }))];
+    const combinedHomework = [...homework, ...manualHomework.filter(x => !x.completed).map(x => ({ subject: x.subject, text: x.description, due_date: x.due_date, manual: true, completed: x.completed }))];
     const exams = Array.isArray(data.exams) ? data.exams : [];
     const calendar = Array.isArray(data.calendar) ? data.calendar : [];
     const requests = data.requests || {};
