@@ -36,7 +36,10 @@ function summarizeEarnings(requests, payments) {
     let earned = 0, open = 0, paidCount = 0, completedWithoutPrice = 0;
     // work in cents so 0.1 + 0.2 never shows as 0.30000000000000004
     for (const request of requests || []) {
-        const amount = amountById.get(String(request.id));
+        const savedAmount = amountById.get(String(request.id));
+        // Until an admin-entered price exists, use a parseable customer offer as an estimate.
+        const offeredAmount = savedAmount === undefined ? parsePrice(request.price_offer) : savedAmount;
+        const amount = typeof offeredAmount === "number" ? offeredAmount : undefined;
         if (EARNING_STATUSES_PAID.includes(request.status)) {
             if (amount === undefined) completedWithoutPrice++;
             else { earned += Math.round(amount * 100); paidCount++; }
