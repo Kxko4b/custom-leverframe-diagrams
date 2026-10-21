@@ -1,2 +1,2 @@
-# custom-leverframe-diagrams
+# diagrams
 I will create your custom leverframe diagram by hand.
