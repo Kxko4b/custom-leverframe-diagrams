@@ -2048,7 +2048,41 @@
         @media (prefers-reduced-motion: reduce) {
             *,*::before,*::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
         }
-    </style>
+    
+.briefing-live-panel{margin:0 0 22px;overflow:hidden;background:var(--surface);border:1px solid var(--border);border-top:3px solid var(--brass);border-radius:var(--radius)}
+.briefing-live-head{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:21px 23px;border-bottom:1px solid var(--border);background:var(--surface-raised)}
+.briefing-live-kicker{color:var(--brass);font:600 10px var(--mono);letter-spacing:.12em}
+.briefing-live-head h3{margin:5px 0 4px;font-size:25px}
+.briefing-live-head p{margin:0;color:var(--muted);font-size:12px}
+.briefing-refresh{min-height:39px;padding:8px 14px;border:1px solid var(--border);border-radius:var(--radius-small);background:var(--surface);color:var(--text);font:600 12px var(--mono)}
+.briefing-refresh:hover{border-color:var(--brass);background:var(--brass-soft)}
+.briefing-live-content{padding:21px 23px 23px}
+.briefing-live-loading{min-height:70px;display:grid;place-items:center;color:var(--muted)}
+.briefing-live-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:21px}
+.briefing-live-stat{min-width:0;padding:13px 15px;background:var(--surface-raised);border:1px solid var(--border);border-radius:var(--radius-small)}
+.briefing-live-stat span{display:block;color:var(--muted);font-size:11px}
+.briefing-live-stat strong{display:block;margin-top:5px;font:600 23px var(--mono)}
+.briefing-live-stat strong.alert{color:var(--danger)}
+.briefing-live-block{margin-top:22px}.briefing-live-block:first-child{margin-top:0}
+.briefing-live-block h4{margin:0 0 11px;font:600 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.briefing-lesson-list{display:grid;border:1px solid var(--border);border-radius:var(--radius-small);overflow:hidden}
+.briefing-lesson{display:grid;grid-template-columns:105px minmax(0,1fr) auto;align-items:center;gap:13px;padding:12px 14px;background:var(--surface);border-bottom:1px solid var(--border)}
+.briefing-lesson:last-child{border-bottom:0}.briefing-lesson.cancelled{background:var(--danger-soft)}
+.briefing-lesson-time{font:500 12px var(--mono);font-variant-numeric:tabular-nums}
+.briefing-lesson-subject{font-weight:600}.briefing-lesson-meta{display:block;margin-top:2px;color:var(--muted);font-size:11px}
+.briefing-tag{padding:4px 7px;background:var(--surface-soft);color:var(--muted);font:600 9px var(--mono);text-transform:uppercase;white-space:nowrap}
+.briefing-tag.alert{background:var(--danger-soft);color:var(--danger)}.briefing-tag.change{background:var(--brass-soft);color:var(--text)}
+.briefing-info-list,.briefing-change-list{display:grid;gap:9px}
+.briefing-info-row,.briefing-change{padding:13px 15px;border:1px solid var(--border);border-left:3px solid var(--brass);background:var(--surface-raised);border-radius:var(--radius-small)}
+.briefing-info-row strong,.briefing-change strong{display:block;font-size:13px}.briefing-info-row p,.briefing-change p{margin:4px 0 0;color:var(--muted);font-size:12px}
+.briefing-live-two-col{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.briefing-live-note,.briefing-live-empty{padding:14px 15px;border:1px solid var(--border);border-radius:var(--radius-small);background:var(--surface-raised);color:var(--muted);font-size:12px}
+.briefing-live-error{padding:15px;background:var(--danger-soft);color:var(--danger);border:1px solid rgb(150 44 36 / 20%);border-radius:var(--radius-small)}
+.briefing-live-error p{margin:5px 0 0;font-size:12px}
+@media(max-width:900px){.briefing-live-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.briefing-live-head{align-items:flex-start;padding:16px}.briefing-live-head h3{font-size:22px}.briefing-live-content{padding:15px}.briefing-lesson{grid-template-columns:76px minmax(0,1fr);gap:8px;padding:11px}.briefing-lesson>.briefing-tag{grid-column:2;justify-self:start}.briefing-live-two-col{grid-template-columns:1fr;gap:0}}
+
+</style>
 
 </head>
 
@@ -2287,6 +2321,14 @@
                     <div class="section-card timetable-card"><div class="timetable-head"><div><h3>School timetable</h3><p>WebUntis · Today's plan</p></div><span class="timetable-status">Schedule</span></div><div id="briefing-timetable-content" class="timetable-content"><div class="timetable-empty"><strong>Timetable connection</strong><p>This dashboard does not currently receive your WebUntis lesson data. The timetable needs to be connected to the same source used by Kxko Daily Briefing before lessons or substitutions can be shown here.</p></div></div></div>
                 </div>
 
+
+<section id="briefing-live-panel" class="briefing-live-panel" aria-live="polite">
+  <div class="briefing-live-head">
+    <div><span class="briefing-live-kicker">LIVE DATA · WEBUNTIS</span><h3>Today's school briefing</h3><p id="briefing-live-meta">Live timetable and connected updates load when you open this tab.</p></div>
+    <button id="briefing-live-refresh" class="briefing-refresh" type="button" onclick="loadLiveBriefing()">Refresh</button>
+  </div>
+  <div id="briefing-live-content" class="briefing-live-content"><div class="briefing-live-loading">Ready to fetch live school data.</div></div>
+</section>
                 <div id="briefing-attention" class="section-card attn-card hidden"></div>
 
                 <div id="briefing-detail" class="section-card">
@@ -2461,6 +2503,7 @@
         const title = document.querySelector(".header-title");
         if (title) title.textContent = ({overview:"Overview",weather:"Weather",briefing:"Briefing",business:"Business",more:"More",requests:"Business / Requests",questions:"Business / Questions",reviews:"Business / Reviews",examples:"Business / Examples",content:"Business / Website content",kxkos:"More / KXKOS"})[actualView] || "Kxko Admin";
         window.scrollTo({top:0,behavior:"smooth"});
+        if (actualView === "briefing" && typeof loadLiveBriefing === "function") loadLiveBriefing();
     }
 
     function syncBusinessSnapshot(){[["stat-total-requests","business-total"],["stat-pending","business-pending"],["stat-progress","business-progress"]].forEach(([from,to])=>{const s=document.getElementById(from),t=document.getElementById(to);if(s&&t)t.textContent=s.textContent;});}
