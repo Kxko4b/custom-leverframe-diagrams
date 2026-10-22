@@ -1,8 +1,9 @@
 -- Applied to production. Documents the briefing schedule (the cron commands contain a secret and are NOT stored here).
 -- All times are UTC. Berlin is UTC+2 in summer time and UTC+1 in winter time, so they shift by an hour on the clock change.
 --   briefing-early     04:00 Mon-Fri  (06:00 Berlin in summer)  full briefing #1 (same command as briefing-full; added 2026-10-22)
---   briefing-full      05:00 Mon-Fri  (07:00 Berlin in summer)  full briefing #2; pushed only if its text differs from an earlier push that day
---                                                              (same text is never sent twice, so #2 stays silent when nothing changed since #1)
+--   briefing-full      05:00 Mon-Fri  (07:00 Berlin in summer)  full briefing #2, called with ?push=always so it ALWAYS notifies the phone
+--                                                              (the "same text is never pushed twice" rule is skipped for this job; the 06:00 and
+--                                                              watcher jobs keep it). The dashboard retry button re-runs this command, so it also notifies.
 --   untis-watch        every 10 min, 04:00-05:50 Mon-Fri (06:00-07:50 Berlin)  ?mode=untis-watch: checks only WebUntis and pushes a short
 --                                                              "TIMETABLE CHANGE" notice only when a lesson was cancelled / substituted.
 --                                                              Nothing changed = nothing sent, nothing stored.
