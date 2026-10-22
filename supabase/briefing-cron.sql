@@ -1,9 +1,14 @@
 -- Applied to production. Documents the briefing schedule (the cron commands contain a secret and are NOT stored here).
 -- All times are UTC. Berlin is UTC+2 in summer time and UTC+1 in winter time, so they shift by an hour on the clock change.
---   briefing-full      05:00 Mon-Fri  (07:00 Berlin in summer)  full briefing; pushed once per day (same text is never sent twice)
+--   briefing-early     04:00 Mon-Fri  (06:00 Berlin in summer)  full briefing #1 (same command as briefing-full; added 2026-10-22)
+--   briefing-full      05:00 Mon-Fri  (07:00 Berlin in summer)  full briefing #2; pushed only if its text differs from an earlier push that day
+--                                                              (same text is never sent twice, so #2 stays silent when nothing changed since #1)
 --   untis-watch        every 10 min, 04:00-05:50 Mon-Fri (06:00-07:50 Berlin)  ?mode=untis-watch: checks only WebUntis and pushes a short
 --                                                              "TIMETABLE CHANGE" notice only when a lesson was cancelled / substituted.
 --                                                              Nothing changed = nothing sent, nothing stored.
 --   briefing-retention Sundays 03:15                            delete stored briefings older than 90 days (events go with them)
--- The dashboard "Let the AI try again" button re-runs the first job whose name starts with 'briefing-' (= briefing-full).
+-- The dashboard "Let the AI try again" button re-runs the first job (lowest jobid) whose name starts with 'briefing-' and contains the secret
+-- (= briefing-full, jobid 13). Keep briefing-full's jobid lower than any other briefing-* job that calls the function.
+-- CLOCK CHANGE: all schedules are UTC. When Berlin switches (last Sunday of March / October) move briefing-early, briefing-full and
+-- untis-watch by one hour with cron.alter_job(), e.g. winter: briefing-early 05:00, briefing-full 06:00, untis-watch */10 5-6.
 select cron.schedule('briefing-retention', '15 3 * * 0', $$delete from public.briefing_runs where run_at < now() - interval '90 days'$$);
