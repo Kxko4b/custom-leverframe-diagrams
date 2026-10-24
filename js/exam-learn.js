@@ -252,7 +252,13 @@ if (typeof module !== "undefined" && module.exports) {
                     const b = el("button", "learn-option" + (saved === i ? " selected" : ""), text);
                     b.type = "button";
                     b.setAttribute("aria-pressed", saved === i ? "true" : "false");
-                    b.addEventListener("click", () => setAnswer(q, i));
+                    b.addEventListener("click", () => {
+                        options.querySelectorAll("button").forEach((option, j) => {
+                            option.classList.toggle("selected", i === j);
+                            option.setAttribute("aria-pressed", i === j ? "true" : "false");
+                        });
+                        setAnswer(q, i);
+                    });
                     options.append(b);
                 });
                 card.append(options);
