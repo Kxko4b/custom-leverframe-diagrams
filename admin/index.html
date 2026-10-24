@@ -2930,6 +2930,17 @@
         .more-tool-card strong { color: #efeee8; font-size: 13px; font-weight: 650; letter-spacing: -.01em; line-height: 1.4; }
         .more-tool-card > span:not(.more-tool-icon) { max-width: 360px; color: #a7aeaa; font-size: 11px; line-height: 1.55; }
         .more-tool-card b { display: flex; align-items: center; gap: 6px; margin-top: auto; padding-top: 3px; color: #d8b778; font: 600 9px var(--mono); letter-spacing: .025em; text-transform: uppercase; }
+        .more-preferences{margin:0 0 23px;padding:20px;border:1px solid rgb(197 161 107 / 17%);border-radius:16px;background:linear-gradient(145deg,#202624,#191e1f)}
+        .exam-preferences{display:grid;gap:0;border:1px solid rgb(224 218 202 / 9%);border-radius:12px;overflow:hidden}
+        .exam-preference-row{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:16px;background:rgb(255 255 255 / 1.5%);cursor:pointer}
+        .exam-preference-row+.exam-preference-row{border-top:1px solid rgb(224 218 202 / 9%)}
+        .exam-preference-row>span{display:grid;gap:5px;min-width:0}
+        .exam-preference-row strong{font-size:13px;color:#efeee8;font-weight:650}
+        .exam-preference-row small{font-size:11px;line-height:1.55;color:#a7aeaa;max-width:560px}
+        .exam-preference-select{min-width:170px;max-width:48%;padding:10px;border:1px solid rgb(224 218 202 / 18%);border-radius:8px;background:#171c1b;color:#e8e6de;font:inherit;font-size:12px}
+        .exam-preference-row input[type=checkbox]{width:19px;height:19px;flex:0 0 19px;accent-color:#c5a16b}
+        .exam-preference-status{margin:0;padding:10px 14px;color:#858d87;font-size:10px}
+        @media(max-width:620px){.more-preferences{padding:14px}.exam-preference-row{align-items:flex-start;padding:13px;gap:10px}.exam-preference-select{min-width:0;max-width:48%;font-size:11px}}
         .more-info-card {
             display: flex;
             align-items: center;
@@ -3309,6 +3320,29 @@
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4H5v16h5M14 8l4 4-4 4m4-4H9"/></svg>
                 Sign out
             </button>
+        </div>
+    </section>
+
+    <section class="more-preferences" aria-labelledby="more-preferences-title">
+        <div class="more-section-title">
+            <div><span class="more-eyebrow">LEARNING EXPERIENCE</span><h3 id="more-preferences-title">Exam &amp; quiz settings</h3></div>
+            <span class="more-section-note">SAVED ON THIS DEVICE</span>
+        </div>
+        <div id="exam-preferences" class="exam-preferences">
+            <label class="exam-preference-row" for="exam-language">
+                <span><strong>Question language</strong><small>Automatic uses German for other subjects, English for English, and Spanish for Spanish.</small></span>
+                <select id="exam-language" class="exam-preference-select">
+                    <option value="auto">Automatic by subject</option>
+                    <option value="de">German</option>
+                    <option value="en">English</option>
+                    <option value="es">Spanish</option>
+                </select>
+            </label>
+            <label class="exam-preference-row" for="exam-study-first">
+                <span><strong>Learning notes before quizzes</strong><small>Show a short revision text before the questions, including picture-based questions.</small></span>
+                <input id="exam-study-first" type="checkbox">
+            </label>
+            <p class="exam-preference-status" id="exam-preference-status" aria-live="polite">Settings are stored in this browser on this device.</p>
         </div>
     </section>
 
