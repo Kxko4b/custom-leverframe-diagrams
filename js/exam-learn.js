@@ -205,6 +205,13 @@ if (typeof module !== "undefined" && module.exports) {
             if (q.kind === "match") return "Match each term with its meaning. Write the term and its matching meaning on separate lines:\n\n" + q.payload.pairs.map(p => "• " + p.term).join("\n");
             return q.payload.front;
         }
+        function maxPoints(q) {
+            const value = Number(q.payload && q.payload.points);
+            return Number.isFinite(value) && value > 0 ? Math.min(5, value) : 1;
+        }
+        function totalPoints() {
+            return deck.reduce((sum, q) => sum + maxPoints(q), 0);
+        }
         function referenceAnswer(q) {
             if (q.kind === "choice") return String(q.payload.options[q.payload.answer] || "");
             if (q.kind === "match") return q.payload.pairs.map(p => p.term + " = " + p.match).join("\n");
@@ -260,6 +267,20 @@ if (typeof module !== "undefined" && module.exports) {
             const box = frame(q);
             const card = el("div", "learn-card");
             card.append(el("p", "learn-front", questionText(q)));
+            card.append(el("p", "learn-muted-note", "Worth " + maxPoints(q) + (maxPoints(q) === 1 ? " point" : " points")));
+            const imageUrl = typeof q.payload.image_url === "string" ? q.payload.image_url.trim() : "";
+            if (/^https:\/\//i.test(imageUrl)) {
+                const visual = el("figure", "learn-question-visual");
+                const image = el("img", "learn-question-image");
+                image.src = imageUrl;
+                image.alt = String(q.payload.image_alt || "Image to interpret for this question").slice(0, 250);
+                image.loading = "lazy";
+                image.referrerPolicy = "no-referrer";
+                image.addEventListener("error", () => visual.replaceChildren(el("p", "learn-muted-note", "This image could not be loaded. You can still answer the question.")), { once: true });
+                visual.append(image);
+                if (q.payload.image_caption) visual.append(el("figcaption", "learn-muted-note", String(q.payload.image_caption).slice(0, 250)));
+                card.append(visual);
+            }
             const saved = answers.get(q.id);
             if (q.kind === "choice") {
                 const options = el("div", "learn-options");
@@ -352,17 +373,35 @@ if (typeof module !== "undefined" && module.exports) {
                     const { data: session } = await db.auth.getSession();
                     const token = session && session.session && session.session.access_token;
                     if (!token) throw new Error("Your admin session expired. Sign in again.");
-                    const response = await fetch(FUNCTION_URL, {
-                        method: "POST",
-                        headers: { apikey: API_KEY, Authorization: "Bearer " + token, "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            action: "grade",
-                            exam_id: exam.id,
-                            answers: written.map(q => ({ id: q.id, question: questionText(q), answer: String(answers.get(q.id) || ""), reference: referenceAnswer(q), kind: q.kind }))
-                        })
-                    });
-                    const body = await response.json().catch(() => ({}));
-                    if (!response.ok || !body.success) throw new Error(body.error || "AI grading failed (HTTP " + response.status + ").");
+                    const gradingPayload = {
+                        action: "grade",
+                        exam_id: exam.id,
+                        answers: written.map(q => ({
+                            id: q.id, question: questionText(q),
+                            answer: String(answers.get(q.id) || ""),
+                            reference: referenceAnswer(q), kind: q.kind,
+                            max_points: maxPoints(q),
+                            image_context: q.payload.image_caption || q.payload.image_alt || ""
+                        }))
+                    };
+                    let response, body = {};
+                    // Safari can report a dropped long-running request as "Load failed".
+                    // Grading has no write side effects, so retrying the same request is safe.
+                    for (let attempt = 0; attempt < 2; attempt++) {
+                        try {
+                            response = await fetch(FUNCTION_URL, {
+                                method: "POST",
+                                headers: { apikey: API_KEY, Authorization: "Bearer " + token, "Content-Type": "application/json" },
+                                body: JSON.stringify(gradingPayload)
+                            });
+                            body = await response.json().catch(() => ({}));
+                            if (!response.ok || !body.success) throw new Error(body.error || "AI grading failed (HTTP " + response.status + ").");
+                            break;
+                        } catch (error) {
+                            if (attempt === 1) throw new Error((error && error.message ? error.message : "Network error") + ". Your answers are still saved on this screen; tap Retry marking.");
+                            await new Promise(resolve => setTimeout(resolve, 1200));
+                        }
+                    }
                     graded = Array.isArray(body.results) ? body.results : [];
                 }
                 const gradeMap = new Map(graded.map(r => [String(r.id), r]));
@@ -371,12 +410,13 @@ if (typeof module !== "undefined" && module.exports) {
                     const answer = answers.get(q.id);
                     let points = 0, feedback = "No answer submitted.";
                     if (q.kind === "choice") {
-                        points = answer === q.payload.answer ? 1 : 0;
+                        points = answer === q.payload.answer ? maxPoints(q) : 0;
                         feedback = points ? "Correct." : "Reference answer: " + referenceAnswer(q);
                         if (q.payload.explain) feedback += " " + q.payload.explain;
                     } else {
                         const result = gradeMap.get(String(q.id));
-                        points = Math.max(0, Math.min(1, Number(result?.points) || 0));
+                        const fraction = Math.max(0, Math.min(1, Number(result?.fraction ?? result?.points) || 0));
+                        points = fraction * maxPoints(q);
                         feedback = String(result?.feedback || "No marking feedback was returned.");
                     }
                     earned += points;
@@ -401,11 +441,11 @@ if (typeof module !== "undefined" && module.exports) {
             }
         }
         function renderResults(results, earned, autoSubmit) {
-            const total = deck.length;
-            const pct = Math.round((earned / total) * 100);
+            const total = totalPoints();
+            const pct = total ? Math.round((earned / total) * 100) : 0;
             const box = el("div", "learn-quiz learn-done");
             box.append(el("h4", "", extended ? "Extended test results" : "Practice test results"));
-            box.append(el("p", "", earned.toFixed(1).replace(/\.0$/, "") + " / " + total + " points · " + pct + "%"));
+            box.append(el("p", "", earned.toFixed(1).replace(/\.0$/, "") + " / " + total.toFixed(1).replace(/\.0$/, "") + " points · " + pct + "%"));
             if (autoSubmit) box.append(el("p", "learn-review-warning", "The timer ran out, so the test was submitted automatically."));
             if (extended) {
                 const grade = pct >= 95 ? 1 : pct >= 80 ? 2 : pct >= 65 ? 3 : pct >= 50 ? 4 : pct >= 25 ? 5 : 6;
@@ -418,7 +458,8 @@ if (typeof module !== "undefined" && module.exports) {
                 const item = el("article", "learn-result-item " + (r.points >= 0.75 ? "is-right" : "is-wrong"));
                 item.append(el("strong", "", (i + 1) + ". " + questionText(r.q)));
                 item.append(el("p", "learn-result-answer", "Your answer: " + (typeof r.answer === "number" ? r.q.payload.options[r.answer] : String(r.answer || "—"))));
-                item.append(el("p", "learn-result-feedback", Math.round(r.points * 100) + "% credit · " + r.feedback));
+                const possible = maxPoints(r.q);
+                item.append(el("p", "learn-result-feedback", r.points.toFixed(2).replace(/0+$/, "").replace(/\.$/, "") + " / " + possible + " points (" + Math.round((r.points / possible) * 100) + "%) · " + r.feedback));
                 item.append(el("p", "learn-result-reference", "Reference: " + referenceAnswer(r.q)));
                 details.append(item);
             });
