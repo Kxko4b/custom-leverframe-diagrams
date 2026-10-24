@@ -332,6 +332,10 @@ if (typeof module !== "undefined" && module.exports) {
 
     module.exports = {
         briefingEscape,
+        filterBriefingHomework,
+        briefingAddDays,
+        briefingHomeworkDue,
+        briefingLessonClass,
         formatBriefingTime,
         formatBriefingDateKey,
         briefingStatusInfo,
@@ -343,6 +347,36 @@ if (typeof module !== "undefined" && module.exports) {
     };
 }
 
+
+/* Homework in the briefing card: only what is due within the next 3 days (WebUntis) or is due soon / overdue (personal tracker). */
+const BRIEFING_HOMEWORK_LEAD_DAYS = 3;
+
+function briefingAddDays(iso, days) {
+    const [y, m, d] = String(iso).split("-").map(Number);
+    return new Date(Date.UTC(y, m - 1, d + days)).toISOString().slice(0, 10);
+}
+
+function briefingHomeworkDue(item) {
+    const raw = String(item?.due_date ?? item?.dueDate ?? "").trim();
+    const compact = raw.match(/^(\d{4})(\d{2})(\d{2})$/);
+    if (compact) return compact[1] + "-" + compact[2] + "-" + compact[3];
+    const dashed = raw.match(/^(\d{4}-\d{2}-\d{2})/);
+    return dashed ? dashed[1] : "";
+}
+
+/* WebUntis items: due from today to today+3 (no due date = hidden). Personal items: not completed, due by today+3; overdue stays until ticked off. */
+function filterBriefingHomework(untisItems, manualItems, todayIso) {
+    const limit = briefingAddDays(todayIso, BRIEFING_HOMEWORK_LEAD_DAYS);
+    const untis = (untisItems || []).filter(x => { const due = briefingHomeworkDue(x); return due && due >= todayIso && due <= limit; })
+        .map(x => ({ ...x, due_date: briefingHomeworkDue(x) }));
+    const manual = (manualItems || []).filter(x => { if (x.completed) return false; const due = briefingHomeworkDue(x); return due && due <= limit; })
+        .map(x => ({ subject: x.subject, text: x.description, due_date: briefingHomeworkDue(x), manual: true, completed: x.completed }));
+    return [...untis, ...manual].sort((a, b) => String(a.due_date).localeCompare(String(b.due_date)));
+}
+
+function briefingLessonClass(lesson) {
+    return lesson?.cancelled ? "cancelled" : lesson?.changed ? "changed" : "";
+}
 
 /* Live WebUntis briefing — only called when the Briefing tab is opened. */
 let liveBriefingRequest = null;
@@ -363,7 +397,8 @@ function renderLiveBriefing(data) {
         return { ...item, subject: typeof sub === "object" ? (sub.longName ?? sub.name ?? "") : sub, text: typeof raw === "object" ? (raw.text ?? raw.description ?? "") : raw, teacher: typeof teacher === "object" ? (teacher.longName ?? teacher.name ?? "") : teacher };
     }).filter(item => String(item.text ?? "").trim());
     const manualHomework = Array.isArray(data.manualHomework) ? data.manualHomework : [];
-    const combinedHomework = [...homework, ...manualHomework.filter(x => !x.completed).map(x => ({ subject: x.subject, text: x.description, due_date: x.due_date, manual: true, completed: x.completed }))];
+    const todayIso = new Intl.DateTimeFormat("en-CA", { timeZone: BRIEFING_TZ, year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+    const combinedHomework = filterBriefingHomework(homework, manualHomework, todayIso);
     const exams = Array.isArray(data.exams) ? data.exams : [];
     const calendar = Array.isArray(data.calendar) ? data.calendar : [];
     const requests = data.requests || {};
@@ -389,7 +424,7 @@ function renderLiveBriefing(data) {
     const lessonRows = lessons.length ? '<div class="briefing-lesson-list">' + lessons.map(l => {
         const status = l.cancelled ? '<span class="briefing-tag alert">Cancelled</span>' : l.changed ? '<span class="briefing-tag change">Changed</span>' : '<span class="briefing-tag">Scheduled</span>';
         const details = [l.teacher, l.room ? "Room " + l.room : ""].filter(Boolean).join(" · ");
-        return '<div class="briefing-lesson ' + (l.cancelled ? "cancelled" : "") + '"><span class="briefing-subject-dot ' + subjectClass(l.subject) + '"></span><span class="briefing-lesson-time">' + esc(l.time || "—") + '</span><div><div class="briefing-lesson-subject ' + subjectClass(l.subject) + '">' + esc(l.subject || "Lesson") + '</div><span class="briefing-lesson-meta">' + esc(details || "No teacher or room details") + '</span></div>' + status + '</div>';
+        return '<div class="briefing-lesson ' + briefingLessonClass(l) + '"><span class="briefing-subject-dot ' + subjectClass(l.subject) + '"></span><span class="briefing-lesson-time">' + esc(l.time || "—") + '</span><div><div class="briefing-lesson-subject ' + subjectClass(l.subject) + '">' + esc(l.subject || "Lesson") + '</div><span class="briefing-lesson-meta">' + esc(details || "No teacher or room details") + '</span></div>' + status + '</div>';
     }).join("") + '</div>' : '<div class="briefing-live-empty">No lessons returned. Check the source status below.</div>';
     const timetableTarget = document.getElementById("briefing-timetable-content");
     if (timetableTarget) timetableTarget.innerHTML = lessonRows;
@@ -406,7 +441,7 @@ function renderLiveBriefing(data) {
         '<div class="briefing-live-stat"><span>In progress</span><strong>' + esc(requests.inProgress ?? "—") + '</strong></div></div>' +
 
         '<div class="briefing-live-block"><h4>Changes and cancellations</h4>' + changeRows + '</div>' +
-        '<div class="briefing-live-two-col"><div class="briefing-live-block"><h4>Homework</h4>' + infoList(combinedHomework,"No homework returned from WebUntis or your personal tracker.",x=>[x.subject,x.manual ? "Personal" : x.teacher].filter(Boolean).join(" · ") || "Homework",x=>[x.text, x.due_date ? "Due " + manualHomeworkDateLabel(x.due_date) : "", x.completed ? "Completed" : ""].filter(Boolean).join(" · ")) + '</div>' +
+        '<div class="briefing-live-two-col"><div class="briefing-live-block"><h4>Homework</h4>' + infoList(combinedHomework,"No homework due in the next 3 days.",x=>[x.subject,x.manual ? "Personal" : x.teacher].filter(Boolean).join(" · ") || "Homework",x=>[x.text, x.due_date ? "Due " + manualHomeworkDateLabel(x.due_date) : "", x.completed ? "Completed" : ""].filter(Boolean).join(" · ")) + '</div>' +
         '<div class="briefing-live-block"><h4>Exams</h4>' + infoList(exams,"No exam entries returned for today.",x=>x.title||x.name||x.subject,x=>[x.time,x.description,x.room,x.date].filter(Boolean).join(" · ")) + '</div></div>' +
         '<div class="briefing-live-block"><h4>Calendar</h4>' + infoList(calendar,"No calendar entries returned for today.",x=>x.title||x.summary||x.name,x=>[x.time,x.start,x.location,x.description,x.date].filter(Boolean).join(" · ")) + '</div>' +
         '<div class="briefing-live-block">' + sourceNote + '</div>';
