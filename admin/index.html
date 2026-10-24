@@ -1948,6 +1948,28 @@
 .homework-tracker{margin:22px 0}.homework-tracker-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px}.homework-tracker-head h3{margin:4px 0 6px;font-size:25px}.homework-tracker-head p{margin:0;color:var(--muted);max-width:620px}.homework-eyebrow{color:var(--brass);font:600 10px var(--mono);letter-spacing:.1em}
 .homework-form{display:grid;grid-template-columns:minmax(130px,1fr) minmax(150px,.7fr);gap:12px;padding:16px;margin-bottom:12px;background:var(--surface-soft);border:1px solid var(--border)}.homework-form label{display:flex;flex-direction:column;gap:6px;color:var(--muted);font:600 11px var(--mono);text-transform:uppercase;letter-spacing:.03em}.homework-form input,.homework-form textarea{width:100%;min-width:0;padding:10px 11px;border:1px solid var(--input-border);border-radius:var(--radius-small);background:var(--surface-raised);color:var(--text);font:400 14px var(--body);text-transform:none;letter-spacing:normal}.homework-form textarea{resize:vertical}.homework-description{grid-column:1/-1}.homework-form .primary{justify-self:start}.homework-message{margin:0 0 10px;color:var(--moss);font-size:13px}.homework-message:empty{display:none}
 .homework-list{display:grid;gap:9px}.homework-item{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:14px;border:1px solid var(--border);border-left:3px solid var(--brass);background:var(--surface-raised)}.homework-item.is-completed{opacity:.68;border-left-color:var(--moss)}.homework-item-main{min-width:0}.homework-item-title{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:5px;font-weight:700}.homework-item-description{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--muted)}.homework-due{display:inline-flex;padding:3px 7px;border:1px solid var(--border);font:600 10px var(--mono)}.homework-due.overdue{color:var(--danger);background:var(--danger-soft);border-color:transparent}.homework-due.today{color:var(--signal);background:var(--signal-soft);border-color:transparent}.homework-due.done{color:var(--moss);background:var(--moss-soft);border-color:transparent}.homework-item-actions{display:flex;flex-shrink:0;flex-wrap:wrap;gap:6px}.homework-small-btn{padding:7px 9px;border:1px solid var(--border);border-radius:var(--radius-small);background:var(--surface);color:var(--text);font:600 10px var(--mono)}.homework-small-btn.danger{color:var(--danger)}
+.exam-learn{margin:22px 0}
+.learn-exam{border:1px solid var(--border);border-radius:var(--radius-small);background:var(--surface);margin-bottom:10px;overflow:hidden;animation:learnIn .28s ease both}
+.learn-exam.soon{border-color:var(--brass)}
+.learn-exam-head{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:12px;width:100%;padding:13px 14px;background:none;border:0;color:var(--text);text-align:left;cursor:pointer;font:inherit}
+.learn-exam-title{display:flex;flex-direction:column;gap:2px;min-width:0}.learn-exam-title small,.learn-exam-status{color:var(--muted);font-size:12px}
+.learn-chip{padding:3px 10px;border-radius:99px;background:var(--surface-soft);border:1px solid var(--border);font:600 11px var(--mono);white-space:nowrap}.learn-exam.soon .learn-chip{background:var(--brass);color:#111;border-color:var(--brass)}
+.learn-panel{padding:0 14px 14px;border-top:1px solid var(--border)}.learn-label{display:flex;flex-direction:column;gap:6px;margin:12px 0;color:var(--muted);font:600 11px var(--mono);text-transform:uppercase;letter-spacing:.03em}
+.learn-topics{width:100%;padding:10px 11px;border:1px solid var(--input-border);border-radius:var(--radius-small);background:var(--surface-raised);color:var(--text);font:400 14px var(--body);text-transform:none;letter-spacing:normal;resize:vertical}
+.learn-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.learn-actions button:disabled{opacity:.45}
+.learn-quiz{margin-top:14px;padding:16px;border:1px solid var(--brass);border-radius:var(--radius-small);background:var(--surface-soft);animation:learnIn .28s ease both}
+.learn-count{color:var(--muted);font:600 11px var(--mono)}.learn-progress{height:4px;margin:8px 0 14px;background:var(--border);border-radius:4px;overflow:hidden}.learn-progress span{display:block;height:100%;background:var(--brass);transition:width .35s ease}
+.learn-front{margin:0 0 12px;font-size:18px;font-weight:600;line-height:1.35}
+.learn-covered{display:block;width:100%;padding:16px;border:1px dashed var(--brass);border-radius:var(--radius-small);background:repeating-linear-gradient(135deg,var(--surface-raised) 0 10px,var(--surface) 10px 20px);color:var(--muted);font:inherit;cursor:pointer;transition:background .25s,color .25s}.learn-covered.revealed{background:var(--surface-raised);border-style:solid;color:var(--text);cursor:default;animation:learnPop .3s ease}
+.learn-options{display:grid;gap:8px}.learn-option,.learn-tile{padding:12px 14px;border:1px solid var(--border);border-radius:var(--radius-small);background:var(--surface-raised);color:var(--text);font:inherit;text-align:left;cursor:pointer;transition:border-color .2s,background .2s,transform .15s}
+.learn-option:active,.learn-tile:active{transform:scale(.98)}
+.learn-option.right,.learn-tile.done{border-color:var(--moss);background:rgba(85,173,120,.18)}.learn-option.wrong,.learn-tile.wrong{border-color:#e05252;background:var(--danger-soft);animation:learnShake .3s}
+.learn-tile.picked{border-color:var(--brass);background:rgba(240,197,65,.16)}.learn-tile.done{opacity:.7;cursor:default}
+.learn-explain{margin:10px 0 0;color:var(--muted);font-size:13px}.learn-match{display:grid;grid-template-columns:1fr 1fr;gap:10px}.learn-match>div{display:grid;gap:8px;align-content:start}
+.learn-card>.primary{margin-top:12px}.learn-done h4{margin:0 0 6px;font-size:20px}
+@keyframes learnIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}@keyframes learnPop{0%{transform:scale(.97)}60%{transform:scale(1.015)}100%{transform:scale(1)}}@keyframes learnShake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+@media(max-width:600px){.learn-exam-head{grid-template-columns:minmax(0,1fr) auto}.learn-exam-status{display:none}.learn-match{gap:8px}}
+@media(prefers-reduced-motion:reduce){.learn-exam,.learn-quiz,.learn-covered.revealed,.learn-tile.wrong,.learn-option.wrong{animation:none}.learn-progress span{transition:none}}
 @media(max-width:600px){.homework-tracker-head{flex-direction:column}.homework-form{grid-template-columns:1fr}.homework-description{grid-column:auto}.homework-item{flex-direction:column}.homework-item-actions{width:100%}}
 
 
@@ -3105,6 +3127,12 @@
   <p id="manual-homework-message" class="homework-message" role="status"></p>
   <div id="manual-homework-list"><p class="empty">Loading homework…</p></div>
 </section>
+<section id="exam-learn" class="section-card exam-learn" aria-labelledby="exam-learn-title">
+  <div class="homework-tracker-head"><div><span class="homework-eyebrow">LEARN</span><h3 id="exam-learn-title">Exam prep</h3><p>Upcoming tests. Add your topic notes, let the AI make a quiz from them, and practise with covered answers, word matching and multiple choice. You get a reminder at 17:00 and 21:00 in the week before a test.</p></div><button id="exam-learn-refresh" class="briefing-refresh" type="button">Refresh</button></div>
+  <p id="exam-learn-message" class="homework-message" role="status"></p>
+  <div id="exam-learn-list"><p class="empty">Loading exams…</p></div>
+  <div id="exam-learn-stage" aria-live="polite"></div>
+</section>
             </section>
 
             <!-- REQUESTS -->
@@ -3427,6 +3455,7 @@
 <script src="../js/requests-admin.js?v=20261021d"></script>
 <script src="../js/reviews-admin.js?v=20261020b"></script>
 <script src="../js/briefing-admin.js?v=20261021e"></script>
+<script src="../js/exam-learn.js?v=20261024a"></script>
 <script src="../js/hub-admin.js?v=20261021f"></script>
 <script src="../js/attention-admin.js?v=20261020b"></script>
 <script src="../js/app-polish-admin.js?v=20261021f"></script>
