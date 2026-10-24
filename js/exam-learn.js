@@ -160,9 +160,10 @@ if (typeof module !== "undefined" && module.exports) {
         let saveInFlight = null;
         const saveNotes = async (quiet = false) => {
             if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; }
-            const value = area.value;
+            let value = area.value;
             if (value === (exam.topics || "")) return true;
             if (saveInFlight) await saveInFlight;
+            value = area.value;
             if (value === (exam.topics || "")) return true;
             if (!quiet) say("Saving notes…");
             saveInFlight = (async () => {
