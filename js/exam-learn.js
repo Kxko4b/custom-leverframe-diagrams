@@ -77,6 +77,40 @@ if (typeof module !== "undefined" && module.exports) {
     const stageEl = document.getElementById("exam-learn-stage");
     const msgEl = document.getElementById("exam-learn-message");
     let exams = [], counts = new Map(), openId = null, busy = false;
+    const PREF_KEY = "kxko.examPreferences.v1";
+    function readPrefs() {
+        try {
+            const value = JSON.parse(localStorage.getItem(PREF_KEY) || "{}");
+            return { language: ["auto", "de", "en", "es"].includes(value.language) ? value.language : "auto", studyFirst: value.studyFirst === true };
+        } catch { return { language: "auto", studyFirst: false }; }
+    }
+    function savePrefs(prefs) {
+        try { localStorage.setItem(PREF_KEY, JSON.stringify(prefs)); } catch {}
+    }
+    function questionLanguage(subject) {
+        const pref = readPrefs().language;
+        if (pref !== "auto") return ({ de: "German", en: "English", es: "Spanish" })[pref];
+        const value = String(subject || "").toLowerCase();
+        if (/\b(spanish|español|espanol|spanisch)\b/.test(value)) return "Spanish, with instructions and explanations in German";
+        if (/\b(english|englisch)\b/.test(value)) return "English";
+        return "German";
+    }
+    function initPreferences() {
+        const language = document.getElementById("exam-language");
+        const study = document.getElementById("exam-study-first");
+        const status = document.getElementById("exam-preference-status");
+        if (!language || !study) return;
+        const prefs = readPrefs();
+        language.value = prefs.language;
+        study.checked = prefs.studyFirst;
+        const update = () => {
+            savePrefs({ language: language.value, studyFirst: study.checked });
+            if (status) status.textContent = "Saved on this device. New quizzes use the selected language.";
+        };
+        language.addEventListener("change", update);
+        study.addEventListener("change", update);
+    }
+    initPreferences();
 
     const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text !== undefined) n.textContent = text; return n; };
     const say = (text, bad) => { msgEl.textContent = text || ""; msgEl.classList.toggle("is-error", Boolean(bad)); };
@@ -140,7 +174,7 @@ if (typeof module !== "undefined" && module.exports) {
                 const { data: session } = await db.auth.getSession();
                 const token = session && session.session && session.session.access_token;
                 if (!token) throw new Error("Your admin session expired. Sign in again.");
-                const res = await fetch(FUNCTION_URL, { method: "POST", headers: { apikey: API_KEY, Authorization: "Bearer " + token, "Content-Type": "application/json" }, body: JSON.stringify({ exam_id: exam.id }) });
+                const res = await fetch(FUNCTION_URL, { method: "POST", headers: { apikey: API_KEY, Authorization: "Bearer " + token, "Content-Type": "application/json" }, body: JSON.stringify({ exam_id: exam.id, language: questionLanguage(exam.subject) }) });
                 const body = await res.json().catch(() => ({}));
                 if (!res.ok || !body.success) throw new Error(body.error || "Quiz request failed (HTTP " + res.status + ").");
                 say(body.added + " new questions added.");
@@ -154,7 +188,53 @@ if (typeof module !== "undefined" && module.exports) {
         return panel;
     }
 
-    async function runQuiz(exam, extended = false) {
+    async function showStudyGuide(exam, extended) {
+        const box = el("div", "learn-quiz learn-study-guide");
+        box.append(el("p", "learn-muted-note", "PREPARE FIRST"));
+        box.append(el("h3", "", "Quick revision: " + exam.subject));
+        box.append(el("p", "learn-muted-note", "Read this short overview first, then start the quiz with the pictures and questions."));
+        const content = el("div", "learn-study-content");
+        content.append(el("p", "", "Creating your revision notes…"));
+        box.append(content);
+        const actions = el("div", "learn-actions");
+        const back = el("button", "", "Back to exams"); back.type = "button"; back.addEventListener("click", () => { stageEl.replaceChildren(); renderList(); });
+        actions.append(back);
+        box.append(actions);
+        stageEl.replaceChildren(box);
+        try {
+            const { data: sessionData } = await db.auth.getSession();
+            const token = sessionData && sessionData.session && sessionData.session.access_token;
+            if (!token) throw new Error("Your admin session expired. Sign in again.");
+            const response = await fetch(FUNCTION_URL, {
+                method: "POST",
+                headers: { apikey: API_KEY, Authorization: "Bearer " + token, "Content-Type": "application/json" },
+                body: JSON.stringify({ action: "study_guide", exam_id: exam.id, language: questionLanguage(exam.subject) })
+            });
+            const body = await response.json().catch(() => ({}));
+            if (!response.ok || !body.success) throw new Error(body.error || "Could not prepare the revision notes.");
+            content.replaceChildren();
+            const guide = body.guide || {};
+            if (guide.intro) content.append(el("p", "learn-study-intro", String(guide.intro)));
+            for (const section of Array.isArray(guide.sections) ? guide.sections : []) {
+                const part = el("section", "learn-study-section");
+                part.append(el("h4", "", String(section.heading || "Key idea")));
+                part.append(el("p", "", String(section.text || "")));
+                content.append(part);
+            }
+            if (!content.childElementCount) content.append(el("p", "", "Review your saved topic notes before starting."));
+            const begin = el("button", "primary", "I’m ready — start quiz"); begin.type = "button";
+            begin.addEventListener("click", () => runQuiz(exam, extended, true));
+            actions.append(begin);
+        } catch (error) {
+            content.replaceChildren(el("p", "is-error", "Could not load revision notes: " + (error && error.message ? error.message : String(error))));
+            const begin = el("button", "primary", "Continue to quiz anyway"); begin.type = "button";
+            begin.addEventListener("click", () => runQuiz(exam, extended, true));
+            actions.append(begin);
+        }
+    }
+
+    async function runQuiz(exam, extended = false, skipStudy = false) {
+        if (!skipStudy && readPrefs().studyFirst) return showStudyGuide(exam, extended);
         const { data, error } = await db.from("exam_questions")
             .select("id, kind, payload, right_count, wrong_count, last_seen")
             .eq("exam_id", exam.id);
