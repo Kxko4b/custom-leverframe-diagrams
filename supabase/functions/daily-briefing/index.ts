@@ -563,7 +563,9 @@ Deno.serve(async (req) => {
     /* SELF-CHECK 2: send the push; retry only on an explicit FCM server rejection (never risk a double push). */
     /* The same briefing is never pushed twice on one day: several scheduled checks (and manual retries) can run, but the
        phone is only notified when the text is new or the earlier push failed. */
-    const duplicatePush = await alreadyPushed(
+    /* ?push=always (used by the 07:00 job) skips that rule so the second morning briefing always notifies the phone. */
+    const forcePush = url.searchParams.get("push") === "always";
+    const duplicatePush = !forcePush && await alreadyPushed(
       { supabaseUrl: SUPABASE_URL, serviceKey: Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") }, targetDateKey, briefing);
     const push = duplicatePush
       ? { ok: true, attempts: 0, recovered: false, firstError: undefined, error: undefined }
