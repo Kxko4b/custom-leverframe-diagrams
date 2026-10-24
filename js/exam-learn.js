@@ -162,7 +162,7 @@ if (typeof module !== "undefined" && module.exports) {
 
         const deck = learnPickDeck(data || [], extended ? 20 : LEARN_DECK_SIZE);
         if (!deck.length) return say("No questions yet. Make a quiz first.", true);
-        if (extended && deck.length < 10) return say("The extended test needs at least 10 questions. Generate more questions first.", true);
+        if (extended && deck.length < 20) return say("The extended test needs 20 questions. Generate more questions first.", true);
 
         let index = 0, secondsLeft = estimateSeconds(deck), finished = false, submitting = false;
         const answers = new Map();
@@ -411,7 +411,7 @@ if (typeof module !== "undefined" && module.exports) {
             const actions = el("div", "learn-actions");
             if (!extended) {
                 const bigger = el("button", "primary", "Take a larger test (20 questions)");
-                bigger.type = "button"; bigger.disabled = deck.length < 10;
+                bigger.type = "button"; bigger.disabled = (data || []).length < 20;
                 bigger.addEventListener("click", () => runQuiz(exam, true));
                 actions.append(bigger);
                 actions.append(el("p", "learn-muted-note", "Want a longer, more realistic test? The extended test receives a German school grade."));
