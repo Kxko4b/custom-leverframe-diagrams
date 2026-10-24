@@ -156,31 +156,76 @@ if (typeof module !== "undefined" && module.exports) {
         const make = el("button", "", n ? "Make more questions" : "Make quiz with AI"); make.type = "button";
         const start = el("button", "primary", "Start quiz"); start.type = "button"; start.disabled = !n;
 
+        let saveTimer = null;
+        let saveInFlight = null;
+        const saveNotes = async (quiet = false) => {
+            if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; }
+            const value = area.value;
+            if (value === (exam.topics || "")) return true;
+            if (saveInFlight) await saveInFlight;
+            if (value === (exam.topics || "")) return true;
+            if (!quiet) say("Saving notes…");
+            saveInFlight = (async () => {
+                const { error } = await db.from("exams").update({ topics: value, updated_at: new Date().toISOString() }).eq("id", exam.id);
+                if (error) throw new Error(error.message);
+                exam.topics = value;
+                return true;
+            })();
+            try {
+                await saveInFlight;
+                if (area.value === value) say("Notes saved automatically.");
+                return true;
+            } catch (error) {
+                say("Could not save notes: " + error.message, true);
+                return false;
+            } finally { saveInFlight = null; }
+        };
+        area.addEventListener("input", () => {
+            if (saveTimer) clearTimeout(saveTimer);
+            say("Unsaved changes…");
+            saveTimer = setTimeout(() => { saveNotes(true); }, 650);
+        });
+        area.addEventListener("blur", () => { if (saveTimer) saveNotes(true); });
         save.addEventListener("click", async () => {
-            const { error } = await db.from("exams").update({ topics: area.value, updated_at: new Date().toISOString() }).eq("id", exam.id);
-            if (error) return say("Could not save: " + error.message, true);
-            exam.topics = area.value; say("Notes saved."); renderList();
+            const ok = await saveNotes();
+            if (ok) say("Notes saved.");
         });
         make.addEventListener("click", async () => {
             if (busy) return;
             if (!area.value.trim()) return say("Write some topic notes first.", true);
-            busy = true; make.disabled = true; make.textContent = "Thinking… (up to a minute)"; say("");
+            busy = true; make.disabled = true; make.textContent = "Starting AI quiz…"; say("Saving notes and starting the AI quiz…");
             try {
-                if (area.value !== exam.topics) {
-                    const saved = await db.from("exams").update({ topics: area.value }).eq("id", exam.id);
-                    if (saved.error) throw new Error(saved.error.message);
-                    exam.topics = area.value;
-                }
+                const savedOk = await saveNotes();
+                if (!savedOk) throw new Error("Your notes could not be saved. Fix the save error and try again.");
                 const { data: session } = await db.auth.getSession();
                 const token = session && session.session && session.session.access_token;
                 if (!token) throw new Error("Your admin session expired. Sign in again.");
                 const res = await fetch(FUNCTION_URL, { method: "POST", headers: { apikey: API_KEY, Authorization: "Bearer " + token, "Content-Type": "application/json" }, body: JSON.stringify({ exam_id: exam.id, language: questionLanguage(exam.subject) }) });
                 const body = await res.json().catch(() => ({}));
                 if (!res.ok || !body.success) throw new Error(body.error || "Quiz request failed (HTTP " + res.status + ").");
-                say(body.added + " new questions added.");
-                await load();
-            } catch (error) { say(error.message, true); }
-            finally { busy = false; }
+                say(body.message || "AI is generating your questions. This can take a little while…");
+                // The Edge Function works in the background and returns before the AI finishes.
+                // Poll the exam row instead of incorrectly expecting an immediate question count.
+                let completed = false;
+                for (let attempt = 0; attempt < 72; attempt++) {
+                    await new Promise(resolve => setTimeout(resolve, 2500));
+                    const { data: state, error: stateError } = await db.from("exams")
+                        .select("quiz_state, quiz_message, quiz_started_at")
+                        .eq("id", exam.id).maybeSingle();
+                    if (stateError) throw new Error("AI is running, but its status could not be checked: " + stateError.message);
+                    if (!state) throw new Error("Could not find this exam while checking quiz progress.");
+                    if (state.quiz_state === "done") {
+                        completed = true;
+                        say(state.quiz_message || "Your AI quiz is ready!");
+                        await load();
+                        break;
+                    }
+                    if (state.quiz_state === "error") throw new Error(state.quiz_message || "The AI could not create questions. Please try again.");
+                    say("AI is creating your quiz… " + Math.min(99, Math.round(((attempt + 1) / 72) * 100)) + "%");
+                }
+                if (!completed) throw new Error("The AI is taking longer than expected. Your notes are saved; check the exam again in a moment before retrying.");
+            } catch (error) { say(error.message || String(error), true); }
+            finally { busy = false; make.disabled = false; make.textContent = (counts.get(exam.id) || 0) ? "Make more questions" : "Make quiz with AI"; }
         });
         start.addEventListener("click", () => runQuiz(exam));
         row.append(save, make, start);
