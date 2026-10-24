@@ -153,3 +153,34 @@ test("the migration is additive, owner-only and read-only for the browser", () =
   assert.equal([...sql.matchAll(/haleannson@gmail\.com/g)].length, 2);
   assert.doesNotMatch(sql, /to anon/);
 });
+
+/* ---- homework window + yellow substitute rows ---- */
+import { createRequire as __cr } from "node:module";
+{
+    const { test: t2 } = await import("node:test");
+    const assert2 = (await import("node:assert/strict")).default;
+    const m = __cr(import.meta.url)("../js/briefing-admin.js");
+    t2("lesson class: substitute is yellow, cancelled wins", () => {
+        assert2.equal(m.briefingLessonClass({ changed: true }), "changed");
+        assert2.equal(m.briefingLessonClass({ cancelled: true, changed: true }), "cancelled");
+        assert2.equal(m.briefingLessonClass({}), "");
+    });
+    t2("homework: WebUntis only from today to +3 days, with due date", () => {
+        const r = m.filterBriefingHomework([
+            { text: "a", dueDate: "2026-10-26" }, { text: "b", dueDate: "2026-10-27" }, { text: "far", dueDate: "2026-10-28" },
+            { text: "past", dueDate: "2026-10-23" }, { text: "none" }], [], "2026-10-24");
+        assert2.deepEqual(r.map(x => x.text), ["a", "b"]);
+        assert2.equal(r[0].due_date, "2026-10-26");
+    });
+    t2("homework: personal tracker hides completed and far-future, keeps overdue", () => {
+        const r = m.filterBriefingHomework([], [
+            { subject: "M", description: "late", due_date: "2026-10-20", completed: false },
+            { subject: "M", description: "soon", due_date: "2026-10-27", completed: false },
+            { subject: "M", description: "far", due_date: "2026-10-30", completed: false },
+            { subject: "M", description: "done", due_date: "2026-10-25", completed: true }], "2026-10-24");
+        assert2.deepEqual(r.map(x => x.text), ["late", "soon"]);
+    });
+    t2("homework: month boundary", () => {
+        assert2.equal(m.briefingAddDays("2026-10-30", 3), "2026-11-02");
+    });
+}
