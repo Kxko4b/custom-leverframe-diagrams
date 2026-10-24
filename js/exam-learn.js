@@ -357,10 +357,10 @@ if (typeof module !== "undefined" && module.exports) {
             box.append(nav, actions);
             stageEl.replaceChildren(box);
         }
-        async function submitTest(autoSubmit) {
+        async function submitTest(autoSubmit, retrying = false) {
             if (finished || submitting) return;
             const unanswered = deck.filter(q => !isAnswered(q)).length;
-            if (!autoSubmit && unanswered && !confirm("You have " + unanswered + " unanswered question(s). Submit anyway?")) return;
+            if (!autoSubmit && !retrying && unanswered && !confirm("You have " + unanswered + " unanswered question(s). Submit anyway?")) return;
             submitting = true;
             stopTimer();
             const box = el("div", "learn-quiz learn-grading");
@@ -434,7 +434,7 @@ if (typeof module !== "undefined" && module.exports) {
                 submitting = false;
                 const retry = el("button", "primary", "Retry marking");
                 retry.type = "button";
-                retry.addEventListener("click", () => submitTest(true));
+                retry.addEventListener("click", () => submitTest(false, true));
                 const message = el("p", "learn-review-warning", "The test answers are still here, but the AI could not finish marking: " + error.message);
                 box.replaceChildren(el("h4", "", "Marking could not finish"), message, retry);
                 stageEl.replaceChildren(box);
