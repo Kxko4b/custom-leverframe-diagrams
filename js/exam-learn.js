@@ -170,8 +170,23 @@ if (typeof module !== "undefined" && module.exports) {
         let timerId = null;
 
         function estimateSeconds(items) {
-            const raw = items.reduce((sum, q) => sum + (q.kind === "choice" ? 18 : q.kind === "match" ? 25 : 30), 0);
-            return Math.max(extended ? 300 : 180, Math.min(extended ? 900 : 300, raw));
+            // Estimate from both the interaction type and how much text the student
+            // needs to read/produce. Written responses take longer than selecting an option.
+            const raw = items.reduce((sum, q) => {
+                const questionLength = String(
+                    q.kind === "choice" ? (q.payload.question || "") :
+                    q.kind === "match" ? (q.payload.pairs || []).map(p => String(p.term || "") + " " + String(p.match || "")).join(" ") :
+                    String(q.payload.front || "") + " " + String(q.payload.back || "")
+                ).trim().length;
+                if (q.kind === "choice") return sum + 30 + Math.min(15, Math.floor(questionLength / 120) * 5);
+                if (q.kind === "match") return sum + 60 + Math.min(45, Math.floor(questionLength / 100) * 10);
+                // A normal written answer gets ~45 seconds, with extra time for
+                // longer prompts/reference answers. Ten written questions ≈ 7–8 min.
+                return sum + 45 + Math.min(45, Math.floor(questionLength / 100) * 10);
+            }, 0);
+            const minimum = extended ? 600 : 180;
+            const maximum = extended ? 1800 : 1200;
+            return Math.max(minimum, Math.min(maximum, raw));
         }
         function formatTime(seconds) {
             const s = Math.max(0, seconds);
