@@ -154,106 +154,275 @@ if (typeof module !== "undefined" && module.exports) {
         return panel;
     }
 
-    async function runQuiz(exam) {
-        const { data, error } = await db.from("exam_questions").select("id, kind, payload, right_count, wrong_count, last_seen").eq("exam_id", exam.id);
+    async function runQuiz(exam, extended = false) {
+        const { data, error } = await db.from("exam_questions")
+            .select("id, kind, payload, right_count, wrong_count, last_seen")
+            .eq("exam_id", exam.id);
         if (error) return say("Could not load questions: " + error.message, true);
-        const deck = learnPickDeck(data || [], LEARN_DECK_SIZE);
+
+        const deck = learnPickDeck(data || [], extended ? 20 : LEARN_DECK_SIZE);
         if (!deck.length) return say("No questions yet. Make a quiz first.", true);
-        let index = 0, right = 0;
+        if (extended && deck.length < 10) return say("The extended test needs at least 10 questions. Generate more questions first.", true);
 
-        const record = async (q, ok) => {
-            if (ok) right++;
-            await db.from("exam_questions").update({ right_count: (q.right_count || 0) + (ok ? 1 : 0), wrong_count: (q.wrong_count || 0) + (ok ? 0 : 1), last_seen: new Date().toISOString() }).eq("id", q.id);
-        };
-        const next = () => { index++; show(); };
-        const finish = () => {
-            const box = el("div", "learn-quiz learn-done");
-            box.append(el("h4", "", "Done: " + exam.subject), el("p", "", learnScoreText(right, deck.length)));
-            const again = el("button", "primary", "Another round"); again.type = "button"; again.addEventListener("click", () => runQuiz(exam));
-            const close = el("button", "", "Close"); close.type = "button"; close.addEventListener("click", () => stageEl.replaceChildren());
-            box.append(el("div", "learn-actions")); box.lastChild.append(again, close);
-            stageEl.replaceChildren(box);
-        };
-        const frame = (q) => {
-            const box = el("div", "learn-quiz");
-            const bar = el("div", "learn-progress"); const fill = el("span"); fill.style.width = Math.round((index / deck.length) * 100) + "%"; bar.append(fill);
-            box.append(el("small", "learn-count", exam.subject + " · " + (index + 1) + " / " + deck.length), bar);
-            return box;
-        };
+        let index = 0, secondsLeft = estimateSeconds(deck), finished = false, submitting = false;
+        const answers = new Map();
+        const flagged = new Set();
+        let timerId = null;
 
-        function cover(q) {
-            const box = frame(q);
-            const card = el("div", "learn-card"); card.append(el("p", "learn-front", q.payload.front));
-            const answer = el("button", "learn-covered", "Tap to uncover the answer"); answer.type = "button";
-            const buttons = el("div", "learn-actions"); buttons.hidden = true;
-            answer.addEventListener("click", () => { answer.textContent = q.payload.back; answer.classList.add("revealed"); buttons.hidden = false; }, { once: true });
-            const got = el("button", "primary", "Got it"), miss = el("button", "", "Missed it");
-            got.type = miss.type = "button";
-            got.addEventListener("click", async () => { await record(q, true); next(); });
-            miss.addEventListener("click", async () => { await record(q, false); next(); });
-            buttons.append(got, miss); card.append(answer, buttons); box.append(card); return box;
+        function estimateSeconds(items) {
+            const raw = items.reduce((sum, q) => sum + (q.kind === "choice" ? 18 : q.kind === "match" ? 25 : 30), 0);
+            return Math.max(extended ? 300 : 180, Math.min(extended ? 900 : 300, raw));
         }
-
-        function choice(q) {
-            const box = frame(q);
-            const card = el("div", "learn-card"); card.append(el("p", "learn-front", q.payload.question));
-            const options = el("div", "learn-options");
-            const note = el("p", "learn-explain"); note.hidden = true;
-            let answered = false;
-            q.payload.options.forEach((text, i) => {
-                const b = el("button", "learn-option", text); b.type = "button";
-                b.addEventListener("click", async () => {
-                    if (answered) return; answered = true;
-                    const ok = i === q.payload.answer;
-                    b.classList.add(ok ? "right" : "wrong");
-                    options.children[q.payload.answer].classList.add("right");
-                    note.textContent = (ok ? "Right. " : "Not quite. ") + (q.payload.explain || ""); note.hidden = false;
-                    await record(q, ok);
-                    const go = el("button", "primary", index + 1 === deck.length ? "Finish" : "Next"); go.type = "button"; go.addEventListener("click", next); card.append(go);
-                });
-                options.append(b);
+        function formatTime(seconds) {
+            const s = Math.max(0, seconds);
+            return String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0");
+        }
+        function hasAnswer(q, value) {
+            if (value === undefined || value === null) return false;
+            return typeof value === "number" || String(value).trim().length > 0;
+        }
+        function isAnswered(q) {
+            return answers.has(q.id) && hasAnswer(q, answers.get(q.id));
+        }
+        function answeredCount() { return deck.filter(isAnswered).length; }
+        function questionText(q) {
+            if (q.kind === "choice") return q.payload.question;
+            if (q.kind === "match") return "Match each term with its meaning. Write the term and its matching meaning on separate lines:\n\n" + q.payload.pairs.map(p => "• " + p.term).join("\n");
+            return q.payload.front;
+        }
+        function referenceAnswer(q) {
+            if (q.kind === "choice") return String(q.payload.options[q.payload.answer] || "");
+            if (q.kind === "match") return q.payload.pairs.map(p => p.term + " = " + p.match).join("\n");
+            return String(q.payload.back || "");
+        }
+        function setAnswer(q, value) {
+            answers.set(q.id, value);
+            const count = document.getElementById("learn-answered-count");
+            if (count) count.textContent = answeredCount() + " / " + deck.length + " answered";
+            const current = document.querySelector(".learn-question-nav button[data-q-index='" + index + "']");
+            if (current) current.classList.toggle("is-answered", isAnswered(q));
+            renderPalette();
+        }
+        function renderPalette() {
+            const palette = document.getElementById("learn-question-palette");
+            if (!palette) return;
+            palette.replaceChildren();
+            deck.forEach((q, i) => {
+                const b = el("button", "learn-palette-item" + (i === index ? " is-current" : "") + (isAnswered(q) ? " is-answered" : "") + (flagged.has(q.id) ? " is-flagged" : ""));
+                b.type = "button";
+                b.textContent = String(i + 1);
+                b.setAttribute("aria-label", "Question " + (i + 1) + (isAnswered(q) ? ", answered" : ", unanswered") + (flagged.has(q.id) ? ", flagged for review" : ""));
+                b.addEventListener("click", () => { index = i; show(); });
+                palette.append(b);
             });
-            card.append(options, note); box.append(card); return box;
         }
-
-        function match(q) {
-            const box = frame(q);
-            const card = el("div", "learn-card"); card.append(el("p", "learn-front", "Connect each term with its meaning"));
-            const pairs = q.payload.pairs;
-            const termOrder = learnShuffle(pairs.map((_, i) => i)), matchOrder = learnShuffle(pairs.map((_, i) => i));
-            const grid = el("div", "learn-match");
-            const left = el("div"), rightCol = el("div");
-            let picked = null, mistakes = 0, solved = 0;
-            const buttons = { t: new Map(), m: new Map() };
-            const make = (side, i, text) => {
-                const b = el("button", "learn-tile", text); b.type = "button"; buttons[side].set(i, b);
-                b.addEventListener("click", async () => {
-                    if (b.classList.contains("done")) return;
-                    if (side === "t") { if (picked !== null) buttons.t.get(picked).classList.remove("picked"); picked = i; b.classList.add("picked"); return; }
-                    if (picked === null) return;
-                    const t = buttons.t.get(picked);
-                    if (learnMatchCorrect(picked, i)) {
-                        t.classList.remove("picked"); t.classList.add("done"); b.classList.add("done"); picked = null; solved++;
-                        if (solved === pairs.length) { await record(q, mistakes === 0); const go = el("button", "primary", index + 1 === deck.length ? "Finish" : "Next"); go.type = "button"; go.addEventListener("click", next); card.append(go); }
-                    } else {
-                        mistakes++; b.classList.add("wrong"); setTimeout(() => b.classList.remove("wrong"), 500);
-                    }
-                });
-                return b;
-            };
-            termOrder.forEach(i => left.append(make("t", i, pairs[i].term)));
-            matchOrder.forEach(i => rightCol.append(make("m", i, pairs[i].match)));
-            grid.append(left, rightCol); card.append(grid); box.append(card); return box;
+        function stopTimer() {
+            if (timerId !== null) clearInterval(timerId);
+            timerId = null;
         }
-
+        function frame(q) {
+            const box = el("div", "learn-quiz learn-exam-mode");
+            const head = el("div", "learn-exam-topline");
+            const meta = el("div", "learn-exam-meta");
+            meta.append(el("small", "learn-count", (extended ? "EXTENDED TEST" : "TIMED PRACTICE") + " · " + exam.subject),
+                el("strong", "learn-question-heading", "Question " + (index + 1) + " of " + deck.length));
+            const clock = el("strong", "learn-timer" + (secondsLeft <= 30 ? " is-low" : ""), formatTime(secondsLeft));
+            clock.id = "learn-exam-timer";
+            head.append(meta, clock);
+            const progress = el("div", "learn-progress");
+            const fill = el("span");
+            fill.style.width = Math.round((answeredCount() / deck.length) * 100) + "%";
+            progress.append(fill);
+            const status = el("div", "learn-answer-status");
+            status.id = "learn-answered-count";
+            status.textContent = answeredCount() + " / " + deck.length + " answered";
+            box.append(head, progress, status);
+            return box;
+        }
         function show() {
-            if (index >= deck.length) return finish();
+            if (finished) return;
             const q = deck[index];
-            const view = q.kind === "match" ? match(q) : q.kind === "choice" ? choice(q) : cover(q);
-            stageEl.replaceChildren(view);
+            const box = frame(q);
+            const card = el("div", "learn-card");
+            card.append(el("p", "learn-front", questionText(q)));
+            const saved = answers.get(q.id);
+            if (q.kind === "choice") {
+                const options = el("div", "learn-options");
+                q.payload.options.forEach((text, i) => {
+                    const b = el("button", "learn-option" + (saved === i ? " selected" : ""), text);
+                    b.type = "button";
+                    b.setAttribute("aria-pressed", saved === i ? "true" : "false");
+                    b.addEventListener("click", () => setAnswer(q, i));
+                    options.append(b);
+                });
+                card.append(options);
+            } else {
+                const answer = el("textarea", "learn-written-answer");
+                answer.rows = q.kind === "match" ? 5 : 4;
+                answer.maxLength = 2500;
+                answer.placeholder = q.kind === "match" ? "Write each matching pair…" : "Type your answer here…";
+                answer.value = typeof saved === "string" ? saved : "";
+                answer.setAttribute("aria-label", "Your answer to question " + (index + 1));
+                answer.addEventListener("input", () => setAnswer(q, answer.value));
+                card.append(answer);
+            }
+
+            const review = el("button", "learn-flag" + (flagged.has(q.id) ? " is-flagged" : ""), flagged.has(q.id) ? "⚑ Flagged for review" : "⚐ Flag for review");
+            review.type = "button";
+            review.addEventListener("click", () => { if (flagged.has(q.id)) flagged.delete(q.id); else flagged.add(q.id); show(); });
+            card.append(review);
+
+            const nav = el("div", "learn-exam-nav");
+            const previous = el("button", "", "← Previous");
+            previous.type = "button"; previous.disabled = index === 0;
+            previous.addEventListener("click", () => { if (index > 0) { index--; show(); } });
+            const next = el("button", "primary", index === deck.length - 1 ? "Review answers →" : "Next →");
+            next.type = "button";
+            next.addEventListener("click", () => { if (index < deck.length - 1) { index++; show(); } else showReview(); });
+            nav.append(previous, next);
+            const overview = el("div", "learn-question-nav");
+            overview.append(el("strong", "", "Question overview"));
+            const palette = el("div", "");
+            palette.id = "learn-question-palette";
+            overview.append(palette);
+            card.append(nav, overview);
+            box.append(card);
+            stageEl.replaceChildren(box);
+            renderPalette();
             stageEl.scrollIntoView({ block: "nearest", behavior: "smooth" });
         }
+        function showReview() {
+            const unanswered = deck.filter(q => !isAnswered(q)).length;
+            const box = el("div", "learn-quiz learn-review-screen");
+            box.append(el("h4", "", "Review your answers"), el("p", "", answeredCount() + " of " + deck.length + " questions answered."));
+            const stats = el("div", "learn-review-stats");
+            stats.append(el("span", "", unanswered + " unanswered"), el("span", "", flagged.size + " flagged for review"));
+            box.append(stats);
+            if (unanswered) box.append(el("p", "learn-review-warning", "You still have " + unanswered + " unanswered question" + (unanswered === 1 ? "" : "s") + ". You can return to them before submitting."));
+            const nav = el("div", "learn-question-nav");
+            const palette = el("div", ""); palette.id = "learn-question-palette";
+            deck.forEach((q, i) => {
+                const b = el("button", "learn-palette-item" + (isAnswered(q) ? " is-answered" : "") + (flagged.has(q.id) ? " is-flagged" : ""));
+                b.type = "button"; b.textContent = String(i + 1);
+                b.addEventListener("click", () => { index = i; show(); });
+                palette.append(b);
+            });
+            nav.append(el("strong", "", "Jump to a question"), palette);
+            const actions = el("div", "learn-actions");
+            const back = el("button", "", "← Back to questions"); back.type = "button"; back.addEventListener("click", show);
+            const submit = el("button", "primary", "Submit test"); submit.type = "button"; submit.addEventListener("click", () => submitTest(false));
+            actions.append(back, submit);
+            box.append(nav, actions);
+            stageEl.replaceChildren(box);
+        }
+        async function submitTest(autoSubmit) {
+            if (finished || submitting) return;
+            const unanswered = deck.filter(q => !isAnswered(q)).length;
+            if (!autoSubmit && unanswered && !confirm("You have " + unanswered + " unanswered question(s). Submit anyway?")) return;
+            submitting = true;
+            stopTimer();
+            const box = el("div", "learn-quiz learn-grading");
+            box.append(el("h4", "", "Marking your answers…"), el("p", "", "The AI is checking written answers against the reference answers and marking scheme."));
+            stageEl.replaceChildren(box);
+            try {
+                const written = deck.filter(q => q.kind !== "choice");
+                let graded = [];
+                if (written.length) {
+                    const { data: session } = await db.auth.getSession();
+                    const token = session && session.session && session.session.access_token;
+                    if (!token) throw new Error("Your admin session expired. Sign in again.");
+                    const response = await fetch(FUNCTION_URL, {
+                        method: "POST",
+                        headers: { apikey: API_KEY, Authorization: "Bearer " + token, "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            action: "grade",
+                            exam_id: exam.id,
+                            answers: written.map(q => ({ id: q.id, question: questionText(q), answer: String(answers.get(q.id) || ""), reference: referenceAnswer(q), kind: q.kind }))
+                        })
+                    });
+                    const body = await response.json().catch(() => ({}));
+                    if (!response.ok || !body.success) throw new Error(body.error || "AI grading failed (HTTP " + response.status + ").");
+                    graded = Array.isArray(body.results) ? body.results : [];
+                }
+                const gradeMap = new Map(graded.map(r => [String(r.id), r]));
+                let earned = 0;
+                const results = deck.map(q => {
+                    const answer = answers.get(q.id);
+                    let points = 0, feedback = "No answer submitted.";
+                    if (q.kind === "choice") {
+                        points = answer === q.payload.answer ? 1 : 0;
+                        feedback = points ? "Correct." : "Reference answer: " + referenceAnswer(q);
+                        if (q.payload.explain) feedback += " " + q.payload.explain;
+                    } else {
+                        const result = gradeMap.get(String(q.id));
+                        points = Math.max(0, Math.min(1, Number(result?.points) || 0));
+                        feedback = String(result?.feedback || "No marking feedback was returned.");
+                    }
+                    earned += points;
+                    return { q, answer, points, feedback };
+                });
+                await Promise.allSettled(results.map(r => db.from("exam_questions").update({
+                    right_count: (r.q.right_count || 0) + (r.points >= 0.75 ? 1 : 0),
+                    wrong_count: (r.q.wrong_count || 0) + (r.points >= 0.75 ? 0 : 1),
+                    last_seen: new Date().toISOString()
+                }).eq("id", r.q.id)));
+                finished = true;
+                submitting = false;
+                renderResults(results, earned, autoSubmit);
+            } catch (error) {
+                submitting = false;
+                const retry = el("button", "primary", "Retry marking");
+                retry.type = "button";
+                retry.addEventListener("click", () => submitTest(true));
+                const message = el("p", "learn-review-warning", "The test answers are still here, but the AI could not finish marking: " + error.message);
+                box.replaceChildren(el("h4", "", "Marking could not finish"), message, retry);
+                stageEl.replaceChildren(box);
+            }
+        }
+        function renderResults(results, earned, autoSubmit) {
+            const total = deck.length;
+            const pct = Math.round((earned / total) * 100);
+            const box = el("div", "learn-quiz learn-done");
+            box.append(el("h4", "", extended ? "Extended test results" : "Practice test results"));
+            box.append(el("p", "", earned.toFixed(1).replace(/\.0$/, "") + " / " + total + " points · " + pct + "%"));
+            if (autoSubmit) box.append(el("p", "learn-review-warning", "The timer ran out, so the test was submitted automatically."));
+            if (extended) {
+                const grade = pct >= 95 ? 1 : pct >= 80 ? 2 : pct >= 65 ? 3 : pct >= 50 ? 4 : pct >= 25 ? 5 : 6;
+                const labels = {1:"sehr gut",2:"gut",3:"befriedigend",4:"ausreichend",5:"mangelhaft",6:"ungenügend"};
+                box.append(el("div", "learn-final-grade", "Grade " + grade + " · " + labels[grade]));
+                box.append(el("p", "learn-muted-note", "Indicative grading scale: 1 ≥ 95%, 2 ≥ 80%, 3 ≥ 65%, 4 ≥ 50%, 5 ≥ 25%, otherwise 6."));
+            }
+            const details = el("div", "learn-result-list");
+            results.forEach((r, i) => {
+                const item = el("article", "learn-result-item " + (r.points >= 0.75 ? "is-right" : "is-wrong"));
+                item.append(el("strong", "", (i + 1) + ". " + questionText(r.q)));
+                item.append(el("p", "learn-result-answer", "Your answer: " + (typeof r.answer === "number" ? r.q.payload.options[r.answer] : String(r.answer || "—"))));
+                item.append(el("p", "learn-result-feedback", Math.round(r.points * 100) + "% credit · " + r.feedback));
+                item.append(el("p", "learn-result-reference", "Reference: " + referenceAnswer(r.q)));
+                details.append(item);
+            });
+            box.append(details);
+            const actions = el("div", "learn-actions");
+            if (!extended) {
+                const bigger = el("button", "primary", "Take a larger test (20 questions)");
+                bigger.type = "button"; bigger.disabled = deck.length < 10;
+                bigger.addEventListener("click", () => runQuiz(exam, true));
+                actions.append(bigger);
+                actions.append(el("p", "learn-muted-note", "Want a longer, more realistic test? The extended test receives a German school grade."));
+            }
+            const again = el("button", "", "Try again"); again.type = "button"; again.addEventListener("click", () => runQuiz(exam, extended));
+            const close = el("button", "", "Close"); close.type = "button"; close.addEventListener("click", () => stageEl.replaceChildren());
+            actions.append(again, close); box.append(actions);
+            stageEl.replaceChildren(box);
+        }
+        function tick() {
+            secondsLeft--;
+            const clock = document.getElementById("learn-exam-timer");
+            if (clock) { clock.textContent = formatTime(secondsLeft); clock.classList.toggle("is-low", secondsLeft <= 30); }
+            if (secondsLeft <= 0) submitTest(true);
+        }
         show();
+        timerId = setInterval(tick, 1000);
     }
 
     window.loadExamLearn = load;
